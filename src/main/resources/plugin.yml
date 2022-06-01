@@ -1,0 +1,27 @@
+name: Minetrax
+version: ${project.version}
+main: com.xinecraft.Minetrax
+api-version: 1.18
+authors: [ Xinecraft ]
+description: Minetrax Plugin
+softdepend: [
+    Vault,
+  # Chat plugins
+    Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+  # Vanish plugins
+    Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
+  # Misc. plugins
+    Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap, Skript
+]
+commands:
+  account-link:
+    description: Link player to an account in web
+    aliases:
+      - link-account
+  ww:
+    aliases:
+      - webwhois
+      - mwhois
+    description: Run a web whois against a player username.
+  websay:
+    description: This is just dumb

@@ -1,0 +1,74 @@
+package com.xinecraft.tasks;
+
+import com.google.gson.Gson;
+import com.sun.management.OperatingSystemMXBean;
+import com.xinecraft.Minetrax;
+import com.xinecraft.data.ServerIntelData;
+import com.xinecraft.data.WorldData;
+import com.xinecraft.utils.HttpUtil;
+import com.xinecraft.utils.SystemUtil;
+import net.minecraft.server.MinecraftServer;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+
+import java.lang.management.ManagementFactory;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ServerIntelReportTask implements Runnable {
+    private final OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+
+    @Override
+    public void run() {
+        // Calculate the report
+        Bukkit.getLogger().info("--- SENDING SERVER INTEL ---");
+        ServerIntelData serverIntelData = new ServerIntelData();
+
+        serverIntelData.max_players = Minetrax.getPlugin().getServer().getMaxPlayers();
+        serverIntelData.online_players = Minetrax.getPlugin().getServer().getOnlinePlayers().size();
+        serverIntelData.max_memory = Runtime.getRuntime().maxMemory() / 1024;
+        serverIntelData.total_memory = Runtime.getRuntime().totalMemory() / 1024;
+        serverIntelData.free_memory = Runtime.getRuntime().freeMemory() / 1024;
+
+        double tps = MinecraftServer.getServer().recentTps[0];
+        DecimalFormat format = new DecimalFormat("##.##");
+        tps = Double.parseDouble(format.format(tps));
+        serverIntelData.tps = tps;
+        serverIntelData.available_cpu_count = osBean.getAvailableProcessors();
+        serverIntelData.cpu_load = SystemUtil.getAverageCpuLoad();
+        serverIntelData.uptime = ManagementFactory.getRuntimeMXBean().getUptime() / 1000;
+        serverIntelData.motd = Minetrax.getPlugin().getServer().getMotd();
+        serverIntelData.server_version = Minetrax.getPlugin().getServer().getVersion();
+        serverIntelData.server_session_id = Minetrax.getPlugin().serverSessionId;
+
+        serverIntelData.free_disk_in_kb = SystemUtil.getFreeDiskSpaceInKiloBytes();
+        serverIntelData.chunks_loaded = 0;
+
+        ArrayList<WorldData> worldDataList = new ArrayList<>();
+        final List<World> worlds = Minetrax.getPlugin().getServer().getWorlds();
+        for (final World w : worlds) {
+            WorldData worldData = new WorldData();
+            worldData.world_name = w.getName();
+            worldData.environment = w.getEnvironment().name();
+            worldData.world_border = w.getWorldBorder().getSize();
+            worldData.chunks_loaded = w.getLoadedChunks().length;
+            worldData.game_time = w.getGameTime();
+            worldData.online_players = w.getPlayers().size();
+            worldDataList.add(worldData);
+            serverIntelData.chunks_loaded = serverIntelData.chunks_loaded + worldData.chunks_loaded;
+        }
+        serverIntelData.world_data = worldDataList;
+        serverIntelData.server_id = Minetrax.getPlugin().getApiServerId();
+
+        // Perform the API request
+        Gson gson = new Gson();
+        String serverIntelJson = gson.toJson(serverIntelData);
+        try {
+            String response = HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/server/report", serverIntelJson);
+            Bukkit.getLogger().info("Response: " + response);
+        } catch (Exception e) {
+            Bukkit.getLogger().warning(e.getMessage());
+        }
+    }
+}
