@@ -40,7 +40,8 @@ public class PlayerSessionIntelData
 
     public int afk_time_xmin;   //// TODO: How? using last move/chat delta time? "last_active_timestamp"
 
-    public long last_active_timestamp;  // will be used to calculate afk
+    public String world_location;
+    public long last_active_timestamp;  // TODO: will be used to calculate afk
 
     public void resetXminKeys() {
         this.mob_kills_xmin = 0;

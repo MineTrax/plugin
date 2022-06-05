@@ -33,6 +33,7 @@ public class PlayerIntelReportTask implements Runnable {
             // If online then report and reset the xmin keys
             if (onlinePlayer != null && onlinePlayer.isOnline()) {
                 playerSessionData.player_ping = onlinePlayer.getPing();
+                playerSessionData.world_location = gson.toJson(onlinePlayer.getLocation().serialize());
                 reportAndResetXminData(playerSessionData);
             }
             // If not online then report and delete key from session variable ending the session.
