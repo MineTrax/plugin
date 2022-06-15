@@ -117,8 +117,8 @@ public class EntityDeathEventListener implements Listener {
         else if (event.getEntity().getKiller() != null) {
             Player killer = event.getEntity().getKiller();
 
-            System.out.println("Mob Died: " + event.getEntity().getName());
-            System.out.println("Killer: " + event.getEntity().getKiller());
+            Bukkit.getLogger().info("Mob Died: " + event.getEntity().getName());
+            Bukkit.getLogger().info("Killer: " + event.getEntity().getKiller());
 
             // Increment player mob kills for killer in Session
             PlayerData killerPlayerData = Minetrax.getPlugin().playersDataMap.get(killer.getUniqueId().toString());

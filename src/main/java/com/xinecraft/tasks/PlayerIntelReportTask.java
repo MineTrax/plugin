@@ -46,7 +46,7 @@ public class PlayerIntelReportTask implements Runnable {
     public void reportAndResetXminData(PlayerSessionIntelData playerSession) {
         String playerSessionDataJson = gson.toJson(playerSession);
         try {
-            System.out.println("Reporting Periodic Session Data: " + playerSessionDataJson);
+            Bukkit.getLogger().info("Reporting Periodic Session Data: " + playerSessionDataJson);
             HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", playerSessionDataJson);
         } catch (Exception e) {
             Bukkit.getLogger().warning(e.getMessage());
@@ -55,13 +55,13 @@ public class PlayerIntelReportTask implements Runnable {
     }
 
     private void reportAndRemoveSessionFromDataMap(PlayerSessionIntelData playerSession) {
-        System.out.println("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
+        Bukkit.getLogger().info("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
         playerSession.session_ended_at = new Date().getTime();
         String leftPlayerSessionDataJson = gson.toJson(playerSession);
         // REMOVE SESSION TO MAP
         Minetrax.getPlugin().playerSessionIntelDataMap.remove(playerSession.session_uuid);
         try {
-            System.out.println("Final Session Data: " + leftPlayerSessionDataJson);
+            Bukkit.getLogger().info("Final Session Data: " + leftPlayerSessionDataJson);
             HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", leftPlayerSessionDataJson);
         } catch (Exception e) {
             Bukkit.getLogger().warning(e.getMessage());

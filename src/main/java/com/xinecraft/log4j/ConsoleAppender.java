@@ -9,6 +9,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +26,7 @@ public class ConsoleAppender extends AbstractAppender {
             }
         }
         if (createLayoutMethod == null) {
-            System.out.println("Failed to reflectively find the Log4j createLayout method. The console appender is not going to function.");
+            Bukkit.getLogger().warning("Failed to reflectively find the Log4j createLayout method. The console appender is not going to function.");
             PATTERN_LAYOUT = null;
         } else {
             Object[] args = new Object[createLayoutMethod.getParameterCount()];
@@ -40,7 +41,7 @@ public class ConsoleAppender extends AbstractAppender {
             try {
                 createdLayout = (PatternLayout) createLayoutMethod.invoke(null, args);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                System.out.println("Failed to reflectively invoke the Log4j createLayout method. The console appender is not going to function.");
+                Bukkit.getLogger().warning("Failed to reflectively invoke the Log4j createLayout method. The console appender is not going to function.");
             }
             PATTERN_LAYOUT = createdLayout;
         }

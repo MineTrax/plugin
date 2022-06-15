@@ -42,7 +42,7 @@ public class PlayerWhoisCommand implements CommandExecutor
         String ipAddress = null;
         if (player != null && player.isOnline()) {
             uuid = player.getUniqueId().toString();
-            System.out.println("UUID " + uuid);
+            Bukkit.getLogger().info("UUID " + uuid);
             ipAddress = Objects.requireNonNull(player.getAddress()).getHostString();
         }
 

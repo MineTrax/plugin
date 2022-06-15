@@ -115,7 +115,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     Bukkit.getLogger().info("--- STARTING SESSION FOR A PLAYER ---");
                     Bukkit.getLogger().info(playerSessionDataJson);
                     String sessionInitResponse = HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/session-init", playerSessionDataJson);
-                    System.out.println("Session Start Response: " + sessionInitResponse);
+                    Bukkit.getLogger().info("Session Start Response: " + sessionInitResponse);
                 } catch (Exception e) {
                     Bukkit.getLogger().warning(e.getMessage());
                 }
@@ -129,7 +129,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(key);
         if (playerData != null) {
-            System.out.println("REPORT FINAL SESSION END ON PLAYER QUIT");
+            Bukkit.getLogger().info("REPORT FINAL SESSION END ON PLAYER QUIT");
             PlayerSessionIntelData leftPlayerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
             leftPlayerSessionIntelData.session_ended_at = new Date().getTime();
             String leftPlayerSessionDataJson = gson.toJson(leftPlayerSessionIntelData);
@@ -139,7 +139,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 @Override
                 public void run() {
                     try {
-                        System.out.println("Final Session Data: " + leftPlayerSessionDataJson);
+                        Bukkit.getLogger().info("Final Session Data: " + leftPlayerSessionDataJson);
                         HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", leftPlayerSessionDataJson);
                     } catch (Exception e) {
                         Bukkit.getLogger().warning(e.getMessage());

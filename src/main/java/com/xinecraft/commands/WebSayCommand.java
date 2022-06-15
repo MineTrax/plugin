@@ -13,7 +13,7 @@ public class WebSayCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings)
     {
         if (commandSender instanceof Player) {
-            System.out.println("Player cannot run this command");
+            Bukkit.getLogger().info("Player cannot run this command");
             return false;
         }
 

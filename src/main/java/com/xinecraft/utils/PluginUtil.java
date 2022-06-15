@@ -122,7 +122,7 @@ public class PluginUtil {
                 if (plugin.isEnabled()) {
                     return true;
                 } else {
-                    System.out.println("Plugin " + plugin.getName() + " found but wasn't enabled. Returning false");
+                    Bukkit.getLogger().info("Plugin " + plugin.getName() + " found but wasn't enabled. Returning false");
                     return false;
                 }
             }
