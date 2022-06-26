@@ -1,5 +1,7 @@
 package com.xinecraft;
 
+import com.xinecraft.tasks.PlayerAfkTrackerTask;
+import org.bstats.bukkit.Metrics;
 import com.xinecraft.commands.AccountLinkCommand;
 import com.xinecraft.commands.PlayerWhoisCommand;
 import com.xinecraft.commands.WebSayCommand;
@@ -90,6 +92,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> remindPlayerToLinkMessage;
     @Getter
+    private long afkThresholdInMs;
+    @Getter
     public HashMap<String, PlayerData> playersDataMap;
     @Getter
     public HashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
@@ -107,6 +111,10 @@ public final class Minetrax extends JavaPlugin implements Listener {
     {
         // Plugin startup logic
         Bukkit.getLogger().info("[Minetrax] Minetrax Plugin Enabled!");
+
+        // bStats Metric
+        int pluginId = 15485;
+        Metrics metrics = new Metrics(this, pluginId);
 
         playersDataMap = new HashMap<String, PlayerData>();
         playerSessionIntelDataMap = new HashMap<String, PlayerSessionIntelData>();
@@ -138,6 +146,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
+        afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -169,6 +178,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new EntityPickupItemListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemBreakListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemConsumeListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
 
         // Register Listeners only required for ChatLogs
         if (isChatLogEnabled) {
@@ -215,6 +226,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (isPlayerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerIntelReportTask(), 5 * 60 * 20L, 5 * 60 * 20L);   // every 5 minutes
         }
+
+        getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkTrackerTask(), 20L, 20L);   // Run every seconds
     }
 
     @Override

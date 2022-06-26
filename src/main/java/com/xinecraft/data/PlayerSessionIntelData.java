@@ -38,10 +38,10 @@ public class PlayerSessionIntelData
 
     public int player_ping;   // done
 
-    public int afk_time_xmin;   //// TODO: How? using last move/chat delta time? "last_active_timestamp"
+    public int afk_time_xmin;
 
-    public String world_location;
-    public long last_active_timestamp;  // TODO: will be used to calculate afk
+    public String world_location;   // Hold world location when the intel was last reported
+    public String world_name;       // Hold world name when the intel was last reported
 
     public void resetXminKeys() {
         this.mob_kills_xmin = 0;

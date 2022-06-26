@@ -372,6 +372,11 @@ public class HttpUtil {
             return fetch(method, location, body, headers);
         }
 
+        // If response code is 500 then log it for debug purpose
+        if (conn.getResponseCode() == 500) {
+            Minetrax.getPlugin().getLogger().warning(response);
+        }
+
         return response;
     }
 

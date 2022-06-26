@@ -7,7 +7,7 @@ import com.xinecraft.data.ServerIntelData;
 import com.xinecraft.data.WorldData;
 import com.xinecraft.utils.HttpUtil;
 import com.xinecraft.utils.SystemUtil;
-import net.minecraft.server.MinecraftServer;
+import com.xinecraft.utils.TPS;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -31,7 +31,7 @@ public class ServerIntelReportTask implements Runnable {
         serverIntelData.total_memory = Runtime.getRuntime().totalMemory() / 1024;
         serverIntelData.free_memory = Runtime.getRuntime().freeMemory() / 1024;
 
-        double tps = MinecraftServer.getServer().recentTps[0];
+        double tps = TPS.getTPS();
         DecimalFormat format = new DecimalFormat("##.##");
         tps = Double.parseDouble(format.format(tps));
         serverIntelData.tps = tps;

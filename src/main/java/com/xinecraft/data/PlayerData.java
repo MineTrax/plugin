@@ -19,5 +19,5 @@ public class PlayerData
     // If player has claimed daily reward. Can be claimed by going to https://domain.com/daily-rewards
     public long daily_rewards_claimed_at;
 
-    // TODO: add last_seen_at, world or something for afk tracking?
+    public long last_active_timestamp;  // Time at which the player last made some activity. Used for AFK calculation
 }

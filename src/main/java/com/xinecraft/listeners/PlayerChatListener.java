@@ -1,6 +1,7 @@
 package com.xinecraft.listeners;
 
 import com.xinecraft.Minetrax;
+import com.xinecraft.data.PlayerData;
 import com.xinecraft.utils.HttpUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -41,5 +42,11 @@ public class PlayerChatListener implements Listener {
                 }
             }
         });
+
+        // Update player last active timestamp since chat is activity
+        PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(event.getPlayer().getUniqueId().toString());
+        if (playerData != null) {
+            playerData.last_active_timestamp = System.currentTimeMillis();
+        }
     }
 }

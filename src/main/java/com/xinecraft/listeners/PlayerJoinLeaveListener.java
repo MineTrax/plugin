@@ -96,6 +96,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     String response = HttpUtil.postForm(Minetrax.getPlugin().getApiHost() + "/api/v1/player/data", params);
                     Gson gson = new GsonBuilder().serializeNulls().create();
                     PlayerData playerData = gson.fromJson(response, PlayerData.class);
+                    playerData.last_active_timestamp = System.currentTimeMillis();
 
                     PlayerSessionIntelData playerSessionIntelData = gson.fromJson(response, PlayerSessionIntelData.class);
                     playerSessionIntelData.session_uuid = UUID.randomUUID().toString();
