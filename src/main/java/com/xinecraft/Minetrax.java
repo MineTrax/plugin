@@ -1,6 +1,6 @@
 package com.xinecraft;
 
-import com.xinecraft.tasks.PlayerAfkTrackerTask;
+import com.xinecraft.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import org.bstats.bukkit.Metrics;
 import com.xinecraft.commands.AccountLinkCommand;
 import com.xinecraft.commands.PlayerWhoisCommand;
@@ -227,9 +227,9 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (isPlayerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerIntelReportTask(), 5 * 60 * 20L, 5 * 60 * 20L);   // every 5 minutes
         }
-
-        getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkTrackerTask(), 20L, 20L);   // Run every seconds
-
+        
+        getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkAndWorldIntelTrackerTask(), 20L, 20L);   // Run every seconds
+        
         // Update Checker
         new UpdateChecker(this, 102972).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {

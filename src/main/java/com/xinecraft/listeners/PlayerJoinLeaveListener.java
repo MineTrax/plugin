@@ -5,10 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.xinecraft.Minetrax;
 import com.xinecraft.data.PlayerData;
 import com.xinecraft.data.PlayerSessionIntelData;
+import com.xinecraft.data.PlayerWorldStatsIntelData;
 import com.xinecraft.utils.HttpUtil;
 import com.xinecraft.utils.WhoisUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -107,6 +109,11 @@ public class PlayerJoinLeaveListener implements Listener {
                     playerSessionIntelData.is_op = event.getPlayer().isOp();
                     playerSessionIntelData.player_ping = event.getPlayer().getPing();
                     playerSessionIntelData.server_id = Minetrax.getPlugin().getApiServerId();
+                    // Init world stats hashmap for each world
+                    playerSessionIntelData.players_world_stat_intel = new HashMap<String, PlayerWorldStatsIntelData>();
+                    for(World world : Minetrax.getPlugin().getServer().getWorlds()) {
+                        playerSessionIntelData.players_world_stat_intel.put(world.getName(), new PlayerWorldStatsIntelData(world.getName()));
+                    }
 
                     playerData.session_uuid = playerSessionIntelData.session_uuid;
                     Minetrax.getPlugin().playerSessionIntelDataMap.put(playerSessionIntelData.session_uuid, playerSessionIntelData);
