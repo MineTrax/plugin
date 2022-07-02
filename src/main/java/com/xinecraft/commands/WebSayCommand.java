@@ -1,5 +1,6 @@
 package com.xinecraft.commands;
 
+import com.xinecraft.Minetrax;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +14,7 @@ public class WebSayCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings)
     {
         if (commandSender instanceof Player) {
-            Bukkit.getLogger().info("Player cannot run this command");
+            Minetrax.getPlugin().getLogger().info("Player cannot run this command");
             return false;
         }
 

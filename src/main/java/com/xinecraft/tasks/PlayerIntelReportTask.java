@@ -47,25 +47,25 @@ public class PlayerIntelReportTask implements Runnable {
     public void reportAndResetXminData(PlayerSessionIntelData playerSession) {
         String playerSessionDataJson = gson.toJson(playerSession);
         try {
-            Bukkit.getLogger().info("Reporting Periodic Session Data: " + playerSessionDataJson);
+            Minetrax.getPlugin().getLogger().info("Reporting Periodic Session Data: " + playerSessionDataJson);
             HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", playerSessionDataJson);
         } catch (Exception e) {
-            Bukkit.getLogger().warning(e.getMessage());
+            Minetrax.getPlugin().getLogger().warning(e.getMessage());
         }
         playerSession.resetXminKeys();
     }
 
     private void reportAndRemoveSessionFromDataMap(PlayerSessionIntelData playerSession) {
-        Bukkit.getLogger().info("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
+        Minetrax.getPlugin().getLogger().info("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
         playerSession.session_ended_at = new Date().getTime();
         String leftPlayerSessionDataJson = gson.toJson(playerSession);
         // REMOVE SESSION TO MAP
         Minetrax.getPlugin().playerSessionIntelDataMap.remove(playerSession.session_uuid);
         try {
-            Bukkit.getLogger().info("Final Session Data: " + leftPlayerSessionDataJson);
+            Minetrax.getPlugin().getLogger().info("Final Session Data: " + leftPlayerSessionDataJson);
             HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", leftPlayerSessionDataJson);
         } catch (Exception e) {
-            Bukkit.getLogger().warning(e.getMessage());
+            Minetrax.getPlugin().getLogger().warning(e.getMessage());
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.xinecraft;
 
-import com.xinecraft.tasks.PlayerAfkAndWorldIntelTrackerTask;
-import org.bstats.bukkit.Metrics;
 import com.xinecraft.commands.AccountLinkCommand;
 import com.xinecraft.commands.PlayerWhoisCommand;
 import com.xinecraft.commands.WebSayCommand;
@@ -12,14 +10,16 @@ import com.xinecraft.listeners.*;
 import com.xinecraft.log4j.ConsoleAppender;
 import com.xinecraft.log4j.ConsoleMessage;
 import com.xinecraft.tasks.AccountLinkReminderTask;
+import com.xinecraft.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.tasks.PlayerIntelReportTask;
 import com.xinecraft.tasks.ServerIntelReportTask;
 import com.xinecraft.threads.ConsoleMessageQueueWorker;
 import com.xinecraft.threads.WebQuerySocketServer;
 import com.xinecraft.utils.PluginUtil;
+import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -110,7 +110,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     public void onEnable()
     {
         // Plugin startup logic
-        Bukkit.getLogger().info("[Minetrax] Minetrax Plugin Enabled!");
+        getLogger().info("Minetrax Plugin Enabled!");
 
         // bStats Metric
         int pluginId = 15485;
@@ -154,7 +154,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
                 apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
                         apiHost.isEmpty() || apiKey.isEmpty() || apiSecret.isEmpty() || apiServerId.isEmpty()
         ) {
-            Bukkit.getLogger().warning("Minetrax: Plugin disabled due to no API information");
+            getLogger().warning("Plugin disabled due to no API information");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -185,7 +185,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (isChatLogEnabled) {
             // Register Plugin Hook Listeners only if its plugin exists
             if (PluginUtil.checkIfPluginEnabled("VentureChat")) {
-                Bukkit.getLogger().info("[Minetrax] Venture Chat is found! Adding Hook...");
+                getLogger().info("Venture Chat is found! Adding Hook...");
                 getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
             }
         }
@@ -211,9 +211,9 @@ public final class Minetrax extends JavaPlugin implements Listener {
         // Vault API Setup
         boolean hasVaultPermission = setupVaultPermission();
         if (!hasVaultPermission) {
-            Bukkit.getLogger().info("[Minetrax] No Vault supported permission plugin found.");
+            getLogger().info("No Vault supported permission plugin found.");
         } else {
-            Bukkit.getLogger().info("[Minetrax] Vault Permission Plugin: " + perms.getName());
+            getLogger().info("Vault Permission Plugin: " + perms.getName());
         }
 
         // Setup Schedulers
@@ -226,15 +226,18 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (isPlayerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerIntelReportTask(), 5 * 60 * 20L, 5 * 60 * 20L);   // every 5 minutes
         }
-
+        
         getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkAndWorldIntelTrackerTask(), 20L, 20L);   // Run every seconds
+
+        // Update Checker
+        checkForPluginUpdates();
     }
 
     @Override
     public void onDisable()
     {
         // Plugin shutdown logic
-        Bukkit.getLogger().info("Minetrax Plugin Disabled!");
+        getLogger().info("Minetrax Plugin Disabled!");
         HandlerList.unregisterAll();
         webQuerySocketServer.close();
     }
@@ -243,6 +246,16 @@ public final class Minetrax extends JavaPlugin implements Listener {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return perms != null;
+    }
+
+    private void checkForPluginUpdates() {
+        new UpdateChecker(this, 102635).getVersion(version -> {
+            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                getLogger().info("Your minetrax plugin version is up to date!");
+            } else {
+                getLogger().info("There is a new update available. Please update to latest version.");
+            }
+        });
     }
 
     public static Permission getVaultPermission() {

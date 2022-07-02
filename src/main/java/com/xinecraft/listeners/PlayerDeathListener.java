@@ -37,7 +37,7 @@ public class PlayerDeathListener implements Listener {
                     try {
                         HttpUtil.postForm(Minetrax.getPlugin().getApiHost() + "/api/v1/server/chat", params);
                     } catch (Exception e) {
-                        Bukkit.getLogger().warning(e.getMessage());
+                        Minetrax.getPlugin().getLogger().warning(e.getMessage());
                     }
                 }
             });

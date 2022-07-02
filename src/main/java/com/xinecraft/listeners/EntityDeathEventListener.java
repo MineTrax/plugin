@@ -32,7 +32,7 @@ public class EntityDeathEventListener implements Listener {
             Player victim = (Player) event.getEntity();
             PlayerData victimPlayerData = Minetrax.getPlugin().playersDataMap.get(victim.getUniqueId().toString());
             if(victimPlayerData == null) {
-                Bukkit.getLogger().warning("Failed to send death data. Cannot find player in playerData HashMap");
+                Minetrax.getPlugin().getLogger().warning("Failed to send death data. Cannot find player in playerData HashMap");
                 return;
             }
 
@@ -80,14 +80,14 @@ public class EntityDeathEventListener implements Listener {
 
                     // REPORT HTTP
                     String playerPvpKillDataJSON = gson.toJson(playerPvpKillData);
-                    Bukkit.getLogger().info("---SENDING PLAYER PVP KILL REPORT---");
+                    Minetrax.getPlugin().getLogger().info("---SENDING PLAYER PVP KILL REPORT---");
                     Bukkit.getScheduler().runTaskAsynchronously(Minetrax.getPlugin(), new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/pvp-kill", playerPvpKillDataJSON);
                             } catch (Exception e) {
-                                Bukkit.getLogger().warning(e.getMessage());
+                                Minetrax.getPlugin().getLogger().warning(e.getMessage());
                             }
                         }
                     });
@@ -100,7 +100,7 @@ public class EntityDeathEventListener implements Listener {
                 playerDeathData.killer_entity_name = lastDamageCause.getDamager().getName();
             }
 
-            Bukkit.getLogger().info("---SENDING PLAYER DEATH REPORT---");
+            Minetrax.getPlugin().getLogger().info("---SENDING PLAYER DEATH REPORT---");
             String playerDeathJSON = gson.toJson(playerDeathData);
             Bukkit.getScheduler().runTaskAsynchronously(Minetrax.getPlugin(), new Runnable() {
                 @Override
@@ -108,7 +108,7 @@ public class EntityDeathEventListener implements Listener {
                     try {
                         HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/death", playerDeathJSON);
                     } catch (Exception e) {
-                        Bukkit.getLogger().warning(e.getMessage());
+                        Minetrax.getPlugin().getLogger().warning(e.getMessage());
                     }
                 }
             });
@@ -117,8 +117,8 @@ public class EntityDeathEventListener implements Listener {
         else if (event.getEntity().getKiller() != null) {
             Player killer = event.getEntity().getKiller();
 
-            Bukkit.getLogger().info("Mob Died: " + event.getEntity().getName());
-            Bukkit.getLogger().info("Killer: " + event.getEntity().getKiller());
+            Minetrax.getPlugin().getLogger().info("Mob Died: " + event.getEntity().getName());
+            Minetrax.getPlugin().getLogger().info("Killer: " + event.getEntity().getKiller());
 
             // Increment player mob kills for killer in Session
             PlayerData killerPlayerData = Minetrax.getPlugin().playersDataMap.get(killer.getUniqueId().toString());

@@ -129,7 +129,7 @@ public class WhoisUtil {
                     }
 
                 } catch (Exception e) {
-                    Bukkit.getLogger().warning(e.getMessage());
+                    Minetrax.getPlugin().getLogger().warning(e.getMessage());
                 }
             }
         });
