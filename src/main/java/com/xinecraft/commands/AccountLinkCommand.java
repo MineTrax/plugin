@@ -19,7 +19,7 @@ public class AccountLinkCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
 
         if (!(commandSender instanceof Player)) {
-            Bukkit.getLogger().info("Error: Only players can execute that command.");
+            Minetrax.getPlugin().getLogger().info("Error: Only players can execute that command.");
             return false;
         }
 

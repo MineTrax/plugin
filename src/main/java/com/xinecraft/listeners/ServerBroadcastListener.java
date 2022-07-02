@@ -20,7 +20,7 @@ public class ServerBroadcastListener implements Listener {
             return;
         }
 
-        Bukkit.getLogger().info("Server Broadcasting: "+ event.getMessage());
+        Minetrax.getPlugin().getLogger().info("Server Broadcasting: "+ event.getMessage());
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("api_key", Minetrax.getPlugin().getApiKey());
@@ -35,7 +35,7 @@ public class ServerBroadcastListener implements Listener {
                 try {
                     HttpUtil.postForm(Minetrax.getPlugin().getApiHost() + "/api/v1/server/chat", params);
                 } catch (Exception e) {
-                    Bukkit.getLogger().warning(e.getMessage());
+                    Minetrax.getPlugin().getLogger().warning(e.getMessage());
                 }
             }
         });

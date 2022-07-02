@@ -1,5 +1,6 @@
 package com.xinecraft.commands;
 
+import com.xinecraft.Minetrax;
 import com.xinecraft.utils.WhoisUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -31,7 +32,7 @@ public class PlayerWhoisCommand implements CommandExecutor
                 username = senderPlayer.getName();
             }
             else {
-                Bukkit.getLogger().info("Username is required! Eg: ww notch");
+                Minetrax.getPlugin().getLogger().info("Username is required! Eg: ww notch");
                 return false;
             }
         }
@@ -42,7 +43,7 @@ public class PlayerWhoisCommand implements CommandExecutor
         String ipAddress = null;
         if (player != null && player.isOnline()) {
             uuid = player.getUniqueId().toString();
-            Bukkit.getLogger().info("UUID " + uuid);
+            Minetrax.getPlugin().getLogger().info("UUID " + uuid);
             ipAddress = Objects.requireNonNull(player.getAddress()).getHostString();
         }
 

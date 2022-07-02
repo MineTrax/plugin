@@ -1,5 +1,6 @@
 package com.xinecraft.utils;
 
+import com.xinecraft.Minetrax;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
@@ -122,7 +123,7 @@ public class PluginUtil {
                 if (plugin.isEnabled()) {
                     return true;
                 } else {
-                    Bukkit.getLogger().info("Plugin " + plugin.getName() + " found but wasn't enabled. Returning false");
+                    Minetrax.getPlugin().getLogger().info("Plugin " + plugin.getName() + " found but wasn't enabled. Returning false");
                     return false;
                 }
             }

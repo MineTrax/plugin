@@ -11,10 +11,10 @@ import java.util.function.Consumer;
 
 public class UpdateChecker {
 
-    private final JavaPlugin plugin;
+    private final Minetrax plugin;
     private final int resourceId;
 
-    public UpdateChecker(JavaPlugin plugin, int resourceId) {
+    public UpdateChecker(Minetrax plugin, int resourceId) {
         this.plugin = plugin;
         this.resourceId = resourceId;
     }
