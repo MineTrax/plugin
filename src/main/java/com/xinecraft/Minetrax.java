@@ -24,6 +24,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.xinecraft.utils.UpdateChecker;
 
 import java.util.*;
 
@@ -226,8 +227,17 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (isPlayerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerIntelReportTask(), 5 * 60 * 20L, 5 * 60 * 20L);   // every 5 minutes
         }
-
+        
         getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkAndWorldIntelTrackerTask(), 20L, 20L);   // Run every seconds
+        
+        // Update Checker
+        new UpdateChecker(this, 102972).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                getLogger().info("[Minetrax] There are no new updates available.");
+            } else {
+                getLogger().info("[Minetrax] There is a new update available.");
+            }
+        });
     }
 
     @Override
