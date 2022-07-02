@@ -2,6 +2,8 @@ package com.xinecraft.data;
 
 import lombok.Data;
 
+import java.util.HashMap;
+
 @Data
 public class PlayerSessionIntelData
 {
@@ -19,7 +21,8 @@ public class PlayerSessionIntelData
     public int mob_kills;   // done
     public int player_kills;    // done
     public int deaths;  // done
-    public int afk_time;
+    public int afk_time;    // total time player is afk this session
+    public int play_time;   // total time player is online (including afk) for this session
     public Boolean is_kicked = false;
     public Boolean is_banned = false;
 
@@ -58,5 +61,5 @@ public class PlayerSessionIntelData
         this.afk_time_xmin = 0;
     }
 
-    // public ArrayList<PlayerWorldStatIntelData> players_world_stat_intel;
+    public HashMap<String, PlayerWorldStatsIntelData> players_world_stat_intel;
 }
