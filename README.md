@@ -6,6 +6,8 @@ Project use Maven to build. Clone the project and open in IntelliJ IDEA to work 
 # Links
 https://www.spigotmc.org/resources/minetrax-suite.102378/
 
+https://www.spigotmc.org/resources/minetrax-suite-plugin.102635/
+
 # Tested with
  - Java 17
  - Minecraft 1.18
