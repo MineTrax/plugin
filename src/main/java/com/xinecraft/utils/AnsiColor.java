@@ -66,7 +66,8 @@ public class AnsiColor {
         ITALIC('o', FORMAT_PATTERN, 3),
         BOLD('l', FORMAT_PATTERN, 1),
         UNDERLINE('n', FORMAT_PATTERN, 4),
-        RESET('r', FORMAT_PATTERN, 0);
+        RESET('r', FORMAT_PATTERN, 0),
+        OBFUSCATED('k', FORMAT_PATTERN, 9);
 
 
         private char bukkitColor;
