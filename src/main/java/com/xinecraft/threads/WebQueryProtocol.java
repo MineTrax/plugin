@@ -36,7 +36,6 @@ public class WebQueryProtocol {
         // Try to decrypt the input with api_secret return null if any issue
         String decryptedInput = CryptoUtil.getDecryptedString(Minetrax.getPlugin().getApiKey(), theInput);
         if (decryptedInput == null || decryptedInput.isEmpty()) {
-            Minetrax.getPlugin().getLogger().warning("Error: Decryption failed");
             return null;
         }
 

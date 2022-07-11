@@ -2,7 +2,7 @@ enabled: true
 api-host:
 api-key:
 api-secret:
-server-id:
+server-id: 
 webquery-host: 0.0.0.0
 webquery-port: 25569
 enable-consolelog: true

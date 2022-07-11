@@ -1,5 +1,6 @@
 package com.xinecraft.threads;
 
+import com.xinecraft.Minetrax;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ public class WebQuerySocketServer extends BukkitRunnable {
         try {
             socket = new ServerSocket();
             socket.bind(new InetSocketAddress(host, port));
+            Minetrax.getPlugin().getLogger().info("WebQuery successfully started on " + host + ":" + port);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -28,13 +30,13 @@ public class WebQuerySocketServer extends BukkitRunnable {
     @Override
     public void run() {
         while (running) {
+            PrintWriter out = null;
             try {
                 Socket sock;
                 sock = socket.accept();
                 sock.setSoTimeout(5000);
 
                 BufferedReader br;
-                PrintWriter out;
                 br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(sock.getOutputStream(), true);
 
@@ -54,6 +56,9 @@ public class WebQuerySocketServer extends BukkitRunnable {
                 out.close();
             } catch (Exception e) {
                 e.printStackTrace();
+                if (out != null) {
+                    out.close();
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.xinecraft.utils;
 
 import com.google.gson.Gson;
+import com.xinecraft.Minetrax;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Cipher;
@@ -54,8 +55,10 @@ public class CryptoUtil {
         hmacSha256.update(ivValue.getBytes(StandardCharsets.UTF_8));
         byte[] calcMac = hmacSha256.doFinal(encryptedData.getBytes(StandardCharsets.UTF_8));
         byte[] mac = Hex.decodeHex(macValue.toCharArray());
-        if (!Arrays.equals(calcMac, mac))
-            return "MAC mismatch";
+        if (!Arrays.equals(calcMac, mac)) {
+            Minetrax.getPlugin().getLogger().warning("Mac Mismatch while decrypting data. Please check your API Key and Secret.");
+            return null;
+        }
 
         Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
         c.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
