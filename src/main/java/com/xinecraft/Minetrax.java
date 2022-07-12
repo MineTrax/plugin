@@ -14,7 +14,7 @@ import com.xinecraft.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.tasks.PlayerIntelReportTask;
 import com.xinecraft.tasks.ServerIntelReportTask;
 import com.xinecraft.threads.ConsoleMessageQueueWorker;
-import com.xinecraft.threads.NettyWebQueryServer;
+import com.xinecraft.threads.webquery.NettyWebQueryServer;
 import com.xinecraft.threads.WebQuerySocketServer;
 import com.xinecraft.utils.PluginUtil;
 import com.xinecraft.utils.UpdateChecker;

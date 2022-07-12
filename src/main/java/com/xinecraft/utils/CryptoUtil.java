@@ -70,7 +70,7 @@ public class CryptoUtil {
     }
 
     public static String getDecryptedString(String secretKey, String encryptedString) {
-        String aesDataString = new String(Base64.getDecoder().decode(encryptedString.getBytes()));
+        String aesDataString = new String(Base64.getDecoder().decode(encryptedString.trim().getBytes(StandardCharsets.UTF_8)));
 
         AesEncryptionData aesEncryptedData = new Gson().fromJson(aesDataString, AesEncryptionData.class);
 

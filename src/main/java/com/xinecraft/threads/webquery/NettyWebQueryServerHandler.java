@@ -1,4 +1,4 @@
-package com.xinecraft.threads;
+package com.xinecraft.threads.webquery;
 
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
