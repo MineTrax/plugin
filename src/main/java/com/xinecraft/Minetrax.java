@@ -14,7 +14,7 @@ import com.xinecraft.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.tasks.PlayerIntelReportTask;
 import com.xinecraft.tasks.ServerIntelReportTask;
 import com.xinecraft.threads.ConsoleMessageQueueWorker;
-import com.xinecraft.threads.WebQuerySocketServer;
+import com.xinecraft.threads.webquery.NettyWebQueryServer;
 import com.xinecraft.utils.PluginUtil;
 import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     private ConsoleMessageQueueWorker consoleMessageQueueWorker;
 
     @Getter
-    private WebQuerySocketServer webQuerySocketServer;
+    private NettyWebQueryServer webQuerySocketServer;
 
     // Console
     @Getter
@@ -205,7 +205,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
             consoleMessageQueueWorker.start();
         }
 
-        webQuerySocketServer = new WebQuerySocketServer(webQueryHost, webQueryPort);
+        // WebQuery Server
+        webQuerySocketServer = new NettyWebQueryServer(webQueryHost, webQueryPort);
         webQuerySocketServer.runTaskAsynchronously(this);
 
         // Vault API Setup
@@ -239,7 +240,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
         HandlerList.unregisterAll();
-        webQuerySocketServer.close();
+        webQuerySocketServer.shutdown();
     }
 
     private boolean setupVaultPermission() {

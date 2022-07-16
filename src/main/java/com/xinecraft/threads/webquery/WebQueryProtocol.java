@@ -1,4 +1,4 @@
-package com.xinecraft.threads;
+package com.xinecraft.threads.webquery;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
