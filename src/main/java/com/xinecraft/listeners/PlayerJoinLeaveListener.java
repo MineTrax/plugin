@@ -8,9 +8,13 @@ import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.data.PlayerWorldStatsIntelData;
 import com.xinecraft.utils.HttpUtil;
 import com.xinecraft.utils.WhoisUtil;
+import org.apache.maven.model.Build;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.World;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,12 +22,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.awt.*;
 import java.util.*;
+
+import static org.bukkit.FireworkEffect.Type.STAR;
 
 public class PlayerJoinLeaveListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
+
+        Player player = event.getPlayer();
+
         // Make playerDataList and add it to list.
         this.addPlayerToPlayerDataMapAndStartSession(event);
 
@@ -32,6 +43,21 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // perform whois & add player to list of linkedPlayers hashmap
         this.broadcastWhoisForPlayer(event.getPlayer());
+
+        // fireworks effect when player joins
+        if (!Minetrax.getPlugin().getWhoisPlayerOnJoinFireworks()) {
+            return;
+        }
+        Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
+        FireworkMeta fwm = fw.getFireworkMeta();
+        FireworkEffect.Builder builder = FireworkEffect.builder();
+
+        fwm.addEffect(builder.flicker(true).withColor(Color.ORANGE).build());
+        fwm.addEffect(builder.trail(true).build());
+        fwm.addEffect(builder.withFade(Color.YELLOW).build());
+        fwm.addEffect(builder.with(STAR).build());
+        fwm.setPower(2);
+        fw.setFireworkMeta(fwm);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
