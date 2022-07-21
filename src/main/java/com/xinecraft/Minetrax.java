@@ -74,6 +74,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> whoisPlayerOnCommandMessage;
     @Getter
+    private Boolean whoisPlayerOnJoinFireworks;
+    @Getter
     private String whoisAdminPermissionName;
     @Getter
     private List<String> whoisPlayerOnAdminCommandMessage;
@@ -136,6 +138,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         whoisNoMatchFoundMessage = this.getConfig().getString("whois-no-match-found-message");
         whoisPlayerOnJoinMessage = this.getConfig().getStringList("whois-player-on-join-message");
         whoisPlayerOnFirstJoinMessage = this.getConfig().getStringList("whois-player-on-first-join-message");
+        whoisPlayerOnJoinFireworks = this.getConfig().getBoolean("whois-player-on-first-join-fireworks");
         whoisPlayerOnCommandMessage = this.getConfig().getStringList("whois-player-on-command-message");
         whoisAdminPermissionName = this.getConfig().getString("whois-admin-permission-name");
         whoisPlayerOnAdminCommandMessage = this.getConfig().getStringList("whois-player-on-admin-command-message");

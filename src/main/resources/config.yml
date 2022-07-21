@@ -21,6 +21,7 @@ enable-whois-on-player-join: true
 enable-whois-on-command: true
 whois-admin-permission-name: ww.admin
 whois-no-match-found-message: "&4&lNo matching player found with your whois query"
+whois-player-on-first-join-fireworks: false
 whois-player-on-first-join-message:
   - "&a&l{USERNAME}&r is coming from &a&l{COUNTRY}&r"
   - "&e&oNo data found for this player on web!"
