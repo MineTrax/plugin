@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import java.awt.*;
 import java.util.*;
 
+import static org.bukkit.FireworkEffect.Type.CREEPER;
 import static org.bukkit.FireworkEffect.Type.STAR;
 
 public class PlayerJoinLeaveListener implements Listener {
@@ -52,10 +53,10 @@ public class PlayerJoinLeaveListener implements Listener {
         FireworkMeta fwm = fw.getFireworkMeta();
         FireworkEffect.Builder builder = FireworkEffect.builder();
 
-        fwm.addEffect(builder.flicker(true).withColor(Color.ORANGE).build());
+        fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
         fwm.addEffect(builder.trail(true).build());
-        fwm.addEffect(builder.withFade(Color.YELLOW).build());
-        fwm.addEffect(builder.with(STAR).build());
+        fwm.addEffect(builder.withFade(Color.WHITE).build());
+        fwm.addEffect(builder.with(CREEPER).build());
         fwm.setPower(2);
         fw.setFireworkMeta(fwm);
     }
