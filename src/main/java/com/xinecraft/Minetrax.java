@@ -76,6 +76,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private Boolean isFireworkOnPlayerJoin;
     @Getter
+    private Boolean isFireworkOnPlayerFirstJoin;
+    @Getter
     private String whoisAdminPermissionName;
     @Getter
     private List<String> whoisPlayerOnAdminCommandMessage;
@@ -150,6 +152,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
+        isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -158,6 +161,13 @@ public final class Minetrax extends JavaPlugin implements Listener {
                         apiHost.isEmpty() || apiKey.isEmpty() || apiSecret.isEmpty() || apiServerId.isEmpty()
         ) {
             getLogger().warning("Plugin disabled due to no API information");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        //Disable plugin if fireworks on first join and on join are both set to true
+        if (getIsFireworkOnPlayerFirstJoin() && getIsFireworkOnPlayerJoin()) {
+            getLogger().warning("Please set enable-firework-on-player-first-join or enable-firework-on-player-join to false in config.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
