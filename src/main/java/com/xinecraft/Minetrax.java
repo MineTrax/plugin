@@ -165,13 +165,6 @@ public final class Minetrax extends JavaPlugin implements Listener {
             return;
         }
 
-        //Disable plugin if fireworks on first join and on join are both set to true
-        if (getIsFireworkOnPlayerFirstJoin() && getIsFireworkOnPlayerJoin()) {
-            getLogger().warning("Please set enable-firework-on-player-first-join or enable-firework-on-player-join to false in config.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         // Register Commands
         getCommand("link-account").setExecutor(new AccountLinkCommand());
         getCommand("websay").setExecutor(new WebSayCommand());
