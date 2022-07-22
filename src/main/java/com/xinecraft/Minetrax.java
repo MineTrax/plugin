@@ -74,7 +74,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> whoisPlayerOnCommandMessage;
     @Getter
-    private Boolean whoisPlayerOnJoinFireworks;
+    private Boolean enableFireworkOnPlayerJoin;
     @Getter
     private String whoisAdminPermissionName;
     @Getter
@@ -138,7 +138,6 @@ public final class Minetrax extends JavaPlugin implements Listener {
         whoisNoMatchFoundMessage = this.getConfig().getString("whois-no-match-found-message");
         whoisPlayerOnJoinMessage = this.getConfig().getStringList("whois-player-on-join-message");
         whoisPlayerOnFirstJoinMessage = this.getConfig().getStringList("whois-player-on-first-join-message");
-        whoisPlayerOnJoinFireworks = this.getConfig().getBoolean("whois-player-on-first-join-fireworks");
         whoisPlayerOnCommandMessage = this.getConfig().getStringList("whois-player-on-command-message");
         whoisAdminPermissionName = this.getConfig().getString("whois-admin-permission-name");
         whoisPlayerOnAdminCommandMessage = this.getConfig().getStringList("whois-player-on-admin-command-message");
@@ -150,6 +149,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
+        enableFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -255,7 +255,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     private void checkForPluginUpdates() {
         new UpdateChecker(this, 102635).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                getLogger().info("Your minetrax plugin version is up to date!");
+                getLogger().info("You are currently running the latest version of Minetrax");
             } else {
                 getLogger().info("There is a new update available. Please update to latest version.");
             }
