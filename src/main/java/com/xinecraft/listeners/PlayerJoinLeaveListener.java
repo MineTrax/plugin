@@ -45,7 +45,7 @@ public class PlayerJoinLeaveListener implements Listener {
         this.broadcastWhoisForPlayer(event.getPlayer());
 
         // fireworks effect when player joins
-        if (!Minetrax.getPlugin().getWhoisPlayerOnJoinFireworks()) {
+        if (!Minetrax.getPlugin().getEnableFireworkOnPlayerJoin()) {
             return;
         }
         Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
