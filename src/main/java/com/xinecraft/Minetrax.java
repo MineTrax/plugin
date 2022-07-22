@@ -74,7 +74,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> whoisPlayerOnCommandMessage;
     @Getter
-    private Boolean enableFireworkOnPlayerJoin;
+    private Boolean isFireworkOnPlayerJoin;
     @Getter
     private String whoisAdminPermissionName;
     @Getter
@@ -149,7 +149,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
-        enableFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
+        isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
