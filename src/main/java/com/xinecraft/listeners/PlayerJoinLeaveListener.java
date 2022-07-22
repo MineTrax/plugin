@@ -46,19 +46,34 @@ public class PlayerJoinLeaveListener implements Listener {
         this.broadcastWhoisForPlayer(event.getPlayer());
 
         // fireworks effect when player joins
-        if (!Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
-            return;
-        }
-        Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
-        FireworkMeta fwm = fw.getFireworkMeta();
-        FireworkEffect.Builder builder = FireworkEffect.builder();
+        if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
+            Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
+            FireworkMeta fwm = fw.getFireworkMeta();
+            FireworkEffect.Builder builder = FireworkEffect.builder();
 
-        fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
-        fwm.addEffect(builder.trail(true).build());
-        fwm.addEffect(builder.withFade(Color.WHITE).build());
-        fwm.addEffect(builder.with(CREEPER).build());
-        fwm.setPower(2);
-        fw.setFireworkMeta(fwm);
+            fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
+            fwm.addEffect(builder.trail(true).build());
+            fwm.addEffect(builder.withFade(Color.WHITE).build());
+            fwm.addEffect(builder.with(CREEPER).build());
+            fwm.setPower(2);
+            fw.setFireworkMeta(fwm);
+        } else {
+            // firewoks effect when player first joins only
+            if (!(player.hasPlayedBefore())) {
+                if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
+                    Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
+                    FireworkMeta fwm = fw.getFireworkMeta();
+                    FireworkEffect.Builder builder = FireworkEffect.builder();
+
+                    fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
+                    fwm.addEffect(builder.trail(true).build());
+                    fwm.addEffect(builder.withFade(Color.WHITE).build());
+                    fwm.addEffect(builder.with(CREEPER).build());
+                    fwm.setPower(2);
+                    fw.setFireworkMeta(fwm);
+                }
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

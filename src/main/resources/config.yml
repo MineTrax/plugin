@@ -46,3 +46,4 @@ whois-multiple-players-title-message: '&a&lThere is total &e&l{COUNT}&r &a&lplay
 whois-multiple-players-list-message: '&6#{POSITION}&r - &b{USERNAME}&r'
 afk-threshold-in-seconds: 300
 enable-firework-on-player-join: false
+enable-firework-on-player-first-join: false
