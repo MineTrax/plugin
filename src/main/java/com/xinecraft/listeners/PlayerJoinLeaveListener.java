@@ -47,6 +47,10 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // fireworks effect when player joins
         if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
+            if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
+                Minetrax.getPlugin().getLogger().warning("Please set enable-firework-on-player-first-join or enable-firework-on-player-join to false in config.");
+                return;
+            }
             Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
             FireworkMeta fwm = fw.getFireworkMeta();
             FireworkEffect.Builder builder = FireworkEffect.builder();
@@ -61,6 +65,10 @@ public class PlayerJoinLeaveListener implements Listener {
             // firewoks effect when player first joins only
             if (!(player.hasPlayedBefore())) {
                 if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
+                    if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
+                        Minetrax.getPlugin().getLogger().warning("Please set enable-firework-on-player-first-join or enable-firework-on-player-join to false in config.");
+                        return;
+                    }
                     Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
                     FireworkMeta fwm = fw.getFireworkMeta();
                     FireworkEffect.Builder builder = FireworkEffect.builder();
