@@ -8,11 +8,8 @@ import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.data.PlayerWorldStatsIntelData;
 import com.xinecraft.utils.HttpUtil;
 import com.xinecraft.utils.WhoisUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +19,7 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -31,7 +29,7 @@ public class PlayerJoinLeaveListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        Player player = event.getPlayer();
+        Player p = event.getPlayer();
 
         // Make playerDataList and add it to list.
         this.addPlayerToPlayerDataMapAndStartSession(event);
@@ -48,37 +46,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 Minetrax.getPlugin().getLogger().warning("Please set enable-firework-on-player-first-join to false in config.");
                 return;
             } else {
-                Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
-                FireworkMeta fwm = fw.getFireworkMeta();
-                FireworkEffect.Builder builder = FireworkEffect.builder();
-
-                fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
-                fwm.addEffect(builder.trail(true).build());
-                fwm.addEffect(builder.withFade(Color.WHITE).build());
-                fwm.addEffect(builder.with(CREEPER).build());
-                fwm.setPower(2);
-                fw.setFireworkMeta(fwm);
-            }
-        } else {
-            // fireworks effect when player first joins only
-            if (!(player.hasPlayedBefore())) {
-                if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
-                    if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
-                        Minetrax.getPlugin().getLogger().warning("Please set enable-firework-on-player-join to false in config.");
-                        return;
-                    } else {
-                        Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
-                        FireworkMeta fwm = fw.getFireworkMeta();
-                        FireworkEffect.Builder builder = FireworkEffect.builder();
-
-                        fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
-                        fwm.addEffect(builder.trail(true).build());
-                        fwm.addEffect(builder.withFade(Color.WHITE).build());
-                        fwm.addEffect(builder.with(CREEPER).build());
-                        fwm.setPower(2);
-                        fw.setFireworkMeta(fwm);
-                    }
-                }
+                spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt("join-fireworks-amount"));
             }
         }
     }
@@ -207,5 +175,27 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Remove player data map.
         Minetrax.getPlugin().playersDataMap.remove(key);
+    }
+
+    private static void spawnFireworks(Player p, Integer amount) {
+        Location loc = p.getLocation();
+        int diameter = 10;
+
+        Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
+        FireworkMeta fwm = fw.getFireworkMeta();
+
+        fwm.setPower(2);
+        fwm.addEffect(FireworkEffect.builder().withColor(Color.BLUE).flicker(true).build());
+        fwm.addEffect(FireworkEffect.builder().withFade(Color.WHITE).build());
+        fwm.addEffect(FireworkEffect.builder().trail(true).build());
+        fwm.addEffect(FireworkEffect.builder().with(CREEPER).build());
+        fw.setFireworkMeta(fwm);
+        fw.detonate();
+
+        for (int i = 0; i < amount; i++) {
+            Location newLocation = loc.add(new Vector(Math.random()-0.5, 0, Math.random()-0.5).multiply(diameter));
+            Firework fw2 = (Firework) loc.getWorld().spawnEntity(newLocation, EntityType.FIREWORK);
+            fw2.setFireworkMeta(fwm);
+        }
     }
 }
