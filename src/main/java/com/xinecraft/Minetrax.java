@@ -74,6 +74,10 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> whoisPlayerOnCommandMessage;
     @Getter
+    private Boolean isFireworkOnPlayerJoin;
+    @Getter
+    private Boolean isFireworkOnPlayerFirstJoin;
+    @Getter
     private String whoisAdminPermissionName;
     @Getter
     private List<String> whoisPlayerOnAdminCommandMessage;
@@ -147,6 +151,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
+        isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
+        isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -252,7 +258,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     private void checkForPluginUpdates() {
         new UpdateChecker(this, 102635).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                getLogger().info("Your minetrax plugin version is up to date!");
+                getLogger().info("You are currently running the latest version of Minetrax");
             } else {
                 getLogger().info("There is a new update available. Please update to latest version.");
             }
