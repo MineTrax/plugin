@@ -78,6 +78,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private Boolean isFireworkOnPlayerFirstJoin;
     @Getter
+    private String fireworkSendAmount;
+    @Getter
     private String whoisAdminPermissionName;
     @Getter
     private List<String> whoisPlayerOnAdminCommandMessage;
@@ -153,6 +155,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
         isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
+        fireworkSendAmount = this.getConfig().getString("join-fireworks-amount");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there

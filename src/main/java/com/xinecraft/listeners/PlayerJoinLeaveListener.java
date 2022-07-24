@@ -27,17 +27,16 @@ import java.util.*;
 import static org.bukkit.FireworkEffect.Type.CREEPER;
 
 public class PlayerJoinLeaveListener implements Listener {
-    @EventHandler
-    public void onPlayerJoinFirst(PlayerLoginEvent event) {
+    /*@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerFirstJoin(PlayerLoginEvent event) {
         Player p = event.getPlayer();
 
-        if (!(p.hasPlayedBefore())) {
-            // fireworks effect when player joins
-            if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
-                spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt("join-fireworks-amount"));
+        if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
+            if (!p.hasPlayedBefore()) {
+                spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt(Minetrax.getPlugin().getFireworkSendAmount()));
             }
         }
-    }
+    }*/
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
@@ -53,8 +52,12 @@ public class PlayerJoinLeaveListener implements Listener {
         this.broadcastWhoisForPlayer(event.getPlayer());
 
         // fireworks effect when player joins
-        if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
-            spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt("join-fireworks-amount"));
+        if (!p.hasPlayedBefore() && Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
+            spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt(Minetrax.getPlugin().getFireworkSendAmount()));
+        } else {
+            if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
+                spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt(Minetrax.getPlugin().getFireworkSendAmount()));
+            }
         }
     }
 
@@ -185,7 +188,7 @@ public class PlayerJoinLeaveListener implements Listener {
     }
 
     private static void spawnFireworks(Player p, Integer amount) {
-        int diameter = 1;
+        int diameter = 10;
 
         Firework fw = p.getWorld().spawn(p.getLocation(), Firework.class);
         FireworkMeta fwm = fw.getFireworkMeta();
@@ -200,7 +203,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         for (int i = 0; i < amount; i++) {
             Location newLocation = p.getLocation().add(new Vector(Math.random()-0.5, 0, Math.random()-0.5).multiply(diameter));
-            Firework fw2 = (Firework) p.getLocation().getWorld().spawnEntity(newLocation, EntityType.FIREWORK);
+            Firework fw2 = (Firework) Objects.requireNonNull(p.getLocation().getWorld()).spawnEntity(newLocation, EntityType.FIREWORK);
             fw2.setFireworkMeta(fwm);
         }
     }
