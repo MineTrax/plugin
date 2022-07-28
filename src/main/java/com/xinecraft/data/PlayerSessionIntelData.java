@@ -38,10 +38,9 @@ public class PlayerSessionIntelData
     public int items_crafted_xmin;  //// TODO: CraftItemEvent & FurnaceExtractEvent
     public int items_placed_xmin;   // done
     public int items_consumed_xmin;  // done
+    public int afk_time_xmin;
 
     public int player_ping;   // done
-
-    public int afk_time_xmin;
 
     public String world_location;   // Hold world location when the intel was last reported
     public String world_name;       // Hold world name when the intel was last reported

@@ -34,7 +34,8 @@ public class WebQueryProtocol {
         String theOutput = null;
 
         // Try to decrypt the input with api_secret return null if any issue
-        String decryptedInput = CryptoUtil.getDecryptedString(Minetrax.getPlugin().getApiKey(), theInput);
+        String apiSecret = Minetrax.getPlugin().getApiSecret().substring(0, 32);
+        String decryptedInput = CryptoUtil.getDecryptedString(apiSecret, theInput);
         if (decryptedInput == null || decryptedInput.isEmpty()) {
             return null;
         }
@@ -43,9 +44,9 @@ public class WebQueryProtocol {
         Gson gson = new Gson();
         QueryRequestData queryRequestData = gson.fromJson(decryptedInput, QueryRequestData.class);
 
-        // Verify if API secret is correct return null if any issue
-        if (!Minetrax.getPlugin().getApiSecret().equals(queryRequestData.secret)) {
-            Minetrax.getPlugin().getLogger().warning("Error: Secret Mismatch");
+        // Verify if API key is correct return null if any issue
+        if (!Minetrax.getPlugin().getApiKey().equals(queryRequestData.api_key)) {
+            Minetrax.getPlugin().getLogger().warning("Error: API Key Mismatch");
             return null;
         }
 

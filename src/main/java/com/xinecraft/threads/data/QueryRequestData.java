@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class QueryRequestData {
-    @SerializedName("secret")
-    public String secret;
+    @SerializedName("api_key")
+    public String api_key;
 
     @SerializedName("type")
     public String type;
