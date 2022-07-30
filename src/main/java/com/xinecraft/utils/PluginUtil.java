@@ -123,7 +123,7 @@ public class PluginUtil {
                 if (plugin.isEnabled()) {
                     return true;
                 } else {
-                    Minetrax.getPlugin().getLogger().info("Plugin " + plugin.getName() + " found but wasn't enabled. Returning false");
+                    Minetrax.getPlugin().getLogger().info("Plugin " + plugin.getName() + " found but wasn't enabled. Returning false.");
                     return false;
                 }
             }

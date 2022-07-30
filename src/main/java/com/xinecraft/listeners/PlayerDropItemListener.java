@@ -16,6 +16,11 @@ public class PlayerDropItemListener implements Listener {
         Player player = event.getPlayer();
 
         PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(player.getUniqueId().toString());
+        if (playerData == null)
+        {
+            return;
+        }
+
         PlayerSessionIntelData playerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
         playerSessionIntelData.items_dropped_xmin = playerSessionIntelData.items_dropped_xmin + 1;
     }

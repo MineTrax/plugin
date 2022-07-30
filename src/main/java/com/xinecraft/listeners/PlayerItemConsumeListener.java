@@ -16,6 +16,11 @@ public class PlayerItemConsumeListener implements Listener {
         Player player = event.getPlayer();
 
         PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(player.getUniqueId().toString());
+        if (playerData == null)
+        {
+            return;
+        }
+
         PlayerSessionIntelData playerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
         playerSessionIntelData.items_consumed_xmin = playerSessionIntelData.items_consumed_xmin + 1;
         playerSessionIntelData.items_used_xmin = playerSessionIntelData.items_used_xmin + 1;
