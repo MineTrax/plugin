@@ -16,6 +16,11 @@ public class PlayerItemBreakListener implements Listener {
         Player player = event.getPlayer();
 
         PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(player.getUniqueId().toString());
+        if (playerData == null)
+        {
+            return;
+        }
+
         PlayerSessionIntelData playerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
         playerSessionIntelData.items_broken_xmin = playerSessionIntelData.items_broken_xmin + 1;
     }

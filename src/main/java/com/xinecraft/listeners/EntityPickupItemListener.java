@@ -17,6 +17,11 @@ public class EntityPickupItemListener implements Listener {
             Player player = (Player) event.getEntity();
 
             PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(player.getUniqueId().toString());
+            if (playerData == null)
+            {
+                return;
+            }
+
             PlayerSessionIntelData playerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
             playerSessionIntelData.items_picked_up_xmin = playerSessionIntelData.items_picked_up_xmin + 1;
         }
