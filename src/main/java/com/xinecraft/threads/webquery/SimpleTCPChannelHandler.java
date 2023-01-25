@@ -12,6 +12,9 @@ public class SimpleTCPChannelHandler extends SimpleChannelInboundHandler<String>
         } catch (Exception e) {
             output = "err";
         }
+        if (output == null) {
+            output = "err";
+        }
         ctx.channel().writeAndFlush(output);
         ctx.close();
     }

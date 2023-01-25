@@ -19,6 +19,7 @@ import com.xinecraft.utils.PluginUtil;
 import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
 import net.milkbowl.vault.permission.Permission;
+import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -128,7 +129,17 @@ public final class Minetrax extends JavaPlugin implements Listener {
         // Config
         this.saveDefaultConfig();
         isEnabled = this.getConfig().getBoolean("enabled");
+        // No need for anything if plugin is DISABLED
+        if (!isEnabled) {
+            getLogger().warning("Plugin disabled from config.yml");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         apiHost = this.getConfig().getString("api-host");
+        if (apiHost != null) {
+            apiHost = StringUtils.strip(apiHost, "/");
+        }
         apiKey = this.getConfig().getString("api-key");
         apiSecret = this.getConfig().getString("api-secret");
         apiServerId = this.getConfig().getString("server-id");
