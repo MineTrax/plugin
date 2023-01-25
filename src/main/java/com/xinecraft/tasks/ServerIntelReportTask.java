@@ -49,7 +49,7 @@ public class ServerIntelReportTask implements Runnable {
         for (final World w : worlds) {
             WorldData worldData = new WorldData();
             worldData.world_name = w.getName();
-            worldData.environment = w.getEnvironment().name();
+            worldData.environment = w.getEnvironment().toString();
             worldData.world_border = w.getWorldBorder().getSize();
             worldData.chunks_loaded = w.getLoadedChunks().length;
             worldData.game_time = w.getGameTime();

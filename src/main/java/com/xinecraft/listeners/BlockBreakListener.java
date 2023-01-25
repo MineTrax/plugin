@@ -23,5 +23,6 @@ public class BlockBreakListener implements Listener {
 
         PlayerSessionIntelData playerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
         playerSessionIntelData.items_mined_xmin = playerSessionIntelData.items_mined_xmin + 1;
+        playerSessionIntelData.items_used_xmin = playerSessionIntelData.items_used_xmin + 1;
     }
 }

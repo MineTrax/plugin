@@ -30,7 +30,7 @@ public class PlayerSessionIntelData
     public int mob_kills_xmin;  // done
     public int player_kills_xmin;   // done
     public int deaths_xmin; // done
-    public int items_used_xmin; // TODO: BlockBreakEvent, PlayerItemConsumeEvent, PlayerEggThrowEvent
+    public int items_used_xmin; // TODO: PlayerEggThrowEvent
     public int items_mined_xmin;    // done
     public int items_picked_up_xmin;   // done
     public int items_dropped_xmin; // done

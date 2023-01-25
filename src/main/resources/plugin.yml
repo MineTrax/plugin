@@ -4,6 +4,7 @@ main: com.xinecraft.Minetrax
 api-version: 1.16
 authors: [ Xinecraft ]
 description: Minetrax Plugin
+depend: [ Vault ]
 softdepend: [
   # Chat plugins
     Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
