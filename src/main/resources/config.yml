@@ -30,7 +30,7 @@ report-server-intel: true
 # Sends player intel to website for better analysis.
 report-player-intel: true
 # Message format that will be sent when sending message from website to game
-web-message-format: '&b[WEB]&r {USERNAME} {MESSAGE}:&r'
+web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 # Sends a reminder to player to link their account to website.
 remind-player-to-link: true
 # How often to send the reminder to player.  This value is in seconds (300 seconds = 5 minutes)
