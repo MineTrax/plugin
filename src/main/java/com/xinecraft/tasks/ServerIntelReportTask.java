@@ -6,6 +6,7 @@ import com.xinecraft.Minetrax;
 import com.xinecraft.data.ServerIntelData;
 import com.xinecraft.data.WorldData;
 import com.xinecraft.utils.HttpUtil;
+import com.xinecraft.utils.LoggingUtil;
 import com.xinecraft.utils.SystemUtil;
 import com.xinecraft.utils.TPS;
 import org.bukkit.World;
@@ -20,8 +21,7 @@ public class ServerIntelReportTask implements Runnable {
 
     @Override
     public void run() {
-        // Calculate the report
-        Minetrax.getPlugin().getLogger().info("--- SENDING SERVER INTEL ---");
+        LoggingUtil.info("--- SENDING SERVER INTEL ---");
         ServerIntelData serverIntelData = new ServerIntelData();
 
         serverIntelData.max_players = Minetrax.getPlugin().getServer().getMaxPlayers();
@@ -65,7 +65,7 @@ public class ServerIntelReportTask implements Runnable {
         String serverIntelJson = gson.toJson(serverIntelData);
         try {
             String response = HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/server/report", serverIntelJson);
-            Minetrax.getPlugin().getLogger().info("Response: " + response);
+            LoggingUtil.info("Response: " + response);
         } catch (Exception e) {
             Minetrax.getPlugin().getLogger().warning(e.getMessage());
         }

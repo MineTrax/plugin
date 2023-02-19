@@ -1,6 +1,7 @@
 package com.xinecraft.commands;
 
 import com.xinecraft.Minetrax;
+import com.xinecraft.utils.LoggingUtil;
 import com.xinecraft.utils.WhoisUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -43,7 +44,7 @@ public class PlayerWhoisCommand implements CommandExecutor
         String ipAddress = null;
         if (player != null && player.isOnline()) {
             uuid = player.getUniqueId().toString();
-            Minetrax.getPlugin().getLogger().info("UUID " + uuid);
+            LoggingUtil.info("UUID " + uuid);
             ipAddress = Objects.requireNonNull(player.getAddress()).getHostString();
         }
 

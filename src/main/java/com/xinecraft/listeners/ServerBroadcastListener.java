@@ -2,6 +2,7 @@ package com.xinecraft.listeners;
 
 import com.xinecraft.Minetrax;
 import com.xinecraft.utils.HttpUtil;
+import com.xinecraft.utils.LoggingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,7 +21,7 @@ public class ServerBroadcastListener implements Listener {
             return;
         }
 
-        Minetrax.getPlugin().getLogger().info("Server Broadcasting: "+ event.getMessage());
+        LoggingUtil.info("Server Broadcasting: "+ event.getMessage());
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("api_key", Minetrax.getPlugin().getApiKey());

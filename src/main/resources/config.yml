@@ -87,3 +87,5 @@ enable-firework-on-player-join: false
 enable-firework-on-player-first-join: false
 # How many fireworks will be sent when player joins
 join-fireworks-amount: 2
+# If enabled the plugin will send more log data in console for better debugging.
+debug-mode: false

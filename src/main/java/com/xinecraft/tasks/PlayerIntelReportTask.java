@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.xinecraft.Minetrax;
 import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.utils.HttpUtil;
+import com.xinecraft.utils.LoggingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -47,7 +48,7 @@ public class PlayerIntelReportTask implements Runnable {
     public void reportAndResetXminData(PlayerSessionIntelData playerSession) {
         String playerSessionDataJson = gson.toJson(playerSession);
         try {
-            Minetrax.getPlugin().getLogger().info("Reporting Periodic Session Data: " + playerSessionDataJson);
+            LoggingUtil.info("Reporting Periodic Session Data: " + playerSessionDataJson);
             HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", playerSessionDataJson);
         } catch (Exception e) {
             Minetrax.getPlugin().getLogger().warning(e.getMessage());
@@ -56,13 +57,13 @@ public class PlayerIntelReportTask implements Runnable {
     }
 
     private void reportAndRemoveSessionFromDataMap(PlayerSessionIntelData playerSession) {
-        Minetrax.getPlugin().getLogger().info("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
+        LoggingUtil.info("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
         playerSession.session_ended_at = new Date().getTime();
         String leftPlayerSessionDataJson = gson.toJson(playerSession);
         // REMOVE SESSION TO MAP
         Minetrax.getPlugin().playerSessionIntelDataMap.remove(playerSession.session_uuid);
         try {
-            Minetrax.getPlugin().getLogger().info("Final Session Data: " + leftPlayerSessionDataJson);
+            LoggingUtil.info("Final Session Data: " + leftPlayerSessionDataJson);
             HttpUtil.postJsonWithAuth(Minetrax.getPlugin().getApiHost() + "/api/v1/intel/player/report/event", leftPlayerSessionDataJson);
         } catch (Exception e) {
             Minetrax.getPlugin().getLogger().warning(e.getMessage());

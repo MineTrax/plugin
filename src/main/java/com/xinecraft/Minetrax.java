@@ -45,6 +45,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private Boolean isEnabled;
     @Getter
+    private Boolean isDebugMode;
+    @Getter
     private String apiKey;
     @Getter
     private String apiSecret;
@@ -140,6 +142,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (apiHost != null) {
             apiHost = StringUtils.strip(apiHost, "/");
         }
+        isDebugMode = this.getConfig().getBoolean("debug-mode");
         apiKey = this.getConfig().getString("api-key");
         apiSecret = this.getConfig().getString("api-secret");
         apiServerId = this.getConfig().getString("server-id");

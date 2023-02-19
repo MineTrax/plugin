@@ -8,6 +8,7 @@ import com.xinecraft.data.PlayerDeathData;
 import com.xinecraft.data.PlayerPvpKillData;
 import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.utils.HttpUtil;
+import com.xinecraft.utils.LoggingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -80,7 +81,7 @@ public class EntityDeathEventListener implements Listener {
 
                     // REPORT HTTP
                     String playerPvpKillDataJSON = gson.toJson(playerPvpKillData);
-                    Minetrax.getPlugin().getLogger().info("---SENDING PLAYER PVP KILL REPORT---");
+                    LoggingUtil.info("---SENDING PLAYER PVP KILL REPORT---");
                     Bukkit.getScheduler().runTaskAsynchronously(Minetrax.getPlugin(), new Runnable() {
                         @Override
                         public void run() {
@@ -100,7 +101,7 @@ public class EntityDeathEventListener implements Listener {
                 playerDeathData.killer_entity_name = lastDamageCause.getDamager().getName();
             }
 
-            Minetrax.getPlugin().getLogger().info("---SENDING PLAYER DEATH REPORT---");
+            LoggingUtil.info("---SENDING PLAYER DEATH REPORT---");
             String playerDeathJSON = gson.toJson(playerDeathData);
             Bukkit.getScheduler().runTaskAsynchronously(Minetrax.getPlugin(), new Runnable() {
                 @Override

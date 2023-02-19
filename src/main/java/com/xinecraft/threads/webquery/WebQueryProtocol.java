@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.xinecraft.Minetrax;
 import com.xinecraft.threads.data.QueryRequestData;
 import com.xinecraft.utils.CryptoUtil;
+import com.xinecraft.utils.LoggingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -51,7 +52,7 @@ public class WebQueryProtocol {
         }
 
         // Switch case to find what user want to do and handle it accordingly
-        Minetrax.getPlugin().getLogger().info("Handing Query of Type: " + queryRequestData.type);
+        LoggingUtil.info("Handing Query of Type: " + queryRequestData.type);
         switch (queryRequestData.type) {
             case "status":
                 theOutput = handleStatus();
