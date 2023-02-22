@@ -168,6 +168,7 @@ public class HttpUtil {
             headers = new HashMap<String, String>();
         }
         headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Accept", "application/json");
 
         // parse parameters
         String body = "";
