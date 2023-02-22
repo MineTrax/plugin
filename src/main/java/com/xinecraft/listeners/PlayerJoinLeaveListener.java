@@ -96,6 +96,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     HttpUtil.postForm(Minetrax.getPlugin().getApiHost() + "/api/v1/server/chat", params);
                 } catch (Exception e) {
                     Minetrax.getPlugin().getLogger().warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });
@@ -153,6 +154,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     LoggingUtil.info("Session Start Response: " + sessionInitResponse);
                 } catch (Exception e) {
                     Minetrax.getPlugin().getLogger().warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });

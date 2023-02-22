@@ -130,6 +130,7 @@ public class WhoisUtil {
 
                 } catch (Exception e) {
                     Minetrax.getPlugin().getLogger().warning(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });

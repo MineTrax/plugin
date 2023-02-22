@@ -181,7 +181,11 @@ public class HttpUtil {
                 }
                 String value = params.get(param);
                 body += URLEncoder.encode(param, "UTF-8") + "=";
-                body += URLEncoder.encode(value, "UTF-8");
+                if (value != null)
+                    body += URLEncoder.encode(value, "UTF-8");
+                else {
+                    body += "";
+                }
             }
         }
 
