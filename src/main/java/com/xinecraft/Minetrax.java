@@ -6,6 +6,7 @@ import com.xinecraft.commands.WebSayCommand;
 import com.xinecraft.data.PlayerData;
 import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.hooks.chat.VentureChatHook;
+import com.xinecraft.hooks.placeholderapi.MinetraxPlaceholderExpansion;
 import com.xinecraft.listeners.*;
 import com.xinecraft.log4j.ConsoleAppender;
 import com.xinecraft.log4j.ConsoleMessage;
@@ -21,6 +22,7 @@ import lombok.Getter;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -253,6 +255,12 @@ public final class Minetrax extends JavaPlugin implements Listener {
         
         getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkAndWorldIntelTrackerTask(), 20L, 20L);   // Run every seconds
 
+        // Setup PlaceholderAPI
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            getLogger().info("Hooking into PlaceholderAPI.");
+            new MinetraxPlaceholderExpansion(this).register();
+        }
+
         // Update Checker
         checkForPluginUpdates();
     }
@@ -275,7 +283,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     private void checkForPluginUpdates() {
         new UpdateChecker(this, 102635).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                getLogger().info("You are currently running the latest version of Minetrax");
+                getLogger().info("You are currently running the latest version of MineTrax");
             } else {
                 getLogger().info("There is a new update available. Please update to latest version.");
             }

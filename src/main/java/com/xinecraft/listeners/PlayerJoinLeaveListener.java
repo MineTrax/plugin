@@ -27,16 +27,6 @@ import java.util.*;
 import static org.bukkit.FireworkEffect.Type.CREEPER;
 
 public class PlayerJoinLeaveListener implements Listener {
-    /*@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerFirstJoin(PlayerLoginEvent event) {
-        Player p = event.getPlayer();
-
-        if (Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
-            if (!p.hasPlayedBefore()) {
-                spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt(Minetrax.getPlugin().getFireworkSendAmount()));
-            }
-        }
-    }*/
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 

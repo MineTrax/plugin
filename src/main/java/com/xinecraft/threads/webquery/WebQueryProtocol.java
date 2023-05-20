@@ -140,6 +140,7 @@ public class WebQueryProtocol {
         {
             JsonObject playerJsonObject = new JsonObject();
             playerJsonObject.addProperty("username", player.getName());
+            playerJsonObject.addProperty("display_name", player.getDisplayName());
             playerJsonObject.addProperty("id", player.getUniqueId().toString());
             playerJsonObject.addProperty("is_op", player.isOp());
             playerJsonObject.addProperty("ping", player.getPing());

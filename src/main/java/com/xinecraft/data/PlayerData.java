@@ -20,4 +20,20 @@ public class PlayerData
     public long daily_rewards_claimed_at;
 
     public long last_active_timestamp;  // Time at which the player last made some activity. Used for AFK calculation
+
+    public float rating;
+
+    public int total_score;
+
+    public int position;
+
+    public String first_seen_at;    // String diffForHumans()
+
+    public String last_seen_at;     // String diffForHumans()
+
+    public String profile_link;             // Link to player's profile on web
+
+    public CountryData country;
+
+    public PlayerRankData rank;
 }

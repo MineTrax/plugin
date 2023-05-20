@@ -13,8 +13,10 @@ import org.bukkit.World;
 
 import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ServerIntelReportTask implements Runnable {
     private final OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
@@ -30,9 +32,16 @@ public class ServerIntelReportTask implements Runnable {
         serverIntelData.total_memory = Runtime.getRuntime().totalMemory() / 1024;
         serverIntelData.free_memory = Runtime.getRuntime().freeMemory() / 1024;
 
-        double tps = TPS.getTPS();
-        DecimalFormat format = new DecimalFormat("##.##");
-        tps = Double.parseDouble(format.format(tps));
+        double tps = 0.0;
+        try {
+            tps = TPS.getTPS();
+            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+            DecimalFormat format = new DecimalFormat("##.##", decimalFormatSymbols);
+            tps = Double.parseDouble(format.format(tps).replace(",", "."));
+        } catch(Exception e) {
+            tps = 00.00;
+        }
+
         serverIntelData.tps = tps;
         serverIntelData.available_cpu_count = osBean.getAvailableProcessors();
         serverIntelData.cpu_load = SystemUtil.getAverageCpuLoad();
