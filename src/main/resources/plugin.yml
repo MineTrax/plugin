@@ -7,7 +7,7 @@ description: Minetrax Plugin
 depend: [ Vault ]
 softdepend: [
   # Chat plugins
-    Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+    Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat, Chatty,
   # Vanish plugins
     Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins

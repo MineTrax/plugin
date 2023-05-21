@@ -5,6 +5,7 @@ import com.xinecraft.commands.PlayerWhoisCommand;
 import com.xinecraft.commands.WebSayCommand;
 import com.xinecraft.data.PlayerData;
 import com.xinecraft.data.PlayerSessionIntelData;
+import com.xinecraft.hooks.chat.ChattyHook;
 import com.xinecraft.hooks.chat.VentureChatHook;
 import com.xinecraft.hooks.placeholderapi.MinetraxPlaceholderExpansion;
 import com.xinecraft.listeners.*;
@@ -212,6 +213,10 @@ public final class Minetrax extends JavaPlugin implements Listener {
             if (PluginUtil.checkIfPluginEnabled("VentureChat")) {
                 getLogger().info("Venture Chat is found! Adding Hook...");
                 getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
+            }
+            if (PluginUtil.checkIfPluginEnabled("Chatty")) {
+                getLogger().info("Chatty is found! Adding Hook...");
+                getServer().getPluginManager().registerEvents(new ChattyHook(), this);
             }
         }
 
