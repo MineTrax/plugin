@@ -271,7 +271,9 @@ public final class Minetrax extends JavaPlugin implements Listener {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
         HandlerList.unregisterAll();
-        webQuerySocketServer.shutdown();
+        if (webQuerySocketServer != null) {
+            webQuerySocketServer.shutdown();
+        }
     }
 
     private boolean setupVaultPermission() {
