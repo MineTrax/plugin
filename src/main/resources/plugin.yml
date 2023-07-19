@@ -1,13 +1,13 @@
 name: Minetrax
 version: ${project.version}
 main: com.xinecraft.Minetrax
-api-version: 1.16
+api-version: 1.13
 authors: [ Xinecraft ]
 description: Minetrax Plugin
 depend: [ Vault ]
 softdepend: [
   # Chat plugins
-    Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat,
+    Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat, EpicCore,
   # Vanish plugins
     Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Misc. plugins

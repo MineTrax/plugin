@@ -5,6 +5,7 @@ import com.xinecraft.commands.PlayerWhoisCommand;
 import com.xinecraft.commands.WebSayCommand;
 import com.xinecraft.data.PlayerData;
 import com.xinecraft.data.PlayerSessionIntelData;
+import com.xinecraft.hooks.chat.EpicCoreChatHook;
 import com.xinecraft.hooks.chat.VentureChatHook;
 import com.xinecraft.hooks.placeholderapi.MinetraxPlaceholderExpansion;
 import com.xinecraft.listeners.*;
@@ -110,6 +111,10 @@ public final class Minetrax extends JavaPlugin implements Listener {
     public HashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
     @Getter
     public String serverSessionId;
+    @Getter
+    public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
+    @Getter
+    public List<String> whitelistedCommandsFromWeb;
 
     private static Permission perms = null;
 
@@ -172,6 +177,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
         isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
         isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
         fireworkSendAmount = this.getConfig().getString("join-fireworks-amount");
+        isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
+        whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -212,6 +219,11 @@ public final class Minetrax extends JavaPlugin implements Listener {
             if (PluginUtil.checkIfPluginEnabled("VentureChat")) {
                 getLogger().info("Venture Chat is found! Adding Hook...");
                 getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
+            }
+
+            if (PluginUtil.checkIfPluginEnabled("EpicCore")) {
+                getLogger().info("EpicCore is found! Adding Hook...");
+                getServer().getPluginManager().registerEvents(new EpicCoreChatHook(), this);
             }
         }
 

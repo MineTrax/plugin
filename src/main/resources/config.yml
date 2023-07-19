@@ -89,3 +89,12 @@ enable-firework-on-player-first-join: false
 join-fireworks-amount: 2
 # If enabled the plugin will send more log data in console for better debugging.
 debug-mode: false
+# If enabled only whitelisted commands (whitelisted-commands-from-web) can be sent from web. other custom command will be discarded.
+allow-only-whitelisted-commands-from-web: false
+whitelisted-commands-from-web:
+  - kill
+  - kick
+  - mute
+  - emute
+  - ban
+  - broadcast

@@ -125,7 +125,13 @@ public class PlayerJoinLeaveListener implements Listener {
                     playerSessionIntelData.display_name = ChatColor.stripColor(event.getPlayer().getDisplayName());
                     playerSessionIntelData.session_started_at = new Date().getTime();
                     playerSessionIntelData.is_op = event.getPlayer().isOp();
-                    playerSessionIntelData.player_ping = event.getPlayer().getPing();
+                    int playerPing;
+                    try {
+                        playerPing = event.getPlayer().getPing();
+                    } catch (NoSuchMethodError e) {
+                        playerPing = 0;
+                    }
+                    playerSessionIntelData.player_ping = playerPing;
                     playerSessionIntelData.server_id = Minetrax.getPlugin().getApiServerId();
                     // Init world stats hashmap for each world
                     playerSessionIntelData.players_world_stat_intel = new HashMap<String, PlayerWorldStatsIntelData>();

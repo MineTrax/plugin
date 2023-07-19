@@ -61,7 +61,12 @@ public class ServerIntelReportTask implements Runnable {
             worldData.environment = w.getEnvironment().toString();
             worldData.world_border = w.getWorldBorder().getSize();
             worldData.chunks_loaded = w.getLoadedChunks().length;
-            worldData.game_time = w.getGameTime();
+            // Quick Hack for 1.12 as getGameTime() doesn't exist there.
+            try {
+                worldData.game_time = w.getGameTime();
+            } catch (NoSuchMethodError e) {
+                worldData.game_time = 0;
+            }
             worldData.online_players = w.getPlayers().size();
             worldDataList.add(worldData);
             serverIntelData.chunks_loaded = serverIntelData.chunks_loaded + worldData.chunks_loaded;

@@ -73,8 +73,25 @@ public class WebQueryProtocol {
                 theOutput = "ok";
                 break;
             case "command":
-                boolean status = handleCommand(queryRequestData.params);
-                if (status) theOutput = "ok";
+                boolean isAllowOnlyWhitelistedCommandsFromWeb = Minetrax.getPlugin().getIsAllowOnlyWhitelistedCommandsFromWeb();
+                List<String> whitelistedCommands = Minetrax.getPlugin().getWhitelistedCommandsFromWeb();
+                if (isAllowOnlyWhitelistedCommandsFromWeb) {
+                    // Check if params start with any of the whitelisted commands
+                    boolean isWhitelisted = false;
+                    for (String command: whitelistedCommands) {
+                        if (queryRequestData.params.startsWith(command)) {
+                            isWhitelisted = true;
+                            break;
+                        }
+                    }
+                    if(isWhitelisted) {
+                        boolean status = handleCommand(queryRequestData.params);
+                        if (status) theOutput = "ok";
+                    }
+                } else {
+                    boolean status = handleCommand(queryRequestData.params);
+                    if (status) theOutput = "ok";
+                }
                 break;
             case "get-player-groups":
                 theOutput = getPlayerGroups(queryRequestData.params);
@@ -143,7 +160,13 @@ public class WebQueryProtocol {
             playerJsonObject.addProperty("display_name", player.getDisplayName());
             playerJsonObject.addProperty("id", player.getUniqueId().toString());
             playerJsonObject.addProperty("is_op", player.isOp());
-            playerJsonObject.addProperty("ping", player.getPing());
+            int playerPing;
+            try {
+                playerPing = player.getPing();
+            } catch (NoSuchMethodError e) {
+                playerPing = 0;
+            }
+            playerJsonObject.addProperty("ping", playerPing);
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getAddress()).getHostString());
 
             jsonArray.add(playerJsonObject);
