@@ -42,10 +42,18 @@ public class PlayerIntelReportTask implements Runnable {
                 playerSessionData.player_ping = playerPing;
                 playerSessionData.world_location = gson.toJson(onlinePlayer.getLocation().serialize());
                 playerSessionData.world_name = onlinePlayer.getWorld().getName();
+
+                // Get Vault Plugin Data.
+                playerSessionData.vault_balance = Minetrax.getVaultEconomy() != null ? Minetrax.getVaultEconomy().getBalance(onlinePlayer) : 0;
+                if (Minetrax.getVaultPermission() != null && Minetrax.getVaultPermission().hasGroupSupport()) {
+                    playerSessionData.vault_groups = Minetrax.getVaultPermission().getPlayerGroups(onlinePlayer);
+                }
+
                 reportAndResetXminData(playerSessionData);
             }
             // If not online then report and delete key from session variable ending the session.
             else {
+                // This should happen rarely as we already remove when player quit.
                 reportAndRemoveSessionFromDataMap(playerSessionData);
             }
         }

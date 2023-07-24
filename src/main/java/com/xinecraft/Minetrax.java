@@ -20,6 +20,7 @@ import com.xinecraft.threads.webquery.NettyWebQueryServer;
 import com.xinecraft.utils.PluginUtil;
 import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
@@ -115,8 +116,11 @@ public final class Minetrax extends JavaPlugin implements Listener {
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     @Getter
     public List<String> whitelistedCommandsFromWeb;
+    @Getter
+    public HashMap<String, String> joinAddressCache = new HashMap<String, String>();
 
     private static Permission perms = null;
+    private static Economy economy = null;
 
     public static Minetrax getPlugin() {
         return getPlugin(Minetrax.class);
@@ -212,6 +216,14 @@ public final class Minetrax extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerItemConsumeListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftItemListener(), this);
+        getServer().getPluginManager().registerEvents(new EnchantItemListener(), this);
+        getServer().getPluginManager().registerEvents(new FishCatchListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerBedEnterListener(), this);
+        getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
+        getServer().getPluginManager().registerEvents(new RaidFinishListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
 
         // Register Listeners only required for ChatLogs
         if (isChatLogEnabled) {
@@ -253,6 +265,12 @@ public final class Minetrax extends JavaPlugin implements Listener {
         } else {
             getLogger().info("Vault Permission Plugin: " + perms.getName());
         }
+        boolean hasVaultEconomy = setupVaultEconomy();
+        if (!hasVaultEconomy) {
+            getLogger().info("No Vault supported economy plugin found.");
+        } else {
+            getLogger().info("Vault Economy Plugin: " + economy.getName());
+        }
 
         // Setup Schedulers
         if (isRemindPlayerToLinkEnabled) {
@@ -283,13 +301,27 @@ public final class Minetrax extends JavaPlugin implements Listener {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
         HandlerList.unregisterAll();
-        webQuerySocketServer.shutdown();
+        if(webQuerySocketServer != null) {
+            webQuerySocketServer.shutdown();
+        }
     }
 
     private boolean setupVaultPermission() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        if(rsp == null) {
+            return false;
+        }
         perms = rsp.getProvider();
         return perms != null;
+    }
+
+    private boolean setupVaultEconomy() {
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return economy != null;
     }
 
     private void checkForPluginUpdates() {
@@ -304,5 +336,9 @@ public final class Minetrax extends JavaPlugin implements Listener {
 
     public static Permission getVaultPermission() {
         return perms;
+    }
+
+    public static Economy getVaultEconomy() {
+        return economy;
     }
 }

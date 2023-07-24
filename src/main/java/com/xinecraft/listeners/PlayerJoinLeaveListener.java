@@ -58,6 +58,9 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // remove player from playerDataList list
         this.removePlayerAndSessionFromDataMap(event);
+
+        // Remove from joinAddressCache
+        Minetrax.getPlugin().joinAddressCache.remove(event.getPlayer().getUniqueId().toString());
     }
 
     private void postSendChatlog(PlayerEvent event) {
@@ -125,6 +128,12 @@ public class PlayerJoinLeaveListener implements Listener {
                     playerSessionIntelData.display_name = ChatColor.stripColor(event.getPlayer().getDisplayName());
                     playerSessionIntelData.session_started_at = new Date().getTime();
                     playerSessionIntelData.is_op = event.getPlayer().isOp();
+                    try {
+                        playerSessionIntelData.join_address = Minetrax.getPlugin().joinAddressCache.get(event.getPlayer().getUniqueId().toString());
+                    } catch(Exception e) {
+                        playerSessionIntelData.join_address = null;
+                    }
+
                     int playerPing;
                     try {
                         playerPing = event.getPlayer().getPing();
@@ -165,6 +174,13 @@ public class PlayerJoinLeaveListener implements Listener {
             LoggingUtil.info("REPORT FINAL SESSION END ON PLAYER QUIT");
             PlayerSessionIntelData leftPlayerSessionIntelData = Minetrax.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
             leftPlayerSessionIntelData.session_ended_at = new Date().getTime();
+
+            // Get Vault Plugin Data.
+            leftPlayerSessionIntelData.vault_balance = Minetrax.getVaultEconomy() != null ? Minetrax.getVaultEconomy().getBalance(event.getPlayer()) : 0;
+            if (Minetrax.getVaultPermission() != null && Minetrax.getVaultPermission().hasGroupSupport()) {
+                leftPlayerSessionIntelData.vault_groups = Minetrax.getVaultPermission().getPlayerGroups(event.getPlayer());
+            }
+
             String leftPlayerSessionDataJson = gson.toJson(leftPlayerSessionIntelData);
             // REMOVE SESSION TO MAP
             Minetrax.getPlugin().playerSessionIntelDataMap.remove(playerData.session_uuid);
