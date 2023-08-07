@@ -10,8 +10,10 @@ softdepend: [
     Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat, EpicCore,
   # Vanish plugins
     Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
+  # Permissions plugins
+    LuckPerms,
   # Misc. plugins
-    Multiverse-Core, Vault, PlaceholderAPI, mcMMO, LuckPerms, dynmap, Skript
+    ViaVersion, Multiverse-Core, PlaceholderAPI, mcMMO, dynmap, Skript
 ]
 commands:
   account-link:

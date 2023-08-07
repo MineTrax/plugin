@@ -1,13 +1,14 @@
 package com.xinecraft.listeners;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.viaversion.viaversion.api.Via;
 import com.xinecraft.Minetrax;
 import com.xinecraft.data.PlayerData;
 import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.data.PlayerWorldStatsIntelData;
 import com.xinecraft.utils.HttpUtil;
 import com.xinecraft.utils.LoggingUtil;
+import com.xinecraft.utils.VersionUtil;
 import com.xinecraft.utils.WhoisUtil;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -117,7 +118,7 @@ public class PlayerJoinLeaveListener implements Listener {
             public void run() {
                 try {
                     String response = HttpUtil.postForm(Minetrax.getPlugin().getApiHost() + "/api/v1/player/data", params);
-                    Gson gson = new GsonBuilder().serializeNulls().create();
+                    Gson gson = Minetrax.getPlugin().getGson();
                     PlayerData playerData = gson.fromJson(response, PlayerData.class);
                     playerData.last_active_timestamp = System.currentTimeMillis();
 
@@ -141,6 +142,12 @@ public class PlayerJoinLeaveListener implements Listener {
                         playerPing = 0;
                     }
                     playerSessionIntelData.player_ping = playerPing;
+
+                    if(Minetrax.getPlugin().hasViaVersion) {
+                        int playerProtocolVersion = Via.getAPI().getPlayerVersion(event.getPlayer().getUniqueId());
+                        playerSessionIntelData.minecraft_version = VersionUtil.getMinecraftVersionFromProtoId(playerProtocolVersion);
+                    }
+
                     playerSessionIntelData.server_id = Minetrax.getPlugin().getApiServerId();
                     // Init world stats hashmap for each world
                     playerSessionIntelData.players_world_stat_intel = new HashMap<String, PlayerWorldStatsIntelData>();
@@ -166,7 +173,7 @@ public class PlayerJoinLeaveListener implements Listener {
     }
 
     private void removePlayerAndSessionFromDataMap(PlayerQuitEvent event) {
-        Gson gson = new GsonBuilder().serializeNulls().create();
+        Gson gson = Minetrax.getPlugin().getGson();
         String key = event.getPlayer().getUniqueId().toString();
 
         PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(key);
@@ -180,6 +187,16 @@ public class PlayerJoinLeaveListener implements Listener {
             if (Minetrax.getVaultPermission() != null && Minetrax.getVaultPermission().hasGroupSupport()) {
                 leftPlayerSessionIntelData.vault_groups = Minetrax.getVaultPermission().getPlayerGroups(event.getPlayer());
             }
+
+            // Player Inventory
+            if (Minetrax.getPlugin().getIsSendInventoryDataToPlayerIntel()) {
+                leftPlayerSessionIntelData.inventory = gson.toJson(event.getPlayer().getInventory().getContents());
+                leftPlayerSessionIntelData.ender_chest = gson.toJson(event.getPlayer().getEnderChest().getContents());
+            }
+
+            // Player World location
+            leftPlayerSessionIntelData.world_location = gson.toJson(event.getPlayer().getLocation().serialize());
+            leftPlayerSessionIntelData.world_name = event.getPlayer().getWorld().getName();
 
             String leftPlayerSessionDataJson = gson.toJson(leftPlayerSessionIntelData);
             // REMOVE SESSION TO MAP

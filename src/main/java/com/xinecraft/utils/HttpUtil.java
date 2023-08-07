@@ -368,7 +368,12 @@ public class HttpUtil {
         }
 
         // response
-        InputStream is = conn.getInputStream();
+        InputStream is;
+        if (conn.getResponseCode() >= 400) {
+            is = conn.getErrorStream();
+        } else {
+            is = conn.getInputStream();
+        }
         String response = streamToString(is);
 
         // handle redirects
@@ -377,9 +382,10 @@ public class HttpUtil {
             return fetch(method, location, body, headers);
         }
 
-        // If response code is 500 then log it for debug purpose
-        if (conn.getResponseCode() == 500) {
-            Minetrax.getPlugin().getLogger().warning(response);
+        if(conn.getResponseCode() >= 400) {
+            throw new IOException("Server returned status code "
+                    + conn.getResponseCode() + " with response: "
+                    + response);
         }
 
         return response;

@@ -1,5 +1,8 @@
 package com.xinecraft;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.xinecraft.adapters.ItemStackGsonAdapter;
 import com.xinecraft.commands.AccountLinkCommand;
 import com.xinecraft.commands.PlayerWhoisCommand;
 import com.xinecraft.commands.WebSayCommand;
@@ -27,6 +30,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -115,9 +119,15 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     @Getter
+    public Boolean isSendInventoryDataToPlayerIntel;
+    @Getter
     public List<String> whitelistedCommandsFromWeb;
     @Getter
     public HashMap<String, String> joinAddressCache = new HashMap<String, String>();
+    @Getter
+    public boolean hasViaVersion;
+    @Getter
+    public Gson gson = null;
 
     private static Permission perms = null;
     private static Economy economy = null;
@@ -127,10 +137,16 @@ public final class Minetrax extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         // Plugin startup logic
         getLogger().info("Minetrax Plugin Enabled!");
+
+        // Gson Builder
+        gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(ItemStack.class, new ItemStackGsonAdapter())
+                .serializeNulls()
+                .disableHtmlEscaping()
+                .create();
 
         // bStats Metric
         int pluginId = 15485;
@@ -183,6 +199,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         fireworkSendAmount = this.getConfig().getString("join-fireworks-amount");
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
+        isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -277,18 +294,24 @@ public final class Minetrax extends JavaPlugin implements Listener {
             getServer().getScheduler().scheduleSyncRepeatingTask(this, new AccountLinkReminderTask(), 20 * 20, remindPlayerToLinkInterval * 20L);
         }
         if (isServerIntelEnabled) {
-             getServer().getScheduler().runTaskTimerAsynchronously(this, new ServerIntelReportTask(), 60 * 20L, 60 * 20L);   // every minute
+            getServer().getScheduler().runTaskTimerAsynchronously(this, new ServerIntelReportTask(), 60 * 20L, 60 * 20L);   // every minute
         }
         if (isPlayerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerIntelReportTask(), 5 * 60 * 20L, 5 * 60 * 20L);   // every 5 minutes
         }
-        
+
         getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkAndWorldIntelTrackerTask(), 20L, 20L);   // Run every seconds
 
         // Setup PlaceholderAPI
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("Hooking into PlaceholderAPI.");
             new MinetraxPlaceholderExpansion(this).register();
+        }
+
+        // Check if ViaVersion is installed
+        if (PluginUtil.checkIfPluginEnabled("ViaVersion")) {
+            getLogger().info("ViaVersion is found! Will use it to get player version.");
+            hasViaVersion = true;
         }
 
         // Update Checker
@@ -296,19 +319,18 @@ public final class Minetrax extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onDisable()
-    {
+    public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
         HandlerList.unregisterAll();
-        if(webQuerySocketServer != null) {
+        if (webQuerySocketServer != null) {
             webQuerySocketServer.shutdown();
         }
     }
 
     private boolean setupVaultPermission() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        if(rsp == null) {
+        if (rsp == null) {
             return false;
         }
         perms = rsp.getProvider();

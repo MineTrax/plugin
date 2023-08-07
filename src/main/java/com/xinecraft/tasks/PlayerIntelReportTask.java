@@ -1,7 +1,6 @@
 package com.xinecraft.tasks;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.xinecraft.Minetrax;
 import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.utils.HttpUtil;
@@ -17,7 +16,7 @@ public class PlayerIntelReportTask implements Runnable {
     public final Gson gson;
 
     public PlayerIntelReportTask() {
-        this.gson = new GsonBuilder().serializeNulls().create();
+        this.gson = Minetrax.getPlugin().getGson();
     }
 
     @Override
@@ -42,6 +41,12 @@ public class PlayerIntelReportTask implements Runnable {
                 playerSessionData.player_ping = playerPing;
                 playerSessionData.world_location = gson.toJson(onlinePlayer.getLocation().serialize());
                 playerSessionData.world_name = onlinePlayer.getWorld().getName();
+
+                // Player Inventory
+                if (Minetrax.getPlugin().getIsSendInventoryDataToPlayerIntel()) {
+                    playerSessionData.inventory = gson.toJson(onlinePlayer.getInventory().getContents());
+                    playerSessionData.ender_chest = gson.toJson(onlinePlayer.getEnderChest().getContents());
+                }
 
                 // Get Vault Plugin Data.
                 playerSessionData.vault_balance = Minetrax.getVaultEconomy() != null ? Minetrax.getVaultEconomy().getBalance(onlinePlayer) : 0;

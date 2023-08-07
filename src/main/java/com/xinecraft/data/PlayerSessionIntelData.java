@@ -40,6 +40,7 @@ public class PlayerSessionIntelData
     public int items_placed_xmin;   // done
     public int items_consumed_xmin;  // done
     public int afk_time_xmin;
+    public int play_time_xmin;
 
     public int fish_caught_xmin;
     public int items_enchanted_xmin; // TESTIT
@@ -54,9 +55,16 @@ public class PlayerSessionIntelData
     public double pvp_damage_taken_xmin; // Damage taken from other players
 
     public int player_ping;   // done
+    public String minecraft_version;    // Version of minecraft client player joined with. Can be null.
 
     public String world_location;   // Hold world location when the intel was last reported
     public String world_name;       // Hold world name when the intel was last reported
+
+
+    // Others
+    public HashMap<String, PlayerWorldStatsIntelData> players_world_stat_intel;
+    public String inventory;
+    public String ender_chest;
 
     // Plugins
     public double vault_balance;
@@ -75,6 +83,7 @@ public class PlayerSessionIntelData
         this.items_placed_xmin = 0;
         this.items_consumed_xmin = 0;
         this.afk_time_xmin = 0;
+        this.play_time_xmin = 0;
 
         this.fish_caught_xmin = 0;
         this.items_enchanted_xmin = 0;
@@ -88,6 +97,4 @@ public class PlayerSessionIntelData
         this.pvp_damage_given_xmin = 0;
         this.pvp_damage_taken_xmin = 0;
     }
-
-    public HashMap<String, PlayerWorldStatsIntelData> players_world_stat_intel;
 }

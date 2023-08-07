@@ -29,6 +29,8 @@ enable-chatlog: true
 report-server-intel: true
 # Sends player intel to website for better analysis.
 report-player-intel: true
+# Sends player inventory to Intel for better analysis.
+send-inventory-data-to-player-intel: true
 # Message format that will be sent when sending message from website to game
 web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 # Sends a reminder to player to link their account to website.
