@@ -16,9 +16,8 @@ import java.util.Base64;
 public class CryptoUtil {
     public static String encrypt(byte[] keyValue, String plaintext) throws Exception {
         Key key = new SecretKeySpec(keyValue, "AES");
-        //serialize
-        String serializedPlaintext = "s:" + plaintext.getBytes().length + ":\"" + plaintext + "\";";
-        byte[] plaintextBytes = serializedPlaintext.getBytes(StandardCharsets.UTF_8);
+
+        byte[] plaintextBytes = plaintext.getBytes(StandardCharsets.UTF_8);
 
         Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
         c.init(Cipher.ENCRYPT_MODE, key);
@@ -64,9 +63,7 @@ public class CryptoUtil {
         c.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
         byte[] decValue = c.doFinal(decodedValue);
 
-        int firstQuoteIndex = 0;
-        while (decValue[firstQuoteIndex] != (byte) '"') firstQuoteIndex++;
-        return new String(Arrays.copyOfRange(decValue, firstQuoteIndex + 1, decValue.length - 2));
+        return new String(decValue);
     }
 
     public static String getDecryptedString(String secretKey, String encryptedString) {

@@ -127,14 +127,14 @@
             <artifactId>venturechat</artifactId>
             <version>2.23.2</version>
             <scope>system</scope>
-            <systemPath>C:/Users/Asus/Desktop/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar</systemPath>
+            <systemPath>C:/Users/zisha/Desktop/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.signality</groupId>
             <artifactId>EpicCore</artifactId>
             <version>1.6</version>
             <scope>system</scope>
-            <systemPath>C:/Users/Asus/Desktop/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar</systemPath>
+            <systemPath>C:/Users/zisha/Desktop/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

@@ -20,6 +20,7 @@ import com.xinecraft.tasks.PlayerIntelReportTask;
 import com.xinecraft.tasks.ServerIntelReportTask;
 import com.xinecraft.threads.ConsoleMessageQueueWorker;
 import com.xinecraft.threads.webquery.NettyWebQueryServer;
+import com.xinecraft.utils.PlayerIntelUtil;
 import com.xinecraft.utils.PluginUtil;
 import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
@@ -109,6 +110,16 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> remindPlayerToLinkMessage;
     @Getter
+    private List<String> playerLinkInitMessage;
+    @Getter
+    private List<String> playerLinkNotFoundMessage;
+    @Getter
+    private List<String> playerLinkAlreadyLinkedMessage;
+    @Getter
+    private List<String> playerLinkUnknownErrorMessage;
+    @Getter
+    private List<String> playerLinkFinalActionMessage;
+    @Getter
     private long afkThresholdInMs;
     @Getter
     public HashMap<String, PlayerData> playersDataMap;
@@ -193,6 +204,11 @@ public final class Minetrax extends JavaPlugin implements Listener {
         isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
+        playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
+        playerLinkNotFoundMessage = this.getConfig().getStringList("player-link-not-found-message");
+        playerLinkAlreadyLinkedMessage = this.getConfig().getStringList("player-link-already-linked-message");
+        playerLinkUnknownErrorMessage = this.getConfig().getStringList("player-link-unknown-error-message");
+        playerLinkFinalActionMessage = this.getConfig().getStringList("player-link-final-action-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
         isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
@@ -325,6 +341,13 @@ public final class Minetrax extends JavaPlugin implements Listener {
         HandlerList.unregisterAll();
         if (webQuerySocketServer != null) {
             webQuerySocketServer.shutdown();
+        }
+
+        if (isPlayerIntelEnabled) {
+            getLogger().info("Please wait.. Reporting all pending PlayerIntel");
+            for (PlayerSessionIntelData playerSessionData : playerSessionIntelDataMap.values()) {
+                PlayerIntelUtil.reportPlayerIntel(playerSessionData, true);
+            }
         }
     }
 

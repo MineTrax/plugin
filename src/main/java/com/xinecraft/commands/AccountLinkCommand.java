@@ -25,7 +25,13 @@ public class AccountLinkCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        player.sendMessage(ChatColor.GRAY + "Please wait.. Account verification is instantiating.");
+        // Send Init message
+        for (String line : Minetrax.getPlugin().getPlayerLinkInitMessage()) {
+            line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
+            line = ChatColor.translateAlternateColorCodes('&', line);
+            player.sendMessage(line);
+        }
+
         // Hit the API
         Map<String, String> params = new HashMap<String, String>();
         params.put("api_key", Minetrax.getPlugin().getApiKey());
@@ -48,18 +54,29 @@ public class AccountLinkCommand implements CommandExecutor {
 
                         // If player not found
                         if (errorType.equals("not-found")) {
-                            player.sendMessage(ChatColor.RED + "404! Player not in website database yet.");
-                            player.sendMessage(ChatColor.YELLOW + "Please try again after an hour");
+                            for (String line : Minetrax.getPlugin().getPlayerLinkNotFoundMessage()) {
+                                line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
+                                line = ChatColor.translateAlternateColorCodes('&', line);
+                                player.sendMessage(line);
+                            }
                         }
 
                         // If already linked
-                        else if(errorType.equals("player-already-linked")) {
-                            player.sendMessage(ChatColor.YELLOW + "Hey! This player is already linked. Plz visit " + ChatColor.UNDERLINE + Minetrax.getPlugin().getApiHost() + ChatColor.RESET + ChatColor.YELLOW + " to know more.");
+                        else if (errorType.equals("player-already-linked")) {
+                            for (String line : Minetrax.getPlugin().getPlayerLinkAlreadyLinkedMessage()) {
+                                line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
+                                line = ChatColor.translateAlternateColorCodes('&', line);
+                                player.sendMessage(line);
+                            }
                         }
 
                         // Unknown error
                         else {
-                            player.sendMessage(ChatColor.RED + "Some unknown error occurred. Please try again after some time.");
+                            for (String line : Minetrax.getPlugin().getPlayerLinkUnknownErrorMessage()) {
+                                line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
+                                line = ChatColor.translateAlternateColorCodes('&', line);
+                                player.sendMessage(line);
+                            }
                         }
                         return;
                     }
@@ -67,12 +84,20 @@ public class AccountLinkCommand implements CommandExecutor {
                     // Return the URL to user to click
                     if (responseObj.get("status").getAsString().equals("success")) {
                         String url = responseObj.get("data").getAsString();
-                        player.sendMessage(ChatColor.GREEN + "Please open the below link to start your linking process");
-                        player.sendMessage(url);
+                        for (String line : Minetrax.getPlugin().getPlayerLinkFinalActionMessage()) {
+                            line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
+                            line = line.replace("{LINK_URL}", url);
+                            line = ChatColor.translateAlternateColorCodes('&', line);
+                            player.sendMessage(line);
+                        }
                     }
                 } catch (Exception e) {
                     // Tell user something error happen
-                    player.sendMessage(ChatColor.RED + "Some unknown error occurred. Please try again after some time.");
+                    for (String line : Minetrax.getPlugin().getPlayerLinkUnknownErrorMessage()) {
+                        line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
+                        line = ChatColor.translateAlternateColorCodes('&', line);
+                        player.sendMessage(line);
+                    }
                 }
             }
         });
