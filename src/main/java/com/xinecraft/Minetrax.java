@@ -1,5 +1,8 @@
 package com.xinecraft;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.xinecraft.adapters.ItemStackGsonAdapter;
 import com.xinecraft.commands.AccountLinkCommand;
 import com.xinecraft.commands.PlayerWhoisCommand;
 import com.xinecraft.commands.WebSayCommand;
@@ -17,15 +20,18 @@ import com.xinecraft.tasks.PlayerIntelReportTask;
 import com.xinecraft.tasks.ServerIntelReportTask;
 import com.xinecraft.threads.ConsoleMessageQueueWorker;
 import com.xinecraft.threads.webquery.NettyWebQueryServer;
+import com.xinecraft.utils.PlayerIntelUtil;
 import com.xinecraft.utils.PluginUtil;
 import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -104,6 +110,16 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> remindPlayerToLinkMessage;
     @Getter
+    private List<String> playerLinkInitMessage;
+    @Getter
+    private List<String> playerLinkNotFoundMessage;
+    @Getter
+    private List<String> playerLinkAlreadyLinkedMessage;
+    @Getter
+    private List<String> playerLinkUnknownErrorMessage;
+    @Getter
+    private List<String> playerLinkFinalActionMessage;
+    @Getter
     private long afkThresholdInMs;
     @Getter
     public HashMap<String, PlayerData> playersDataMap;
@@ -114,19 +130,34 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     @Getter
+    public Boolean isSendInventoryDataToPlayerIntel;
+    @Getter
     public List<String> whitelistedCommandsFromWeb;
+    @Getter
+    public HashMap<String, String> joinAddressCache = new HashMap<String, String>();
+    @Getter
+    public boolean hasViaVersion;
+    @Getter
+    public Gson gson = null;
 
     private static Permission perms = null;
+    private static Economy economy = null;
 
     public static Minetrax getPlugin() {
         return getPlugin(Minetrax.class);
     }
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         // Plugin startup logic
         getLogger().info("Minetrax Plugin Enabled!");
+
+        // Gson Builder
+        gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(ItemStack.class, new ItemStackGsonAdapter())
+                .serializeNulls()
+                .disableHtmlEscaping()
+                .create();
 
         // bStats Metric
         int pluginId = 15485;
@@ -173,12 +204,18 @@ public final class Minetrax extends JavaPlugin implements Listener {
         isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
+        playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
+        playerLinkNotFoundMessage = this.getConfig().getStringList("player-link-not-found-message");
+        playerLinkAlreadyLinkedMessage = this.getConfig().getStringList("player-link-already-linked-message");
+        playerLinkUnknownErrorMessage = this.getConfig().getStringList("player-link-unknown-error-message");
+        playerLinkFinalActionMessage = this.getConfig().getStringList("player-link-final-action-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
         isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
         fireworkSendAmount = this.getConfig().getString("join-fireworks-amount");
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
+        isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         serverSessionId = UUID.randomUUID().toString();
 
         // Disable plugin if host, key, secret or server-id is not there
@@ -212,6 +249,14 @@ public final class Minetrax extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerItemConsumeListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerCommandListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftItemListener(), this);
+        getServer().getPluginManager().registerEvents(new EnchantItemListener(), this);
+        getServer().getPluginManager().registerEvents(new FishCatchListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerBedEnterListener(), this);
+        getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
+        getServer().getPluginManager().registerEvents(new RaidFinishListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDamageListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
 
         // Register Listeners only required for ChatLogs
         if (isChatLogEnabled) {
@@ -253,24 +298,36 @@ public final class Minetrax extends JavaPlugin implements Listener {
         } else {
             getLogger().info("Vault Permission Plugin: " + perms.getName());
         }
+        boolean hasVaultEconomy = setupVaultEconomy();
+        if (!hasVaultEconomy) {
+            getLogger().info("No Vault supported economy plugin found.");
+        } else {
+            getLogger().info("Vault Economy Plugin: " + economy.getName());
+        }
 
         // Setup Schedulers
         if (isRemindPlayerToLinkEnabled) {
             getServer().getScheduler().scheduleSyncRepeatingTask(this, new AccountLinkReminderTask(), 20 * 20, remindPlayerToLinkInterval * 20L);
         }
         if (isServerIntelEnabled) {
-             getServer().getScheduler().runTaskTimerAsynchronously(this, new ServerIntelReportTask(), 60 * 20L, 60 * 20L);   // every minute
+            getServer().getScheduler().runTaskTimerAsynchronously(this, new ServerIntelReportTask(), 60 * 20L, 60 * 20L);   // every minute
         }
         if (isPlayerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerIntelReportTask(), 5 * 60 * 20L, 5 * 60 * 20L);   // every 5 minutes
         }
-        
+
         getServer().getScheduler().runTaskTimerAsynchronously(this, new PlayerAfkAndWorldIntelTrackerTask(), 20L, 20L);   // Run every seconds
 
         // Setup PlaceholderAPI
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("Hooking into PlaceholderAPI.");
             new MinetraxPlaceholderExpansion(this).register();
+        }
+
+        // Check if ViaVersion is installed
+        if (PluginUtil.checkIfPluginEnabled("ViaVersion")) {
+            getLogger().info("ViaVersion is found! Will use it to get player version.");
+            hasViaVersion = true;
         }
 
         // Update Checker
@@ -278,18 +335,38 @@ public final class Minetrax extends JavaPlugin implements Listener {
     }
 
     @Override
-    public void onDisable()
-    {
+    public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
         HandlerList.unregisterAll();
-        webQuerySocketServer.shutdown();
+        if (webQuerySocketServer != null) {
+            webQuerySocketServer.shutdown();
+        }
+
+        if (isPlayerIntelEnabled) {
+            getLogger().info("Please wait.. Reporting all pending PlayerIntel");
+            for (PlayerSessionIntelData playerSessionData : playerSessionIntelDataMap.values()) {
+                PlayerIntelUtil.reportPlayerIntel(playerSessionData, true);
+            }
+        }
     }
 
     private boolean setupVaultPermission() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp == null) {
+            return false;
+        }
         perms = rsp.getProvider();
         return perms != null;
+    }
+
+    private boolean setupVaultEconomy() {
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return economy != null;
     }
 
     private void checkForPluginUpdates() {
@@ -304,5 +381,9 @@ public final class Minetrax extends JavaPlugin implements Listener {
 
     public static Permission getVaultPermission() {
         return perms;
+    }
+
+    public static Economy getVaultEconomy() {
+        return economy;
     }
 }

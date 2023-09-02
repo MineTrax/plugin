@@ -20,6 +20,7 @@ public class PlayerAfkAndWorldIntelTrackerTask implements Runnable {
 
             // Track Play Time
             playerSessionIntelData.play_time = playerSessionIntelData.play_time + 1;
+            playerSessionIntelData.play_time_xmin = playerSessionIntelData.play_time_xmin + 1;
 
             // Track AFK Time
             long lastMoveInMs = System.currentTimeMillis() - playerData.last_active_timestamp;

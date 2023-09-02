@@ -29,6 +29,8 @@ enable-chatlog: true
 report-server-intel: true
 # Sends player intel to website for better analysis.
 report-player-intel: true
+# Sends player inventory to Intel for better analysis.
+send-inventory-data-to-player-intel: false
 # Message format that will be sent when sending message from website to game
 web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 # Sends a reminder to player to link their account to website.
@@ -41,6 +43,24 @@ remind-player-link-message:
   - "&lLink now and earn rewards & perks!"
   - "&lType /account-link to begin"
   - "&oIf you have already linked and getting this message try rejoining the server"
+# Message when player initialize account link process by typing /account-link
+player-link-init-message:
+  - "&7Please wait.. Account verification is instantiating."
+# Message when player getting linked is not found in website database
+player-link-not-found-message:
+  - "&c404! Player not in website database yet."
+  - "&ePlease try again later."
+# Message when player is already linked to an account.
+player-link-already-linked-message:
+  - "&eHey! This player is already linked. Plz visit {WEB_URL} to know more"
+# Message when player linking fails due to unknown error
+player-link-unknown-error-message:
+  - "&cUnknown error occurred while linking your account."
+  - "&ePlease try again later."
+# Message when player linking /account-link is successful and LINK_URL is returned for final step.
+player-link-final-action-message:
+  - "&a&lPlease click or open the link below to complete linking process."
+  - "{LINK_URL}"
 # If this is enabled it will send whois information about players when they join the server
 enable-whois-on-player-join: true
 # If this is enabled players with permission can run the /webwhois or /ww command
