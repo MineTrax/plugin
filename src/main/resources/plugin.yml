@@ -20,6 +20,10 @@ commands:
     description: Link player to an account in web
     aliases:
       - link-account
+      - link
+      - accountlink
+      - websitelink
+      - verify
   ww:
     aliases:
       - webwhois
