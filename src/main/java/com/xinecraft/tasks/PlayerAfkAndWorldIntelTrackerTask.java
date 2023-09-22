@@ -32,6 +32,10 @@ public class PlayerAfkAndWorldIntelTrackerTask implements Runnable {
             // Track World Statistics
             String playerWorldName = player.getWorld().getName();
             PlayerWorldStatsIntelData playerWorldStatsIntelData = playerSessionIntelData.players_world_stat_intel.get(playerWorldName);
+            // Player world data can be null if server is creating and deleting worlds dynamically so handle it.
+            if(playerWorldStatsIntelData == null) {
+                continue;
+            }
             String gameMode = player.getGameMode().toString();
             switch (gameMode) {
                 case "SURVIVAL":
