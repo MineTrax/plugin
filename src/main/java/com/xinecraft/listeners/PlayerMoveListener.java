@@ -40,10 +40,16 @@ public class PlayerMoveListener implements Listener {
         // Track total distance travelled
         playerSessionIntelData.distance_traveled_xmin += distance;
 
+        boolean isSwimming = false;
+        try {
+            isSwimming = (boolean) player.getClass().getMethod("isSwimming").invoke(player);
+        } catch (Exception e) {
+            // log
+        }
         // Categorize and track distance based on movement type
         if (player.isFlying() || player.isGliding()) {
             playerSessionIntelData.distance_traveled_on_air_xmin += distance;
-        } else if (player.isSwimming()) {
+        } else if (isSwimming) {
             playerSessionIntelData.distance_traveled_on_water_xmin += distance;
         } else {
             playerSessionIntelData.distance_traveled_on_land_xmin += distance;
