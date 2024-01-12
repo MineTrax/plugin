@@ -6,6 +6,7 @@ import java.util.Map;
 public class VersionUtil {
     private static final Map<Integer, String> protocolToVersion = new HashMap<>();
     static {
+        protocolToVersion.put(765, "1.20");
         protocolToVersion.put(764, "1.20");
         protocolToVersion.put(763, "1.20");
 

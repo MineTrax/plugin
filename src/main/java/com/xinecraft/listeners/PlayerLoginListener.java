@@ -21,7 +21,11 @@ public class PlayerLoginListener implements Listener {
 
             String address = event.getHostname();
             if (!address.isEmpty()) {
-                address = address.substring(0, address.lastIndexOf(':'));
+                int endIndex = address.lastIndexOf(':');
+                if (endIndex == -1) {
+                    endIndex = address.length();
+                }
+                address = address.substring(0, endIndex);
                 if (address.contains("\u0000")) {
                     address = address.substring(0, address.indexOf('\u0000'));
                 }
@@ -30,7 +34,6 @@ public class PlayerLoginListener implements Listener {
                 Minetrax.getPlugin().joinAddressCache.put(playerUUID.toString(), address);
             }
         } catch(Exception e) {
-            // TODO Remove
             e.printStackTrace();
         }
     }

@@ -6,7 +6,7 @@
 
     <groupId>Minetrax</groupId>
     <artifactId>Minetrax</artifactId>
-    <version>3.3.1</version>
+    <version>3.5.0</version>
     <packaging>jar</packaging>
 
     <name>Minetrax</name>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.0.23.Final</version>
+            <version>4.1.86.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -106,8 +106,8 @@
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <artifactId>spigot-api</artifactId>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -127,14 +127,14 @@
             <artifactId>venturechat</artifactId>
             <version>2.23.2</version>
             <scope>system</scope>
-            <systemPath>C:/Users/zisha/Desktop/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar</systemPath>
+            <systemPath>D:/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.signality</groupId>
             <artifactId>EpicCore</artifactId>
             <version>1.6</version>
             <scope>system</scope>
-            <systemPath>C:/Users/zisha/Desktop/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar</systemPath>
+            <systemPath>D:/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
