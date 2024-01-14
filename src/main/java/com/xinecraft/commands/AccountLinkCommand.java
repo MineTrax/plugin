@@ -84,6 +84,9 @@ public class AccountLinkCommand implements CommandExecutor {
                     // Return the URL to user to click
                     if (responseObj.get("status").getAsString().equals("success")) {
                         String url = responseObj.get("data").getAsString();
+                        if (Minetrax.getPlugin().getIsShortenAccountLinkUrl()) {
+                            url = HttpUtil.shortenUrl(url);
+                        }
                         for (String line : Minetrax.getPlugin().getPlayerLinkFinalActionMessage()) {
                             line = line.replace("{WEB_URL}", Minetrax.getPlugin().getApiHost());
                             line = line.replace("{LINK_URL}", url);

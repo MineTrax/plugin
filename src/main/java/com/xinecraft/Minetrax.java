@@ -102,6 +102,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private Boolean isRemindPlayerToLinkEnabled;
     @Getter
+    private  Boolean isShortenAccountLinkUrl;
+    @Getter
     private Boolean isServerIntelEnabled;
     @Getter
     private Boolean isPlayerIntelEnabled;
@@ -200,6 +202,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         whoisMultiplePlayersTitleMessage = this.getConfig().getString("whois-multiple-players-title-message");
         whoisMultiplePlayersListMessage = this.getConfig().getString("whois-multiple-players-list-message");
         isRemindPlayerToLinkEnabled = this.getConfig().getBoolean("remind-player-to-link");
+        isShortenAccountLinkUrl = this.getConfig().getBoolean("shorten-account-link-url");
         isServerIntelEnabled = this.getConfig().getBoolean("report-server-intel");
         isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");

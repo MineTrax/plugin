@@ -47,6 +47,9 @@ package com.xinecraft.utils;
  * @date 2012-05-14
  */
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.xinecraft.Minetrax;
 
 import java.io.*;
@@ -409,5 +412,15 @@ public class HttpUtil {
         }
         br.close();
         return out.toString();
+    }
+
+    static public String shortenUrl(String url) throws IOException {
+        Gson gson = Minetrax.getPlugin().getGson();
+        Map<String, String> params = new HashMap<>();
+        params.put("url", url);
+        String responseString = HttpUtil.postJson("https://www.owly.lol/api/url", gson.toJson(params));
+        JsonObject jsonResponse = JsonParser.parseString(responseString).getAsJsonObject();
+        String alias = jsonResponse.get("alias").getAsString();
+        return "https://owly.lol/" + alias;
     }
 }

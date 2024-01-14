@@ -37,6 +37,8 @@ web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 remind-player-to-link: true
 # How often to send the reminder to player.  This value is in seconds (300 seconds = 5 minutes)
 remind-player-interval: 300
+# Shorten the link URL using link shorter service.  This will make the link shorter and easier to type.
+shorten-account-link-url: false
 # The message send to player to remind them to link their account
 remind-player-link-message:
   - "&lHey there! It seems you haven't linked your player in web yet."

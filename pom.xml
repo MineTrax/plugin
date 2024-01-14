@@ -6,7 +6,7 @@
 
     <groupId>Minetrax</groupId>
     <artifactId>Minetrax</artifactId>
-    <version>3.5.0</version>
+    <version>3.6.0</version>
     <packaging>jar</packaging>
 
     <name>Minetrax</name>
