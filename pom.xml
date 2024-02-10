@@ -6,7 +6,7 @@
 
     <groupId>Minetrax</groupId>
     <artifactId>Minetrax</artifactId>
-    <version>3.6.0</version>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
 
     <name>Minetrax</name>
@@ -89,6 +89,10 @@
             <id>viaversion-repo</id>
             <url>https://repo.viaversion.com</url>
         </repository>
+        <repository>
+            <id>codemc</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -163,6 +167,13 @@
             <groupId>com.viaversion</groupId>
             <artifactId>viaversion-api</artifactId>
             <version>4.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- SkinsRestorer API -->
+        <dependency>
+            <groupId>net.skinsrestorer</groupId>
+            <artifactId>skinsrestorer-api</artifactId>
+            <version>15.0.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -11,6 +11,7 @@ import com.xinecraft.data.PlayerSessionIntelData;
 import com.xinecraft.hooks.chat.EpicCoreChatHook;
 import com.xinecraft.hooks.chat.VentureChatHook;
 import com.xinecraft.hooks.placeholderapi.MinetraxPlaceholderExpansion;
+import com.xinecraft.hooks.skinsrestorer.SkinsRestorerHook;
 import com.xinecraft.listeners.*;
 import com.xinecraft.log4j.ConsoleAppender;
 import com.xinecraft.log4j.ConsoleMessage;
@@ -26,8 +27,11 @@ import com.xinecraft.utils.UpdateChecker;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
+import net.skinsrestorer.api.VersionProvider;
+import net.skinsrestorer.api.event.SkinApplyEvent;
 import org.apache.commons.lang.StringUtils;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -102,7 +106,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private Boolean isRemindPlayerToLinkEnabled;
     @Getter
-    private  Boolean isShortenAccountLinkUrl;
+    private Boolean isShortenAccountLinkUrl;
     @Getter
     private Boolean isServerIntelEnabled;
     @Getter
@@ -136,9 +140,13 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     public List<String> whitelistedCommandsFromWeb;
     @Getter
-    public HashMap<String, String> joinAddressCache = new HashMap<String, String>();
+    public HashMap<String, String> joinAddressCache = new HashMap<>();
     @Getter
     public boolean hasViaVersion;
+    @Getter
+    public Boolean hasSkinRestorer = false;
+    @Getter
+    public SkinsRestorer skinsRestorerApi;
     @Getter
     public Gson gson = null;
 
@@ -161,12 +169,13 @@ public final class Minetrax extends JavaPlugin implements Listener {
                 .disableHtmlEscaping()
                 .create();
 
-        // bStats Metric
-        int pluginId = 15485;
-        Metrics metrics = new Metrics(this, pluginId);
+        // bStats Metric,
+        // NOTE: Need to comment out if using Ant build for testing.
+//        int pluginId = 15485;
+//        Metrics metrics = new Metrics(this, pluginId);
 
-        playersDataMap = new HashMap<String, PlayerData>();
-        playerSessionIntelDataMap = new HashMap<String, PlayerSessionIntelData>();
+        playersDataMap = new HashMap<>();
+        playerSessionIntelDataMap = new HashMap<>();
 
         // Config
         this.saveDefaultConfig();
@@ -220,7 +229,6 @@ public final class Minetrax extends JavaPlugin implements Listener {
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         serverSessionId = UUID.randomUUID().toString();
-
         // Disable plugin if host, key, secret or server-id is not there
         if (
                 apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
@@ -330,6 +338,21 @@ public final class Minetrax extends JavaPlugin implements Listener {
         if (PluginUtil.checkIfPluginEnabled("ViaVersion")) {
             getLogger().info("ViaVersion is found! Will use it to get player version.");
             hasViaVersion = true;
+        }
+
+        // Check if SkinsRestorer is installed
+        if (PluginUtil.checkIfPluginEnabled("SkinsRestorer")) {
+            hasSkinRestorer = true;
+            getLogger().info("Hooking into SkinsRestorer.");
+
+            // Add SkinsRestorerHook
+            skinsRestorerApi = SkinsRestorerProvider.get();
+            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+
+            // Warn if SkinsRestorer is not compatible with v15
+            if (!VersionProvider.isCompatibleWith("15")) {
+                getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
+            }
         }
 
         // Update Checker

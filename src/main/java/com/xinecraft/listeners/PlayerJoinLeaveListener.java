@@ -10,6 +10,11 @@ import com.xinecraft.utils.HttpUtil;
 import com.xinecraft.utils.LoggingUtil;
 import com.xinecraft.utils.VersionUtil;
 import com.xinecraft.utils.WhoisUtil;
+import net.skinsrestorer.api.PropertyUtils;
+import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
+import net.skinsrestorer.api.property.SkinProperty;
+import net.skinsrestorer.api.storage.PlayerStorage;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -69,7 +74,7 @@ public class PlayerJoinLeaveListener implements Listener {
             return;
         }
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("api_key", Minetrax.getPlugin().getApiKey());
         params.put("api_secret", Minetrax.getPlugin().getApiSecret());
         if (event instanceof PlayerJoinEvent) {
@@ -106,7 +111,7 @@ public class PlayerJoinLeaveListener implements Listener {
     }
 
     private void addPlayerToPlayerDataMapAndStartSession(PlayerJoinEvent event) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("api_key", Minetrax.getPlugin().getApiKey());
         params.put("api_secret", Minetrax.getPlugin().getApiSecret());
         params.put("username", event.getPlayer().getName());
@@ -131,7 +136,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     playerSessionIntelData.is_op = event.getPlayer().isOp();
                     try {
                         playerSessionIntelData.join_address = Minetrax.getPlugin().joinAddressCache.get(event.getPlayer().getUniqueId().toString());
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         playerSessionIntelData.join_address = null;
                     }
 
@@ -143,15 +148,18 @@ public class PlayerJoinLeaveListener implements Listener {
                     }
                     playerSessionIntelData.player_ping = playerPing;
 
-                    if(Minetrax.getPlugin().hasViaVersion) {
+                    if (Minetrax.getPlugin().hasViaVersion) {
                         int playerProtocolVersion = Via.getAPI().getPlayerVersion(event.getPlayer().getUniqueId());
                         playerSessionIntelData.minecraft_version = VersionUtil.getMinecraftVersionFromProtoId(playerProtocolVersion);
+                    }
+                    if (Minetrax.getPlugin().hasSkinRestorer) {
+                        updateSkinDataInPlayerIntel(playerSessionIntelData, event.getPlayer());
                     }
 
                     playerSessionIntelData.server_id = Minetrax.getPlugin().getApiServerId();
                     // Init world stats hashmap for each world
-                    playerSessionIntelData.players_world_stat_intel = new HashMap<String, PlayerWorldStatsIntelData>();
-                    for(World world : Minetrax.getPlugin().getServer().getWorlds()) {
+                    playerSessionIntelData.players_world_stat_intel = new HashMap<>();
+                    for (World world : Minetrax.getPlugin().getServer().getWorlds()) {
                         playerSessionIntelData.players_world_stat_intel.put(world.getName(), new PlayerWorldStatsIntelData(world.getName()));
                     }
 
@@ -170,6 +178,20 @@ public class PlayerJoinLeaveListener implements Listener {
                 }
             }
         });
+    }
+
+    private void updateSkinDataInPlayerIntel(PlayerSessionIntelData playerSessionIntelData, Player player) {
+        SkinsRestorer skinsRestorerAPI = SkinsRestorerProvider.get();
+        PlayerStorage playerStorage = skinsRestorerAPI.getPlayerStorage();
+        try {
+            Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getName());
+            if (skin.isPresent()) {
+                playerSessionIntelData.skin_property = Minetrax.getPlugin().getGson().toJson(skin.get());
+                playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureUrlStripped(skin.get());
+            }
+        } catch (Exception e) {
+            Minetrax.getPlugin().getLogger().warning(e.getMessage());
+        }
     }
 
     private void removePlayerAndSessionFromDataMap(PlayerQuitEvent event) {
@@ -233,7 +255,7 @@ public class PlayerJoinLeaveListener implements Listener {
         fw.setFireworkMeta(fwm);
 
         for (int i = 0; i < amount; i++) {
-            Location newLocation = p.getLocation().add(new Vector(Math.random()-0.5, 0, Math.random()-0.5).multiply(diameter));
+            Location newLocation = p.getLocation().add(new Vector(Math.random() - 0.5, 0, Math.random() - 0.5).multiply(diameter));
             Firework fw2 = (Firework) Objects.requireNonNull(p.getLocation().getWorld()).spawnEntity(newLocation, EntityType.FIREWORK);
             fw2.setFireworkMeta(fwm);
         }

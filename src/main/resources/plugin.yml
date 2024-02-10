@@ -7,13 +7,13 @@ description: Minetrax Plugin
 depend: [ Vault ]
 softdepend: [
   # Chat plugins
-    Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat, EpicCore,
+  Herochat, Legendchat, LunaChat, TownyChat, UltimateChat, VentureChat, EpicCore,
   # Vanish plugins
-    Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
+  Essentials, PhantomAdmin, SuperVanish, VanishNoPacket, PremiumVanish,
   # Permissions plugins
-    LuckPerms,
+  LuckPerms,
   # Misc. plugins
-    ViaVersion, Multiverse-Core, PlaceholderAPI, mcMMO, dynmap, Skript
+  ViaVersion, SkinsRestorer, Multiverse-Core, PlaceholderAPI, mcMMO, dynmap, Skript
 ]
 commands:
   account-link:

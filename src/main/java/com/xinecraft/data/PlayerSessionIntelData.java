@@ -5,8 +5,7 @@ import lombok.Data;
 import java.util.HashMap;
 
 @Data
-public class PlayerSessionIntelData
-{
+public class PlayerSessionIntelData {
     public String uuid; // player uuid
     public String username;
     public String player_id;    // id of player in website
@@ -69,6 +68,10 @@ public class PlayerSessionIntelData
     // Plugins
     public double vault_balance;
     public String[] vault_groups;
+
+    // Skin JSON object
+    public String skin_property;
+    public String skin_texture_id;
 
     public void resetXminKeys() {
         this.mob_kills_xmin = 0;
