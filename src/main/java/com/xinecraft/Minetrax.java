@@ -32,6 +32,7 @@ import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.VersionProvider;
 import net.skinsrestorer.api.event.SkinApplyEvent;
 import org.apache.commons.lang.StringUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -172,9 +173,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
                 .create();
 
         // bStats Metric,
-        // NOTE: Need to comment out if using Ant build for testing.
-//        int pluginId = 15485;
-//        Metrics metrics = new Metrics(this, pluginId);
+        int pluginId = 15485;
+        Metrics metrics = new Metrics(this, pluginId);
 
         playersDataMap = new HashMap<>();
         playerSessionIntelDataMap = new HashMap<>();
