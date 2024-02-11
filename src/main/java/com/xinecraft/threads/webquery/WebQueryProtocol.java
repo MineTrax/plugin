@@ -212,6 +212,11 @@ public class WebQueryProtocol {
     }
 
     private static String handleSetPlayerSkin(String params) {
+        if (!Minetrax.getPlugin().getHasSkinRestorer()) {
+            LoggingUtil.warning("Ignoring set-player-skin request as SkinRestorer is not enabled.");
+            return null;
+        }
+       
         String[] strings = params.split("½½½½");
         String playerUuid = strings[0];
         String commandType = strings[1];
