@@ -5,14 +5,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.Minetrax;
 import com.xinecraft.threads.data.QueryRequestData;
+import com.xinecraft.threads.webquery.handlers.PlayerSkinHandler;
 import com.xinecraft.utils.CryptoUtil;
 import com.xinecraft.utils.LoggingUtil;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
-import net.skinsrestorer.api.property.InputDataResult;
 import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
-import net.skinsrestorer.api.storage.SkinStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -212,116 +211,37 @@ public class WebQueryProtocol {
         String[] strings = params.split("½½½½");
         String playerUuid = strings[0];
         String commandType = strings[1];
-        String value = strings[2];
+        String value = null;
+        if (strings.length >= 3) {
+            value = strings[2];
+        }
         String theOutput = null;
 
         LoggingUtil.info("Setting skin for player: " + playerUuid + " with type: " + commandType + " and value: " + value);
-
         // Eg:player_uuid½½½½type½½½½value
         // type can:
         // 1. url -> url value of a skin site like namemc.com or mineskin.org url
         // 2. username -> copy from username of a premium account
-        // 3. custom -> custom skin texture value. Eg: set-player-skin½½½½player_uuid½½½½custom½½½½value:::signature
+        // 3a upload:init -> custom skin texture value. Eg: set-player-skin½½½½player_uuid½½½½custom½½½½value
+        // 3b upload -> custom skin signature value. Eg: set-player-skin½½½½player_uuid½½½½upload½½½½signature
         // 4. clear -> reset the skin to default Eg: set-player-skin½½½½player_uuid½½½½clear
         switch (commandType) {
             case "url":
             case "username":
-                System.out.println("Username" + playerUuid + value);
-                theOutput = setPlayerSkinUsingUrlOrName(playerUuid, value);
+                theOutput = PlayerSkinHandler.setPlayerSkinUsingUrlOrName(playerUuid, value);
                 break;
-            case "custom":
-                theOutput = setPlayerSkinUsingCustom(playerUuid, value);
+            case "upload:init":
+                theOutput = PlayerSkinHandler.initSetPlayerSkinUsingCustom(playerUuid, value);
+                break;
+            case "upload":
+                theOutput = PlayerSkinHandler.setPlayerSkinUsingCustom(playerUuid, value);
                 break;
             case "clear":
-                theOutput = clearPlayerSkin(playerUuid);
+                theOutput = PlayerSkinHandler.clearPlayerSkin(playerUuid);
                 break;
             default:
                 break;
         }
         return theOutput;
-    }
-
-    private static String setPlayerSkinUsingUrlOrName(String playerUuid, String value) {
-        // Find or generate skin data for skin
-        // This either generates it from the URL, finds a custom skin,
-        // finds the skin of a player (with that name) or returns an empty optional
-        // SkinsRestorer never requests the URL directly
-        // and instead tells MineSkin to generate the skin data with the URL
-        try {
-            SkinsRestorer skinsRestorerApi = Minetrax.getPlugin().getSkinsRestorerApi();
-            SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
-            PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
-            Optional<InputDataResult> result = skinStorage.findOrCreateSkinData(value);
-            if (!result.isPresent()) {
-                return null;
-            }
-
-            // Assign the skin to player.
-            playerStorage.setSkinIdOfPlayer(UUID.fromString(playerUuid), result.get().getIdentifier());
-
-            // Instantly apply skin to the player without requiring the player to rejoin, if online
-            Player player = Bukkit.getPlayer(UUID.fromString(playerUuid));
-            if (player != null) {
-                skinsRestorerApi.getSkinApplier(Player.class).applySkin(player);
-            }
-
-            return "ok";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static String setPlayerSkinUsingCustom(String playerUuid, String value) {
-        // Find or generate skin data for skin
-        // This either generates it from the URL, finds a custom skin,
-        // finds the skin of a player (with that name) or returns an empty optional
-        // SkinsRestorer never requests the URL directly
-        // and instead tells MineSkin to generate the skin data with the URL
-        try {
-            SkinsRestorer skinsRestorerApi = Minetrax.getPlugin().getSkinsRestorerApi();
-            SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
-            PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
-            String[] skinKeyVal = value.split(":::");
-
-            skinStorage.setCustomSkinData("custom", SkinProperty.of(skinKeyVal[0], skinKeyVal[1]));
-            Optional<InputDataResult> result = skinStorage.findSkinData("custom");
-            if (!result.isPresent()) {
-                return null;
-            }
-
-            // Assign the skin to player.
-            playerStorage.setSkinIdOfPlayer(UUID.fromString(playerUuid), result.get().getIdentifier());
-
-            // Instantly apply skin to the player without requiring the player to rejoin, if online
-            Player player = Bukkit.getPlayer(UUID.fromString(playerUuid));
-            if (player != null) {
-                skinsRestorerApi.getSkinApplier(Player.class).applySkin(player);
-            }
-
-            return "ok";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static String clearPlayerSkin(String playerUuid) {
-        try {
-            SkinsRestorer skinsRestorerApi = Minetrax.getPlugin().getSkinsRestorerApi();
-            PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
-            playerStorage.removeSkinIdOfPlayer(UUID.fromString(playerUuid));
-
-            // Instantly apply skin to the player without requiring the player to rejoin, if online
-            Player player = Bukkit.getPlayer(UUID.fromString(playerUuid));
-            if (player != null) {
-                skinsRestorerApi.getSkinApplier(Player.class).applySkin(player);
-            }
-
-            return "ok";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

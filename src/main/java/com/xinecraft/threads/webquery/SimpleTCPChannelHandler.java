@@ -1,5 +1,6 @@
 package com.xinecraft.threads.webquery;
 
+import com.xinecraft.utils.LoggingUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -10,6 +11,7 @@ public class SimpleTCPChannelHandler extends SimpleChannelInboundHandler<String>
         try {
             output = WebQueryProtocol.processInput(s);
         } catch (Exception e) {
+            LoggingUtil.warning("Error processing input: " + e.getMessage());
             output = "err";
         }
         if (output == null) {

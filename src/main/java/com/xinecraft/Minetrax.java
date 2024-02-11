@@ -148,6 +148,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     public SkinsRestorer skinsRestorerApi;
     @Getter
+    public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
+    @Getter
     public Gson gson = null;
 
     private static Permission perms = null;
