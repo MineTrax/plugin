@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.Minetrax;
+import com.xinecraft.data.PlayerData;
 import com.xinecraft.threads.data.QueryRequestData;
 import com.xinecraft.threads.webquery.handlers.PlayerSkinHandler;
 import com.xinecraft.utils.CryptoUtil;
@@ -96,6 +97,9 @@ public class WebQueryProtocol {
                 break;
             case "set-player-skin":
                 theOutput = handleSetPlayerSkin(queryRequestData.params);
+                break;
+            case "account-link-success":
+                theOutput = handleAccountLinkSuccess(queryRequestData.params);
                 break;
             default:
                 break;
@@ -243,5 +247,15 @@ public class WebQueryProtocol {
                 break;
         }
         return theOutput;
+    }
+
+    private static String handleAccountLinkSuccess(String params) {
+        String[] strings = params.split("½½½½");
+        String playerUuid = strings[0];
+        PlayerData playerData = Minetrax.getPlugin().playersDataMap.get(playerUuid);
+        if (playerData != null) {
+            playerData.is_verified = true;
+        }
+        return "ok";
     }
 }
