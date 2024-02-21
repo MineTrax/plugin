@@ -34,7 +34,6 @@ import net.skinsrestorer.api.event.SkinApplyEvent;
 import org.apache.commons.lang.StringUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -365,7 +364,6 @@ public final class Minetrax extends JavaPlugin implements Listener {
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
-        HandlerList.unregisterAll();
         if (webQuerySocketServer != null) {
             webQuerySocketServer.shutdown();
         }
