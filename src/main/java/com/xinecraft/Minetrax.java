@@ -90,12 +90,6 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     private List<String> whoisPlayerOnCommandMessage;
     @Getter
-    private Boolean isFireworkOnPlayerJoin;
-    @Getter
-    private Boolean isFireworkOnPlayerFirstJoin;
-    @Getter
-    private String fireworkSendAmount;
-    @Getter
     private String whoisAdminPermissionName;
     @Getter
     private List<String> whoisPlayerOnAdminCommandMessage;
@@ -147,6 +141,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     public Boolean hasSkinRestorer = false;
     @Getter
     public SkinsRestorer skinsRestorerApi;
+    @Getter
+    public Boolean isSkinsRestorerHookEnabled;
     @Getter
     public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
     @Getter
@@ -223,13 +219,11 @@ public final class Minetrax extends JavaPlugin implements Listener {
         playerLinkUnknownErrorMessage = this.getConfig().getStringList("player-link-unknown-error-message");
         playerLinkFinalActionMessage = this.getConfig().getStringList("player-link-final-action-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
-        isFireworkOnPlayerJoin = this.getConfig().getBoolean("enable-firework-on-player-join");
-        isFireworkOnPlayerFirstJoin = this.getConfig().getBoolean("enable-firework-on-player-first-join");
-        fireworkSendAmount = this.getConfig().getString("join-fireworks-amount");
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         serverSessionId = UUID.randomUUID().toString();
+        isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
         // Disable plugin if host, key, secret or server-id is not there
         if (
                 apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
@@ -343,17 +337,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
 
         // Check if SkinsRestorer is installed
         if (PluginUtil.checkIfPluginEnabled("SkinsRestorer")) {
-            hasSkinRestorer = true;
-            getLogger().info("Hooking into SkinsRestorer.");
-
-            // Add SkinsRestorerHook
-            skinsRestorerApi = SkinsRestorerProvider.get();
-            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
-
-            // Warn if SkinsRestorer is not compatible with v15
-            if (!VersionProvider.isCompatibleWith("15")) {
-                getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
-            }
+            hasSkinRestorer = setupSkinsRestorer();
         }
 
         // Update Checker
@@ -374,6 +358,25 @@ public final class Minetrax extends JavaPlugin implements Listener {
                 PlayerIntelUtil.reportPlayerIntel(playerSessionData, true);
             }
         }
+    }
+
+    private Boolean setupSkinsRestorer() {
+        if (!isSkinsRestorerHookEnabled) {
+            getLogger().info("SkinsRestorer is found! But SkinsRestorer hook is disabled in config.");
+            return false;
+        }
+
+        getLogger().info("Hooking into SkinsRestorer.");
+
+        // Add SkinsRestorerHook
+        skinsRestorerApi = SkinsRestorerProvider.get();
+        skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+
+        // Warn if SkinsRestorer is not compatible with v15
+        if (!VersionProvider.isCompatibleWith("15")) {
+            getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
+        }
+        return true;
     }
 
     private boolean setupVaultPermission() {

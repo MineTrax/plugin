@@ -15,9 +15,9 @@ import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
-import org.bukkit.*;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,12 +25,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.util.Vector;
 
 import java.util.*;
-
-import static org.bukkit.FireworkEffect.Type.CREEPER;
 
 public class PlayerJoinLeaveListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -46,15 +42,6 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // perform whois & add player to list of linkedPlayers hashmap
         this.broadcastWhoisForPlayer(event.getPlayer());
-
-        // fireworks effect when player joins
-        if (!p.hasPlayedBefore() && Minetrax.getPlugin().getIsFireworkOnPlayerFirstJoin()) {
-            spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt(Minetrax.getPlugin().getFireworkSendAmount()));
-        } else {
-            if (Minetrax.getPlugin().getIsFireworkOnPlayerJoin()) {
-                spawnFireworks(p, Minetrax.getPlugin().getConfig().getInt(Minetrax.getPlugin().getFireworkSendAmount()));
-            }
-        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -238,26 +225,5 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Remove player data map.
         Minetrax.getPlugin().playersDataMap.remove(key);
-    }
-
-    private static void spawnFireworks(Player p, Integer amount) {
-        int diameter = 10;
-
-        Firework fw = p.getWorld().spawn(p.getLocation(), Firework.class);
-        FireworkMeta fwm = fw.getFireworkMeta();
-        FireworkEffect.Builder builder = FireworkEffect.builder();
-
-        fwm.addEffect(builder.flicker(true).withColor(Color.BLUE).build());
-        fwm.addEffect(builder.trail(true).build());
-        fwm.addEffect(builder.withFade(Color.WHITE).build());
-        fwm.addEffect(builder.with(CREEPER).build());
-        fwm.setPower(2);
-        fw.setFireworkMeta(fwm);
-
-        for (int i = 0; i < amount; i++) {
-            Location newLocation = p.getLocation().add(new Vector(Math.random() - 0.5, 0, Math.random() - 0.5).multiply(diameter));
-            Firework fw2 = (Firework) Objects.requireNonNull(p.getLocation().getWorld()).spawnEntity(newLocation, EntityType.FIREWORK);
-            fw2.setFireworkMeta(fwm);
-        }
     }
 }

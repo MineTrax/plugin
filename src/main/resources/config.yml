@@ -103,12 +103,6 @@ whois-multiple-players-list-message: '&6#{POSITION}&r - &b{USERNAME}&r'
 # This is how long before player is considered AFK in seconds. Player Intel keep track of AFK activity for Analytics..
 # If you use some sort of afk plugin it is recommended to set this time to match.  (300 seconds = 5 minutes)
 afk-threshold-in-seconds: 300
-# If this is enabled this will deploy a firework when a player joins the server
-enable-firework-on-player-join: false
-# If this is enabled this will only deploy a firework when player joins server for first time
-enable-firework-on-player-first-join: false
-# How many fireworks will be sent when player joins
-join-fireworks-amount: 2
 # If enabled the plugin will send more log data in console for better debugging.
 debug-mode: false
 # If enabled only whitelisted commands (whitelisted-commands-from-web) can be sent from web. other custom command will be discarded.
@@ -120,3 +114,5 @@ whitelisted-commands-from-web:
   - emute
   - ban
   - broadcast
+# If enabled this will let minetrax hook into skinsrestorer plugin if available.
+enable-skinsrestorer-hook: true
