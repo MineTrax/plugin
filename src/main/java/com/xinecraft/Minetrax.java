@@ -144,6 +144,8 @@ public final class Minetrax extends JavaPlugin implements Listener {
     @Getter
     public Boolean isSkinsRestorerHookEnabled;
     @Getter
+    public Boolean isSkinsRestorerInProxyMode;
+    @Getter
     public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
     @Getter
     public Gson gson = null;
@@ -224,6 +226,7 @@ public final class Minetrax extends JavaPlugin implements Listener {
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         serverSessionId = UUID.randomUUID().toString();
         isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
+        isSkinsRestorerInProxyMode = this.getConfig().getBoolean("skinsrestorer-in-proxy-mode");
         // Disable plugin if host, key, secret or server-id is not there
         if (
                 apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
@@ -369,12 +372,23 @@ public final class Minetrax extends JavaPlugin implements Listener {
         getLogger().info("Hooking into SkinsRestorer.");
 
         // Add SkinsRestorerHook
-        skinsRestorerApi = SkinsRestorerProvider.get();
-        skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+        try {
+            skinsRestorerApi = SkinsRestorerProvider.get();
+            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
 
-        // Warn if SkinsRestorer is not compatible with v15
-        if (!VersionProvider.isCompatibleWith("15")) {
-            getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
+            // If Proxy Mode enabled then register message channel.
+            if (isSkinsRestorerInProxyMode && !getServer().getMessenger().isOutgoingChannelRegistered(this, "sr:messagechannel")) {
+                getLogger().info("SkinsRestorer is in Proxy Mode. Registering message channel.");
+                getServer().getMessenger().registerOutgoingPluginChannel(this, "sr:messagechannel");
+            }
+
+            // Warn if SkinsRestorer is not compatible with v15
+            if (!VersionProvider.isCompatibleWith("15")) {
+                getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
+            }
+        } catch (Exception e) {
+            getLogger().warning("SkinsRestorer found! But SkinsRestorer hook failed to initialize (Maybe because of Proxy Mode without enableSkinStorageAPI.txt).");
+            return false;
         }
         return true;
     }

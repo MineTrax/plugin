@@ -10,6 +10,8 @@ import net.skinsrestorer.api.storage.SkinStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -98,7 +100,11 @@ public class PlayerSkinHandler {
             // Instantly apply skin to the player without requiring the player to rejoin, if online
             Player player = Bukkit.getPlayer(UUID.fromString(playerUuid));
             if (player != null) {
-                skinsRestorerApi.getSkinApplier(Player.class).applySkin(player);
+                if (Minetrax.getPlugin().isSkinsRestorerInProxyMode) {
+                    scheduleSendMessageToChannel(player, new byte[0]);
+                } else {
+                    skinsRestorerApi.getSkinApplier(Player.class).applySkin(player);
+                }
             }
 
             return "ok";
@@ -106,5 +112,25 @@ public class PlayerSkinHandler {
             LoggingUtil.warning(e.getMessage());
             return null;
         }
+    }
+
+
+    private static void sendMessageToChannel(Player player, byte[] message) {
+        try {
+            System.out.println("Sending clearSkin message to " + player.getName());
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(b);
+            out.writeUTF("clearSkin");
+            out.writeUTF(player.getName());
+            player.sendPluginMessage(Minetrax.getPlugin(), "sr:messagechannel", b.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void scheduleSendMessageToChannel(Player player, byte[] message) {
+        Bukkit.getScheduler().runTaskAsynchronously(Minetrax.getPlugin(), () -> {
+            sendMessageToChannel(player, message);
+        });
     }
 }
