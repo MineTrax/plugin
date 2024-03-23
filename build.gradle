@@ -4,7 +4,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
-group = 'Minetrax'
+group = 'com.xinecraft'
 version = '5.0.0'
 description = 'Minetrax'
 def targetJavaVersion = 11
@@ -62,7 +62,16 @@ tasks.withType(Javadoc).configureEach {
 }
 
 shadowJar {
-    relocate('org.bstats', 'com.xinecraft.bstats')
+    relocate('org.bstats', 'com.xinecraft.minetrax.bstats')
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
 }
 
 publishing {

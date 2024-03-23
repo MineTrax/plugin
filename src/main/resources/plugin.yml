@@ -1,6 +1,6 @@
 name: Minetrax
-version: ${project.version}
-main: com.xinecraft.Minetrax
+version: '${version}'
+main: com.xinecraft.minetrax.Minetrax
 api-version: 1.13
 authors: [ Xinecraft ]
 description: Minetrax Plugin
