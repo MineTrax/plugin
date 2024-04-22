@@ -1,1 +1,6 @@
 rootProject.name = 'Minetrax'
+include 'common'
+include 'bukkit'
+include 'bungee'
+include 'velocity'
+include 'assembly'

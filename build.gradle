@@ -1,83 +1,51 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
     id 'maven-publish'
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'eclipse'
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.0.1"
 }
 
-group = 'com.xinecraft'
-version = '5.0.0'
-description = 'Minetrax'
-def targetJavaVersion = 11
+allprojects {
+    group = 'com.xinecraft'
+    description = 'Minetrax'
+    version = '6.0.0'
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url = uri('https://jitpack.io') }
-    maven { url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/') }
-    maven { url = uri('https://oss.sonatype.org/content/groups/public/') }
-    maven { url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/') }
-    maven { url = uri('https://repo.viaversion.com') }
-    maven { url = uri('https://repo.codemc.org/repository/maven-public/') }
-    maven { url = uri('https://repo.maven.apache.org/maven2/') }
-}
+    repositories {
+        mavenLocal()
+        mavenCentral()
 
-dependencies {
-    implementation 'org.bstats:bstats-bukkit:3.0.0'
-    implementation 'commons-codec:commons-codec:1.15'
-    compileOnly 'io.netty:netty-all:4.1.86.Final'
-    compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
-    compileOnly 'org.projectlombok:lombok:1.18.32'
-    annotationProcessor 'org.projectlombok:lombok:1.18.32'
-    testCompileOnly 'org.projectlombok:lombok:1.18.32'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
-    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
-    compileOnly 'org.jetbrains:annotations:22.0.0'
-    compileOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
-    compileOnly 'me.clip:placeholderapi:2.11.3'
-    compileOnly 'com.viaversion:viaversion-api:4.7.0'
-    compileOnly 'net.skinsrestorer:skinsrestorer-api:15.0.6'
-    compileOnly files('D:/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar')
-    compileOnly files('D:/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar')
-}
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.enonic.com/public/' }
+        maven { url "https://oss.sonatype.org/content/groups/public/" }
+        maven { url "https://repo.aikar.co/content/groups/aikar/" }
+        maven { url 'https://papermc.io/repo/repository/maven-public/' }
+        maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+        maven { url "https://maven.matrixstudios.ltd/public" }
 
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+        maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+        maven { url 'https://repo.viaversion.com' }
+        maven { url 'https://repo.codemc.org/repository/maven-public/' }
+        maven { url 'https://repo.maven.apache.org/maven2/' }
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
+subprojects {
+    ext {
+        targetJavaVersion = 17
     }
-}
 
-tasks.withType(Javadoc).configureEach {
-    options.encoding = 'UTF-8'
-}
+    apply plugin: "java"
+    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "maven-publish"
 
-shadowJar {
-    relocate('org.bstats', 'com.xinecraft.minetrax.bstats')
-}
-
-processResources {
-    def props = [version: version]
-    inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
+    dependencies {
+        //lombok
+        compileOnly 'org.projectlombok:lombok:1.18.22'
     }
-}
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     }
 }

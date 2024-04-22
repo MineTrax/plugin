@@ -1,0 +1,16 @@
+dependencies {
+    implementation project(":common")
+    implementation project(":bukkit")
+    implementation project(":bungee")
+    implementation project(":velocity")
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+shadowJar {
+    archiveFileName = "Minetrax-${project.version}.jar"
+    relocate('org.bstats', 'com.xinecraft.minetrax.bstats')
+}
