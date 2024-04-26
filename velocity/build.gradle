@@ -2,6 +2,7 @@ dependencies {
     implementation project(":common")
     compileOnly "com.velocitypowered:velocity-api:3.3.0-SNAPSHOT"
     annotationProcessor "com.velocitypowered:velocity-api:3.3.0-SNAPSHOT"
+    implementation "dev.dejvokep:boosted-yaml:1.3"
 }
 
 java {

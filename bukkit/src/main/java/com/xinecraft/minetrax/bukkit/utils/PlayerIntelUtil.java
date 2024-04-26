@@ -2,7 +2,7 @@ package com.xinecraft.minetrax.bukkit.utils;
 
 import com.google.gson.Gson;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerSessionIntelData;
+import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

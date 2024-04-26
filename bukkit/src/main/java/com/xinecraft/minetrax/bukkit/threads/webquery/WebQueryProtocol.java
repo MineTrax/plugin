@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.bukkit.threads.webquery.handlers.PlayerSkinHandler;
 import com.xinecraft.minetrax.bukkit.threads.data.QueryRequestData;
 import com.xinecraft.minetrax.bukkit.utils.CryptoUtil;

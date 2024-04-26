@@ -1,4 +1,4 @@
-name: MinetraxBukkit
+name: Minetrax
 version: '${version}'
 main: com.xinecraft.minetrax.bukkit.MinetraxBukkit
 api-version: '1.13'

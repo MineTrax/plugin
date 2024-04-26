@@ -1,9 +1,9 @@
 package com.xinecraft.minetrax.bukkit.tasks;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerData;
-import com.xinecraft.minetrax.bukkit.data.PlayerSessionIntelData;
-import com.xinecraft.minetrax.bukkit.data.PlayerWorldStatsIntelData;
+import com.xinecraft.minetrax.common.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
+import com.xinecraft.minetrax.common.data.PlayerWorldStatsIntelData;
 import org.bukkit.entity.Player;
 
 public class PlayerAfkAndWorldIntelTrackerTask implements Runnable {

@@ -2,7 +2,7 @@ package com.xinecraft.minetrax.bukkit.tasks;
 
 import com.google.gson.Gson;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerSessionIntelData;
+import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.bukkit.utils.PlayerIntelUtil;
 
 import java.util.HashMap;

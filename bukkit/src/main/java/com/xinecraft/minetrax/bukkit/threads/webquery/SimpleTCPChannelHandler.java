@@ -9,6 +9,7 @@ public class SimpleTCPChannelHandler extends SimpleChannelInboundHandler<String>
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
         String output;
         try {
+            System.out.println("Received: " + s.length());
             output = WebQueryProtocol.processInput(s);
         } catch (Exception e) {
             LoggingUtil.warning("Error processing input: " + e.getMessage());

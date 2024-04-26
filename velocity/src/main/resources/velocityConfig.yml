@@ -1,0 +1,42 @@
+#    ███╗   ███╗██╗███╗   ██╗███████╗████████╗██████╗  █████╗ ██╗  ██╗
+#    ████╗ ████║██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚██╗██╔╝
+#    ██╔████╔██║██║██╔██╗ ██║█████╗     ██║   ██████╔╝███████║ ╚███╔╝
+#    ██║╚██╔╝██║██║██║╚██╗██║██╔══╝     ██║   ██╔══██╗██╔══██║ ██╔██╗
+#    ██║ ╚═╝ ██║██║██║ ╚████║███████╗   ██║   ██║  ██║██║  ██║██╔╝ ██╗
+#    ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+#                            Created By: Xinecraft
+#                      Support: https://discord.gg/Hzfj27k
+file-version: 1
+# This will enable or disable the Minetrax plugin
+enabled: true
+# The website address that will be linked. (Example: https://minetrax.live)
+api-host:
+# This is found on your website.  In Admin Section > Settings > Plugin
+api-key:
+# This is also found on your website.  In Admin Section > Settings > Plugin
+api-secret:
+# This is the id of the server on your website.  This has to be a numeric value. Can be found in Admin Section > Servers
+server-id:
+# Your webquery ip address.  Most of the time this can be left at 0.0.0.0
+webquery-host: 0.0.0.0
+# The port that you opened so plugin and website can communicate. Make sure this port is not already take and can be open.
+webquery-port: 25569
+# This enables the sending of console logs to web.
+enable-consolelog: true
+# Sends server intel reports like cpu usage, memory etc. to website.
+report-server-intel: true
+# Sends player intel to website for better analysis.
+report-player-intel: true
+# Sends player inventory to Intel for better analysis.
+send-inventory-data-to-player-intel: false
+# Message format that will be sent when sending message from website to game
+web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
+# If enabled the plugin will send more log data in console for better debugging.
+debug-mode: false
+# If enabled only whitelisted commands (whitelisted-commands-from-web) can be sent from web. other custom command will be discarded.
+allow-only-whitelisted-commands-from-web: false
+whitelisted-commands-from-web:
+  - kick
+  - ban
+# If enabled this will let minetrax hook into skinsrestorer plugin if available.
+enable-skinsrestorer-hook: true

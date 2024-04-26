@@ -1,8 +1,8 @@
 package com.xinecraft.minetrax.bukkit.hooks.skinsrestorer;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerData;
-import com.xinecraft.minetrax.bukkit.data.PlayerSessionIntelData;
+import com.xinecraft.minetrax.common.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.event.SkinApplyEvent;

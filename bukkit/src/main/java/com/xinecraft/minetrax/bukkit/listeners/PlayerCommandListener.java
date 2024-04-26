@@ -1,7 +1,7 @@
 package com.xinecraft.minetrax.bukkit.listeners;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

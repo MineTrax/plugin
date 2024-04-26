@@ -6,8 +6,11 @@ import com.xinecraft.minetrax.bukkit.adapters.ItemStackGsonAdapter;
 import com.xinecraft.minetrax.bukkit.commands.AccountLinkCommand;
 import com.xinecraft.minetrax.bukkit.commands.PlayerWhoisCommand;
 import com.xinecraft.minetrax.bukkit.commands.WebSayCommand;
-import com.xinecraft.minetrax.bukkit.data.PlayerData;
-import com.xinecraft.minetrax.bukkit.data.PlayerSessionIntelData;
+import com.xinecraft.minetrax.bukkit.logging.BukkitLogger;
+import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
+import com.xinecraft.minetrax.common.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.bukkit.hooks.chat.EpicCoreChatHook;
 import com.xinecraft.minetrax.bukkit.hooks.chat.VentureChatHook;
 import com.xinecraft.minetrax.bukkit.hooks.placeholderapi.MinetraxPlaceholderExpansion;
@@ -24,6 +27,7 @@ import com.xinecraft.minetrax.bukkit.utils.UpdateChecker;
 import com.xinecraft.minetrax.bukkit.tasks.AccountLinkReminderTask;
 import com.xinecraft.minetrax.bukkit.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.minetrax.bukkit.utils.PlayerIntelUtil;
+import com.xinecraft.minetrax.common.enums.PlatformType;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -41,112 +45,64 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public final class MinetraxBukkit extends JavaPlugin implements Listener {
+@Getter
+public final class MinetraxBukkit extends JavaPlugin implements Listener, MinetraxPlugin {
 
-    @Getter
     private ConsoleMessageQueueWorker consoleMessageQueueWorker;
 
-    @Getter
     private NettyWebQueryServer webQuerySocketServer;
 
     // Console
-    @Getter
     private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
-    @Getter
     private ConsoleAppender consoleAppender;
 
-    @Getter
     private Boolean isEnabled;
-    @Getter
     private Boolean isDebugMode;
-    @Getter
     private String apiKey;
-    @Getter
     private String apiSecret;
-    @Getter
     private String apiServerId;
-    @Getter
     private String apiHost;
-    @Getter
     private Boolean isChatLogEnabled;
-    @Getter
     private Boolean isConsoleLogEnabled;
-    @Getter
     private String webQueryHost;
-    @Getter
     private int webQueryPort;
-    @Getter
     private String webMessageFormat;
-    @Getter
     private Boolean isWhoisOnPlayerJoinEnabled;
-    @Getter
     private Boolean isWhoisOnCommandEnabled;
-    @Getter
     private String whoisNoMatchFoundMessage;
-    @Getter
     private List<String> whoisPlayerOnJoinMessage;
-    @Getter
     private List<String> whoisPlayerOnFirstJoinMessage;
-    @Getter
     private List<String> whoisPlayerOnCommandMessage;
-    @Getter
     private String whoisAdminPermissionName;
-    @Getter
     private List<String> whoisPlayerOnAdminCommandMessage;
-    @Getter
     private String whoisMultiplePlayersTitleMessage;
-    @Getter
     private String whoisMultiplePlayersListMessage;
-    @Getter
     private Boolean isRemindPlayerToLinkEnabled;
-    @Getter
     private Boolean isShortenAccountLinkUrl;
-    @Getter
     private Boolean isServerIntelEnabled;
-    @Getter
     private Boolean isPlayerIntelEnabled;
-    @Getter
     private Long remindPlayerToLinkInterval;
-    @Getter
     private List<String> remindPlayerToLinkMessage;
-    @Getter
     private List<String> playerLinkInitMessage;
-    @Getter
     private List<String> playerLinkNotFoundMessage;
-    @Getter
     private List<String> playerLinkAlreadyLinkedMessage;
-    @Getter
     private List<String> playerLinkUnknownErrorMessage;
-    @Getter
     private List<String> playerLinkFinalActionMessage;
-    @Getter
     private long afkThresholdInMs;
-    @Getter
     public HashMap<String, PlayerData> playersDataMap;
-    @Getter
     public HashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
-    @Getter
     public String serverSessionId;
-    @Getter
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
-    @Getter
     public Boolean isSendInventoryDataToPlayerIntel;
-    @Getter
     public List<String> whitelistedCommandsFromWeb;
-    @Getter
     public HashMap<String, String> joinAddressCache = new HashMap<>();
-    @Getter
     public boolean hasViaVersion;
-    @Getter
     public Boolean hasSkinRestorer = false;
-    @Getter
     public SkinsRestorer skinsRestorerApi;
-    @Getter
     public Boolean isSkinsRestorerHookEnabled;
-    @Getter
     public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
-    @Getter
     public Gson gson = null;
+    private MinetraxCommon common;
 
     private static Permission perms = null;
     private static Economy economy = null;
@@ -166,6 +122,13 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener {
                 .serializeNulls()
                 .disableHtmlEscaping()
                 .create();
+
+        // Setup Common
+        common = new MinetraxCommon();
+        common.setPlatformType(PlatformType.BUKKIT);
+        common.setGson(gson);
+        common.setLogger(new BukkitLogger(this));
+        common.setPlugin(this);
 
         // bStats Metric,
         int pluginId = 15485;
@@ -402,7 +365,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
                 getLogger().info("You are currently running the latest version of MineTrax");
             } else {
-                getLogger().info("There is a new update available. Please update to latest version.");
+                getLogger().info("There is a new update available. Please update to latest version " + version);
             }
         });
     }

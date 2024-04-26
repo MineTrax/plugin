@@ -1,7 +1,7 @@
 package com.xinecraft.minetrax.bukkit.hooks.placeholderapi;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerData;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

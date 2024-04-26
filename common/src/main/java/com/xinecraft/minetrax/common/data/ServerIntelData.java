@@ -1,4 +1,4 @@
-package com.xinecraft.minetrax.bukkit.data;
+package com.xinecraft.minetrax.common.data;
 
 import lombok.Data;
 
