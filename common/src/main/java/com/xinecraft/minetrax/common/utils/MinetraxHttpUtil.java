@@ -18,7 +18,7 @@ public class MinetraxHttpUtil {
     public static final String VERIFY_ACCOUNT_LINK_ROUTE = "/api/v1/account-link/verify";
     private static final String REPORT_SERVER_CHAT_ROUTE = "/api/v1/server/chat";
     private static final String REPORT_SERVER_CONSOLE_ROUTE = "/api/v1/server/console";
-    private static final String FETCH_PLAYER_WHOIS_ROUTE = "/api/v1/player/whois";
+    public static final String FETCH_PLAYER_WHOIS_ROUTE = "/api/v1/player/whois";
     private static final String FETCH_PLAYER_DATA_ROUTE = "/api/v1/player/data";
     private static final String PLAYER_INTEL_SESSION_INIT_ROUTE = "/api/v1/intel/player/session/init";
     private static final String PLAYER_INTEL_EVENT_REPORT_ROUTE = "/api/v1/intel/player/report/event";

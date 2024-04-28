@@ -1,7 +1,7 @@
 package com.xinecraft.minetrax.bukkit.commands;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.common.actions.AccountLinker;
+import com.xinecraft.minetrax.common.actions.LinkAccount;
 import com.xinecraft.minetrax.common.responses.GenericApiResponse;
 import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ public class AccountLinkCommand implements CommandExecutor {
         String otpCode = strings[0];
         Bukkit.getScheduler().runTaskAsynchronously(MinetraxBukkit.getPlugin(), () -> {
             try {
-                GenericApiResponse response = AccountLinker.linkAccount(
+                GenericApiResponse response = LinkAccount.link(
                         player.getUniqueId().toString(),
                         otpCode,
                         MinetraxBukkit.getPlugin().getApiServerId()

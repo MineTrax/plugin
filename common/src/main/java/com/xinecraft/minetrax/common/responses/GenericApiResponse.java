@@ -1,5 +1,6 @@
 package com.xinecraft.minetrax.common.responses;
 
+import com.google.gson.JsonElement;
 import lombok.Data;
 
 @Data
@@ -8,5 +9,5 @@ public class GenericApiResponse {
     String type;
     String status;
     String message;
-    Object data;
+    JsonElement data;
 }

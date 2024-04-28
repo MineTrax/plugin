@@ -7,8 +7,8 @@ import okhttp3.Response;
 
 import java.util.HashMap;
 
-public class AccountLinker {
-    public static GenericApiResponse linkAccount(String playerUuid, String otpCode, String serverId) throws Exception {
+public class LinkAccount {
+    public static GenericApiResponse link(String playerUuid, String otpCode, String serverId) throws Exception {
         HashMap<String, String> payload = new HashMap<>();
         payload.put("uuid", playerUuid);
         payload.put("server_id", serverId);

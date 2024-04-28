@@ -9,7 +9,7 @@ import com.xinecraft.minetrax.common.data.PlayerWorldStatsIntelData;
 import com.xinecraft.minetrax.bukkit.utils.HttpUtil;
 import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
 import com.xinecraft.minetrax.bukkit.utils.VersionUtil;
-import com.xinecraft.minetrax.bukkit.utils.WhoisUtil;
+import com.xinecraft.minetrax.common.utils.WhoisUtil;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
@@ -92,9 +92,29 @@ public class PlayerJoinLeaveListener implements Listener {
         String username = player.getName();
         String ipAddress = Objects.requireNonNull(player.getAddress()).getHostString();
         String uuid = player.getUniqueId().toString();
-
         Boolean shouldBroadcastOnJoin = MinetraxBukkit.getPlugin().getIsWhoisOnPlayerJoinEnabled();
-        WhoisUtil.forPlayer(username, uuid, ipAddress, shouldBroadcastOnJoin, true, null);
+
+        List<String> sayList = WhoisUtil.forPlayer(
+                username,
+                uuid,
+                ipAddress,
+                shouldBroadcastOnJoin,
+                true,
+                null,
+                MinetraxBukkit.getPlugin().getWhoisNoMatchFoundMessage(),
+                MinetraxBukkit.getPlugin().getWhoisPlayerOnFirstJoinMessage(),
+                MinetraxBukkit.getPlugin().getWhoisPlayerOnJoinMessage(),
+                MinetraxBukkit.getPlugin().getWhoisPlayerOnCommandMessage(),
+                MinetraxBukkit.getPlugin().getWhoisPlayerOnAdminCommandMessage(),
+                MinetraxBukkit.getPlugin().getWhoisMultiplePlayersTitleMessage(),
+                MinetraxBukkit.getPlugin().getWhoisMultiplePlayersListMessage()
+        );
+        if (sayList != null) {
+            for (String line : sayList) {
+                line = ChatColor.translateAlternateColorCodes('&', line);
+                Bukkit.getServer().broadcastMessage(line);
+            }
+        }
     }
 
     private void addPlayerToPlayerDataMapAndStartSession(PlayerJoinEvent event) {

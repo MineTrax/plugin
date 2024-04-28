@@ -10,7 +10,6 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.xinecraft.minetrax.common.MinetraxCommon;
-import com.xinecraft.minetrax.common.actions.AccountLinker;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;

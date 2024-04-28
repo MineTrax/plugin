@@ -1,4 +1,4 @@
-package com.xinecraft.minetrax.bukkit.utils;
+package com.xinecraft.minetrax.common.responses;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -6,18 +6,14 @@ import lombok.Data;
 import java.util.ArrayList;
 
 @Data
-public class WhoisResponseData
-{
-    @SerializedName("status")
-    public String status;
+public class PlayerWhoisApiResponse {
+    int code;
+    String type;
+    String status;
+    String message;
+    RespData data;
 
-    @SerializedName("message")
-    public String message;
-
-    @SerializedName("data")
-    public Data data;
-
-    public static class Data
+    public static class RespData
     {
         @SerializedName("count")
         public int count;
