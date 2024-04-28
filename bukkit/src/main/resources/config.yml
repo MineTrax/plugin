@@ -45,24 +45,17 @@ remind-player-link-message:
   - "&lLink now and earn rewards & perks!"
   - "&lType /account-link to begin"
   - "&oIf you have already linked and getting this message try rejoining the server"
-# Message when player initialize account link process by typing /account-link
+# Message when player send /account-link without otp parameter
 player-link-init-message:
-  - "&7Please wait.. Account verification is instantiating."
-# Message when player getting linked is not found in website database
-player-link-not-found-message:
-  - "&c404! Player not in website database yet."
-  - "&ePlease try again later."
-# Message when player is already linked to an account.
-player-link-already-linked-message:
-  - "&eHey! This player is already linked. Plz visit {WEB_URL} to know more"
-# Message when player linking fails due to unknown error
-player-link-unknown-error-message:
-  - "&cUnknown error occurred while linking your account."
-  - "&ePlease try again later."
-# Message when player linking /account-link is successful and LINK_URL is returned for final step.
-player-link-final-action-message:
-  - "&a&lPlease click or open the link below to complete linking process."
+  - "&6.Please visit below link and follow the steps there to continue linking your account."
   - "{LINK_URL}"
+# If get error message response from server
+player-link-error-message:
+  - "&c&lOops! Some error occurred while linking your account:"
+  - "&c{ERROR_MESSAGE}"
+# Message when player linking is successful
+player-link-success-message:
+  - "&a&lCongratulations! Your account has been successfully linked."
 # If this is enabled it will send whois information about players when they join the server
 enable-whois-on-player-join: true
 # If this is enabled players with permission can run the /webwhois or /ww command

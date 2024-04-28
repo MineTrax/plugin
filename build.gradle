@@ -47,9 +47,11 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
         compileOnly 'org.jetbrains:annotations:22.0.0'
         implementation 'commons-codec:commons-codec:1.15'
+        implementation 'org.apache.commons:commons-lang3:3.14.0'
         compileOnly 'io.netty:netty-all:4.1.86.Final'
         implementation 'com.google.code.gson:gson:2.10.1'
-        compileOnly 'net.skinsrestorer:skinsrestorer-api:15.0.6'
+        compileOnly 'net.skinsrestorer:skinsrestorer-api:15.0.11'
+        implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     }
 
     def targetJavaVersion = project.ext.targetJavaVersion as int

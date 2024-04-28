@@ -2,3 +2,4 @@ name: Minetrax
 version: '${version}'
 main: com.xinecraft.minetrax.bungee.MinetraxBungee
 author: xinecraft
+softDepends: ['SkinsRestorer']

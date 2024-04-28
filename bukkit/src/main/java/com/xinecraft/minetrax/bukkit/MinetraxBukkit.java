@@ -7,6 +7,7 @@ import com.xinecraft.minetrax.bukkit.commands.AccountLinkCommand;
 import com.xinecraft.minetrax.bukkit.commands.PlayerWhoisCommand;
 import com.xinecraft.minetrax.bukkit.commands.WebSayCommand;
 import com.xinecraft.minetrax.bukkit.logging.BukkitLogger;
+import com.xinecraft.minetrax.bukkit.schedulers.BukkitScheduler;
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.data.PlayerData;
@@ -84,10 +85,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private Long remindPlayerToLinkInterval;
     private List<String> remindPlayerToLinkMessage;
     private List<String> playerLinkInitMessage;
-    private List<String> playerLinkNotFoundMessage;
-    private List<String> playerLinkAlreadyLinkedMessage;
-    private List<String> playerLinkUnknownErrorMessage;
-    private List<String> playerLinkFinalActionMessage;
+    private List<String> playerLinkErrorMessage;
+    private List<String> playerLinkSuccessMessage;
     private long afkThresholdInMs;
     public HashMap<String, PlayerData> playersDataMap;
     public HashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
@@ -125,10 +124,11 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Setup Common
         common = new MinetraxCommon();
+        common.setPlugin(this);
         common.setPlatformType(PlatformType.BUKKIT);
         common.setGson(gson);
         common.setLogger(new BukkitLogger(this));
-        common.setPlugin(this);
+        common.setScheduler(new BukkitScheduler(this));
 
         // bStats Metric,
         int pluginId = 15485;
@@ -177,10 +177,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
         playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
-        playerLinkNotFoundMessage = this.getConfig().getStringList("player-link-not-found-message");
-        playerLinkAlreadyLinkedMessage = this.getConfig().getStringList("player-link-already-linked-message");
-        playerLinkUnknownErrorMessage = this.getConfig().getStringList("player-link-unknown-error-message");
-        playerLinkFinalActionMessage = this.getConfig().getStringList("player-link-final-action-message");
+        playerLinkErrorMessage = this.getConfig().getStringList("player-link-error-message");
+        playerLinkSuccessMessage = this.getConfig().getStringList("player-link-success-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
@@ -332,14 +330,21 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         getLogger().info("Hooking into SkinsRestorer.");
 
         // Add SkinsRestorerHook
-        skinsRestorerApi = SkinsRestorerProvider.get();
-        skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+        try {
+            skinsRestorerApi = SkinsRestorerProvider.get();
+            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
 
-        // Warn if SkinsRestorer is not compatible with v15
-        if (!VersionProvider.isCompatibleWith("15")) {
-            getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
+            // Warn if SkinsRestorer is not compatible with v15
+            if (!VersionProvider.isCompatibleWith("15")) {
+                getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
+            }
+            return true;
+        } catch (Exception e) {
+            getLogger().warning("Error while hooking into SkinsRestorer. Maybe its in Proxy mode.");
+            getLogger().warning("Ignore this warning if you are using SkinsRestorer in Proxy mode.");
+            // TODO: Add support for Proxy mode
+            return false;
         }
-        return true;
     }
 
     private boolean setupVaultPermission() {

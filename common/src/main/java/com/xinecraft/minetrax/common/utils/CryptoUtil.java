@@ -1,7 +1,7 @@
-package com.xinecraft.minetrax.bukkit.utils;
+package com.xinecraft.minetrax.common.utils;
 
 import com.google.gson.Gson;
-import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.data.AesEncryptionData;
 import org.apache.commons.codec.binary.Hex;
 
@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class CryptoUtil {
+    private static final MinetraxCommon common = MinetraxCommon.getInstance();
+
     public static String encrypt(byte[] keyValue, String plaintext) throws Exception {
         Key key = new SecretKeySpec(keyValue, "AES");
 
@@ -56,7 +58,7 @@ public class CryptoUtil {
         byte[] calcMac = hmacSha256.doFinal(encryptedData.getBytes(StandardCharsets.UTF_8));
         byte[] mac = Hex.decodeHex(macValue.toCharArray());
         if (!Arrays.equals(calcMac, mac)) {
-            MinetraxBukkit.getPlugin().getLogger().warning("Mac Mismatch while decrypting data. Please check your API Key and Secret.");
+            common.getLogger().warning("Mac Mismatch while decrypting data. Please check your API Key and Secret.");
             return null;
         }
 
@@ -81,19 +83,32 @@ public class CryptoUtil {
                     aesEncryptedData.mac
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            common.getLogger().warning("Failed to decrypt data." + e.getMessage());
         }
         return decrypted;
     }
 
-    public static String getEncryptedString(String secretKey, String plainString)
-    {
+    public static String getEncryptedString(String secretKey, String plainString) {
         String encryptedString = null;
         try {
             encryptedString = CryptoUtil.encrypt(secretKey.getBytes(StandardCharsets.UTF_8), plainString);
         } catch (Exception e) {
-            e.printStackTrace();
+            common.getLogger().warning("Failed to encrypt data." + e.getMessage());
         }
         return encryptedString;
+    }
+
+    public static String getHmacSignature(String secretKey, String payload) {
+        try {
+            Mac hmac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            hmac.init(secretKeySpec);
+            byte[] hash = hmac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
+            return new String(Hex.encodeHex(hash));
+        } catch (Exception e) {
+            common.getLogger().warning("Failed to generate HMAC signature. " + e.getMessage());
+        }
+
+        throw new RuntimeException("Failed to generate HMAC signature");
     }
 }

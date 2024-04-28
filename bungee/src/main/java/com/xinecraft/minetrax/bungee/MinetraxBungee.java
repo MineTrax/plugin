@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bungee;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.xinecraft.minetrax.bungee.logging.BungeeLogger;
+import com.xinecraft.minetrax.bungee.schedulers.BungeeScheduler;
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.enums.PlatformType;
@@ -12,7 +13,6 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.skinsrestorer.api.SkinsRestorer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,7 +41,6 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     public List<String> whitelistedCommandsFromWeb;
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public Boolean hasSkinRestorer = false;
-    public SkinsRestorer skinsRestorerApi;
     public Boolean isSkinsRestorerHookEnabled;
     public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
     public Gson gson = null;
@@ -57,10 +56,11 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
 
         // Setup Common
         common = new MinetraxCommon();
+        common.setPlugin(this);
         common.setPlatformType(PlatformType.BUNGEE);
         common.setGson(gson);
         common.setLogger(new BungeeLogger(this));
-        common.setPlugin(this);
+        common.setScheduler(new BungeeScheduler(this));
 
         // Load configuration
         loadConfig();

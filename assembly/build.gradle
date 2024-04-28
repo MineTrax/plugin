@@ -16,7 +16,10 @@ shadowJar {
     relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
     relocate('com.google.gson', 'com.xinecraft.minetrax.libs.google.gson')
     relocate('org.apache.commons.codec', 'com.xinecraft.minetrax.libs.apache.commons.codec')
+    relocate('org.apache.commons.lang3', 'com.xinecraft.minetrax.libs.apache.commons.lang3')
     relocate('org.intellij.lang.annotations', 'com.xinecraft.minetrax.libs.intellij.lang.annotations')
     relocate('org.jetbrains.annotations', 'com.xinecraft.minetrax.libs.jetbrains.annotations')
     relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
+    relocate('okio', 'com.xinecraft.minetrax.libs.okio')
+    relocate('okhttp3', 'com.xinecraft.minetrax.libs.okhttp3')
 }

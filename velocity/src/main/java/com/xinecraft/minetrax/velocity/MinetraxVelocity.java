@@ -5,14 +5,17 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.actions.AccountLinker;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
 import com.xinecraft.minetrax.velocity.logging.VelocityLogger;
+import com.xinecraft.minetrax.velocity.schedulers.VelocityScheduler;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
@@ -20,7 +23,6 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import lombok.Getter;
-import net.skinsrestorer.api.SkinsRestorer;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -34,7 +36,10 @@ import java.util.Objects;
 @Plugin(
         id = "minetrax",
         name = "Minetrax",
-        version = BuildConstants.VERSION
+        version = BuildConstants.VERSION,
+        dependencies = {
+                @Dependency(id = "skinsrestorer", optional = true)
+        }
 )
 public class MinetraxVelocity implements MinetraxPlugin {
     @Inject
@@ -66,7 +71,6 @@ public class MinetraxVelocity implements MinetraxPlugin {
     public List<String> whitelistedCommandsFromWeb;
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public Boolean hasSkinRestorer = false;
-    public SkinsRestorer skinsRestorerApi;
     public Boolean isSkinsRestorerHookEnabled;
     public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
 
@@ -95,10 +99,11 @@ public class MinetraxVelocity implements MinetraxPlugin {
 
         // Setup Common
         common = new MinetraxCommon();
+        common.setPlugin(this);
         common.setPlatformType(PlatformType.VELOCITY);
         common.setGson(gson);
         common.setLogger(new VelocityLogger(this));
-        common.setPlugin(this);
+        common.setScheduler(new VelocityScheduler(this));
 
         // Start web query server
         startWebQueryServer();
