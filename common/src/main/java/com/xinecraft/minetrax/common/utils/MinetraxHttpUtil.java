@@ -3,8 +3,8 @@ package com.xinecraft.minetrax.common.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.responses.HttpResponse;
 import okhttp3.HttpUrl;
-import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,17 +14,20 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MinetraxHttpUtil {
+    public static final MinetraxCommon common = MinetraxCommon.getInstance();
     public static final String ACCOUNT_LINK_ROUTE = "/user/linked-players";
     public static final String VERIFY_ACCOUNT_LINK_ROUTE = "/api/v1/account-link/verify";
-    private static final String REPORT_SERVER_CHAT_ROUTE = "/api/v1/server/chat";
-    private static final String REPORT_SERVER_CONSOLE_ROUTE = "/api/v1/server/console";
+    public static final String REPORT_SERVER_CHAT_ROUTE = "/api/v1/server/chat";
+    public static final String REPORT_SERVER_CONSOLE_ROUTE = "/api/v1/server/console";
     public static final String FETCH_PLAYER_WHOIS_ROUTE = "/api/v1/player/whois";
-    private static final String FETCH_PLAYER_DATA_ROUTE = "/api/v1/player/data";
-    private static final String PLAYER_INTEL_SESSION_INIT_ROUTE = "/api/v1/intel/player/session/init";
-    private static final String PLAYER_INTEL_EVENT_REPORT_ROUTE = "/api/v1/intel/player/report/event";
-    private static final MinetraxCommon common = MinetraxCommon.getInstance();
+    public static final String FETCH_PLAYER_DATA_ROUTE = "/api/v1/player/data";
+    public static final String SERVER_INTEL_REPORT_ROUTE = "/api/v1/intel/server/report";
+    public static final String PLAYER_INTEL_SESSION_INIT_ROUTE = "/api/v1/intel/player/session-init";
+    public static final String PLAYER_INTEL_EVENT_REPORT_ROUTE = "/api/v1/intel/player/report/event";
+    public static final String PLAYER_INTEL_REPORT_PVP_KILL_ROUTE = "/api/v1/intel/player/report/pvp-kill";
+    public static final String PLAYER_INTEL_REPORT_DEATH_ROUTE = "/api/v1/intel/player/report/death";
 
-    public static Response get(String path, Map<String, String> params, Map<String, String> headers) throws IOException {
+    public static HttpResponse get(String path, Map<String, String> params, Map<String, String> headers) throws IOException {
         String minetraxApiHost = common.getPlugin().getApiHost();
         if (minetraxApiHost != null) {
             minetraxApiHost = StringUtils.stripEnd(minetraxApiHost, "/");
@@ -52,7 +55,7 @@ public class MinetraxHttpUtil {
         return HttpUtil.get(uri, params, headers);
     }
 
-    public static Response post(String path, String payload, Map<String, String> headers) throws IOException {
+    public static HttpResponse post(String path, String payload, Map<String, String> headers) throws IOException {
         String minetraxApiHost = common.getPlugin().getApiHost();
         if (minetraxApiHost != null) {
             minetraxApiHost = StringUtils.stripEnd(minetraxApiHost, "/");

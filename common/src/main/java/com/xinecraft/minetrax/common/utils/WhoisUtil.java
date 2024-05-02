@@ -10,7 +10,7 @@ import java.util.List;
 public class WhoisUtil {
     private static final MinetraxCommon common = MinetraxCommon.getInstance();
 
-    public static List<String> forPlayer(
+    public static List<String> forPlayerSync(
             String username,
             String uuid,
             String ipAddress,
@@ -27,7 +27,7 @@ public class WhoisUtil {
             ) {
         List<String> returnList = new ArrayList<>();
         try {
-            PlayerWhoisApiResponse whoisResponseData = WhoisQuery.player(uuid, username, ipAddress, isFromJoinEvent);
+            PlayerWhoisApiResponse whoisResponseData = WhoisQuery.playerSync(uuid, username, ipAddress, isFromJoinEvent);
 
             if (whoisResponseData.getCode() != 200) {
                 returnList.add("&c Error making whois request: " + whoisResponseData.getMessage());

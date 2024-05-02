@@ -13,8 +13,6 @@ public class WebQueryChannelHandler extends SimpleChannelInboundHandler<String> 
         String output;
         try {
             output = WebQueryProtocol.processInput(s);
-            System.out.println("Received: " + s);
-            System.out.println("Length: " + s.length());
         } catch (Exception e) {
             System.out.println("Error processing input: " + e.getMessage());
             output = "err";

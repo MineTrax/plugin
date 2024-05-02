@@ -1,14 +1,13 @@
 package com.xinecraft.minetrax.bukkit.tasks;
 
-import com.google.gson.Gson;
 import com.sun.management.OperatingSystemMXBean;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.common.data.ServerIntelData;
-import com.xinecraft.minetrax.common.data.WorldData;
-import com.xinecraft.minetrax.bukkit.utils.HttpUtil;
 import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
 import com.xinecraft.minetrax.bukkit.utils.SystemUtil;
 import com.xinecraft.minetrax.bukkit.utils.TPS;
+import com.xinecraft.minetrax.common.actions.ReportServerIntel;
+import com.xinecraft.minetrax.common.data.ServerIntelData;
+import com.xinecraft.minetrax.common.data.WorldData;
 import org.bukkit.World;
 
 import java.lang.management.ManagementFactory;
@@ -38,7 +37,7 @@ public class ServerIntelReportTask implements Runnable {
             DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
             DecimalFormat format = new DecimalFormat("##.##", decimalFormatSymbols);
             tps = Double.parseDouble(format.format(tps).replace(",", "."));
-        } catch(Exception e) {
+        } catch (Exception e) {
             tps = 00.00;
         }
 
@@ -75,13 +74,6 @@ public class ServerIntelReportTask implements Runnable {
         serverIntelData.server_id = MinetraxBukkit.getPlugin().getApiServerId();
 
         // Perform the API request
-        Gson gson = new Gson();
-        String serverIntelJson = gson.toJson(serverIntelData);
-        try {
-            String response = HttpUtil.postJsonWithAuth(MinetraxBukkit.getPlugin().getApiHost() + "/api/v1/intel/server/report", serverIntelJson);
-            LoggingUtil.info("Response: " + response);
-        } catch (Exception e) {
-            MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
-        }
+        ReportServerIntel.reportSync(serverIntelData);
     }
 }

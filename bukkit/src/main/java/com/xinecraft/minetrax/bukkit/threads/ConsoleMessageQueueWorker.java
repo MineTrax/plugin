@@ -1,13 +1,11 @@
 package com.xinecraft.minetrax.bukkit.threads;
 
-import com.xinecraft.minetrax.bukkit.log4j.ConsoleMessage;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.utils.HttpUtil;
+import com.xinecraft.minetrax.bukkit.log4j.ConsoleMessage;
+import com.xinecraft.minetrax.common.actions.ReportServerConsole;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ConsoleMessageQueueWorker extends Thread {
@@ -38,21 +36,16 @@ public class ConsoleMessageQueueWorker extends Thread {
 
                 final String m = message.toString();
                 if (StringUtils.isNotBlank(m)) {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("api_key", MinetraxBukkit.getPlugin().getApiKey());
-                    params.put("api_secret", MinetraxBukkit.getPlugin().getApiSecret());
-                    params.put("log", m);
-                    params.put("server_id", MinetraxBukkit.getPlugin().getApiServerId());
                     try {
-                        HttpUtil.postForm(MinetraxBukkit.getPlugin().getApiHost() + "/api/v1/server/console", params);
+                        ReportServerConsole.reportSync(m);
                     } catch (Exception e) {
                         queue.clear();
-                        // Dont print anything here it will create recurring loop
+                        // Don't print anything here it will create recurring loop
                     }
                 }
 
                 // make sure rate isn't less than every MIN_SLEEP_TIME_MILLIS because of rate limitations
-                long sleepTimeMS = TimeUnit.SECONDS.toMillis( 0);
+                long sleepTimeMS = TimeUnit.SECONDS.toMillis(0);
                 if (sleepTimeMS < MIN_SLEEP_TIME_MILLIS) {
                     sleepTimeMS = MIN_SLEEP_TIME_MILLIS;
                 }

@@ -2,8 +2,8 @@ package com.xinecraft.minetrax.common.actions;
 
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.responses.GenericApiResponse;
+import com.xinecraft.minetrax.common.responses.HttpResponse;
 import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
-import okhttp3.Response;
 
 import java.util.HashMap;
 
@@ -14,12 +14,13 @@ public class LinkAccount {
         payload.put("server_id", serverId);
         payload.put("otp", otpCode);
         String payloadString = MinetraxCommon.getInstance().getGson().toJson(payload);
-        Response resp = MinetraxHttpUtil.post(MinetraxHttpUtil.VERIFY_ACCOUNT_LINK_ROUTE, payloadString, null);
-        if (resp.body() == null) {
+        HttpResponse resp = MinetraxHttpUtil.post(MinetraxHttpUtil.VERIFY_ACCOUNT_LINK_ROUTE, payloadString, null);
+        String body = resp.body();
+        if (body == null) {
             throw new Exception("Empty response body");
         }
 
-        GenericApiResponse response = MinetraxCommon.getInstance().getGson().fromJson(resp.body().string(), GenericApiResponse.class);
+        GenericApiResponse response = MinetraxCommon.getInstance().getGson().fromJson(body, GenericApiResponse.class);
         response.setCode(resp.code());
 
         return response;

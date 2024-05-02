@@ -8,6 +8,6 @@ public interface MinetraxPlugin {
     String getApiSecret();
     String getApiServerId();
     String getApiHost();
-
     String getServerSessionId();
+    Boolean getIsDebugMode();
 }

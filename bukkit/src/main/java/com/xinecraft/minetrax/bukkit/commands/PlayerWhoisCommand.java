@@ -16,6 +16,11 @@ import java.util.Objects;
 public class PlayerWhoisCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] strings) {
+        // Do nothing if the feature is disabled.
+        if (!MinetraxBukkit.getPlugin().getIsWhoisOnCommandEnabled()) {
+            return false;
+        }
+
         String username = null;
         if (strings.length > 0) {
             username = strings[0];
@@ -55,7 +60,7 @@ public class PlayerWhoisCommand implements CommandExecutor {
             try {
                 Boolean isFromJoinEvent = false;
                 Boolean isRanByAdminPlayer = senderPlayer != null && (senderPlayer.hasPermission(MinetraxBukkit.getPlugin().getWhoisAdminPermissionName()) || senderPlayer.isOp());
-                List<String> sayList = WhoisUtil.forPlayer(
+                List<String> sayList = WhoisUtil.forPlayerSync(
                         username,
                         uuid,
                         ipAddress,
