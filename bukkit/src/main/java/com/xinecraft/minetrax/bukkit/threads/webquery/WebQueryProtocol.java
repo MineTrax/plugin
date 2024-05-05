@@ -8,7 +8,7 @@ import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.bukkit.threads.webquery.handlers.PlayerSkinHandler;
 import com.xinecraft.minetrax.bukkit.threads.data.QueryRequestData;
 import com.xinecraft.minetrax.bukkit.utils.CryptoUtil;
-import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.property.SkinProperty;

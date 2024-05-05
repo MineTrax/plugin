@@ -58,7 +58,7 @@ public class CryptoUtil {
         byte[] calcMac = hmacSha256.doFinal(encryptedData.getBytes(StandardCharsets.UTF_8));
         byte[] mac = Hex.decodeHex(macValue.toCharArray());
         if (!Arrays.equals(calcMac, mac)) {
-            common.getLogger().warning("Mac Mismatch while decrypting data. Please check your API Key and Secret.");
+            LoggingUtil.warning("Mac Mismatch while decrypting data. Please check your API Key and Secret.");
             return null;
         }
 
@@ -83,7 +83,7 @@ public class CryptoUtil {
                     aesEncryptedData.mac
             );
         } catch (Exception e) {
-            common.getLogger().warning("Failed to decrypt data." + e.getMessage());
+            LoggingUtil.warning("Failed to decrypt data." + e.getMessage());
         }
         return decrypted;
     }
@@ -93,7 +93,7 @@ public class CryptoUtil {
         try {
             encryptedString = CryptoUtil.encrypt(secretKey.getBytes(StandardCharsets.UTF_8), plainString);
         } catch (Exception e) {
-            common.getLogger().warning("Failed to encrypt data." + e.getMessage());
+            LoggingUtil.warning("Failed to encrypt data." + e.getMessage());
         }
         return encryptedString;
     }
@@ -106,7 +106,7 @@ public class CryptoUtil {
             byte[] hash = hmac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
             return new String(Hex.encodeHex(hash));
         } catch (Exception e) {
-            common.getLogger().warning("Failed to generate HMAC signature. " + e.getMessage());
+            LoggingUtil.warning("Failed to generate HMAC signature. " + e.getMessage());
         }
 
         throw new RuntimeException("Failed to generate HMAC signature");

@@ -3,9 +3,14 @@ package com.xinecraft.minetrax.bukkit.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class to get Minecraft version from protocol id
+ * <a href="https://minecraft.fandom.com/wiki/Protocol_version">...</a>
+ */
 public class VersionUtil {
     private static final Map<Integer, String> protocolToVersion = new HashMap<>();
     static {
+        protocolToVersion.put(766, "1.20");
         protocolToVersion.put(765, "1.20");
         protocolToVersion.put(764, "1.20");
         protocolToVersion.put(763, "1.20");

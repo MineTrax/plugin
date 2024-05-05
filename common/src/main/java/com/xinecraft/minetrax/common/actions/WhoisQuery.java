@@ -2,6 +2,7 @@ package com.xinecraft.minetrax.common.actions;
 
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.exceptions.HttpException;
 import com.xinecraft.minetrax.common.responses.HttpResponse;
 import com.xinecraft.minetrax.common.responses.PlayerWhoisApiResponse;
 import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
@@ -23,8 +24,11 @@ public class WhoisQuery {
         String payloadString = data.toString();
         HttpResponse resp = MinetraxHttpUtil.post(MinetraxHttpUtil.FETCH_PLAYER_WHOIS_ROUTE, payloadString, null);
         String body = resp.body();
+        if (!resp.isSuccessful()) {
+            throw new HttpException(resp, "WhoisQuery.playerSync");
+        }
         if (body == null) {
-            throw new Exception("Empty response body");
+            throw new HttpException(resp, "WhoisQuery.playerSync");
         }
 
         PlayerWhoisApiResponse response = MinetraxCommon.getInstance().getGson().fromJson(body, PlayerWhoisApiResponse.class);

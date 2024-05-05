@@ -2,7 +2,9 @@ package com.xinecraft.minetrax.common.actions;
 
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.exceptions.HttpException;
 import com.xinecraft.minetrax.common.responses.HttpResponse;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
 
 public class ReportServerChat {
@@ -21,10 +23,10 @@ public class ReportServerChat {
                 HttpResponse response = MinetraxHttpUtil.post(MinetraxHttpUtil.REPORT_SERVER_CHAT_ROUTE, payload.toString(), null);
 
                 if (!response.isSuccessful()) {
-                    common.getLogger().warning("Failed to report chat message: " + response.body());
+                    throw new HttpException(response, "ReportServerChat.reportAsync");
                 }
             } catch (Exception e) {
-                common.getLogger().warning(e.getMessage());
+                LoggingUtil.warning(e.getMessage());
             }
         });
     }

@@ -1,6 +1,6 @@
 package com.xinecraft.minetrax.bukkit.threads.webquery;
 
-import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

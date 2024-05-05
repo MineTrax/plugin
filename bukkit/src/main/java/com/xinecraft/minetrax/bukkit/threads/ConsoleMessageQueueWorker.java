@@ -2,6 +2,7 @@ package com.xinecraft.minetrax.bukkit.threads;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.bukkit.log4j.ConsoleMessage;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.actions.ReportServerConsole;
 import org.apache.commons.lang.StringUtils;
 
@@ -29,6 +30,13 @@ public class ConsoleMessageQueueWorker extends Thread {
                 // peek to avoid polling a message that we can't process from the queue
                 while ((consoleMessage = queue.peek()) != null) {
                     final String formattedMessage = consoleMessage.toString();
+
+                    // skip adding if from ReportServerConsole or HttpDebug
+                    if (formattedMessage.contains("[HttpDebug]") || formattedMessage.contains("ReportServerConsole")) {
+                        queue.poll();
+                        continue;
+                    }
+
                     message.append(formattedMessage).append("\r\n");
                     // finally poll to actually remove the appended message
                     queue.poll();
@@ -40,7 +48,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                         ReportServerConsole.reportSync(m);
                     } catch (Exception e) {
                         queue.clear();
-                        // Don't print anything here it will create recurring loop
+                        LoggingUtil.warning(e.getMessage());
                     }
                 }
 

@@ -1,5 +1,6 @@
 package com.xinecraft.minetrax.common.utils;
 
+import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.responses.HttpResponse;
 import okhttp3.*;
 
@@ -8,6 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class HttpUtil {
+    public static final MinetraxCommon common = MinetraxCommon.getInstance();
+
     public static HttpResponse get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
@@ -36,6 +39,13 @@ public class HttpUtil {
             if (response.body() != null) {
                 responseBody = response.body().string();
             }
+
+            // Log if debug mode is enabled
+            if (common.getPlugin().getIsDebugMode()) {
+                LoggingUtil.info("[HttpDebug] POST " + finalUrl + " with headers " + headers);
+                LoggingUtil.info("[HttpDebug] Response: " + responseBody);
+            }
+
             return new HttpResponse(
                     response.code(),
                     response.isSuccessful(),
@@ -63,6 +73,14 @@ public class HttpUtil {
             if (response.body() != null) {
                 responseBody = response.body().string();
             }
+
+            // Log if debug mode is enabled
+            if (common.getPlugin().getIsDebugMode()) {
+                LoggingUtil.info("[HttpDebug] POST " + url + " with headers " + headers);
+                LoggingUtil.info("[HttpDebug] Body: " + json);
+                LoggingUtil.info("[HttpDebug] Response: " + responseBody);
+            }
+
             return new HttpResponse(
                     response.code(),
                     response.isSuccessful(),

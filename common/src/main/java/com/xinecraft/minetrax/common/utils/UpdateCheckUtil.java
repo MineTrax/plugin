@@ -1,7 +1,6 @@
-package com.xinecraft.minetrax.bukkit.utils;
+package com.xinecraft.minetrax.common.utils;
 
-import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import org.bukkit.Bukkit;
+import com.xinecraft.minetrax.common.MinetraxCommon;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,24 +8,22 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
-public class UpdateChecker {
+public class UpdateCheckUtil {
 
-    private final MinetraxBukkit plugin;
     private final int resourceId;
 
-    public UpdateChecker(MinetraxBukkit plugin, int resourceId) {
-        this.plugin = plugin;
+    public UpdateCheckUtil(int resourceId) {
         this.resourceId = resourceId;
     }
 
     public void getVersion(final Consumer<String> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+        MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId).openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
                     consumer.accept(scanner.next());
                 }
             } catch (IOException exception) {
-                plugin.getLogger().info("Unable to check for updates: " + exception.getMessage());
+                MinetraxCommon.getInstance().getLogger().error("Unable to check for updates: " + exception.getMessage());
             }
         });
     }

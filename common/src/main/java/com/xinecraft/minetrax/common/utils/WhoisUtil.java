@@ -1,6 +1,5 @@
 package com.xinecraft.minetrax.common.utils;
 
-import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.actions.WhoisQuery;
 import com.xinecraft.minetrax.common.responses.PlayerWhoisApiResponse;
 
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WhoisUtil {
-    private static final MinetraxCommon common = MinetraxCommon.getInstance();
 
     public static List<String> forPlayerSync(
             String username,
@@ -24,7 +22,7 @@ public class WhoisUtil {
             List<String> onAdminCommandMessage,
             String multiplePlayersTitleMessage,
             String multiplePlayersListMessage
-            ) {
+    ) {
         List<String> returnList = new ArrayList<>();
         try {
             PlayerWhoisApiResponse whoisResponseData = WhoisQuery.playerSync(uuid, username, ipAddress, isFromJoinEvent);
@@ -48,7 +46,7 @@ public class WhoisUtil {
                 returnList.add(noMatchFoundMessage);
             }
 
-            // If count is 0 but its a join event then tell geo without player info
+            // If count is 0, but it's a join event then tell geo without player info
             else if (whoisResponseData.getData().count <= 0 && isFromJoinEvent) {
                 String geoString;
                 assert whoisResponseData.getData().geo != null;
@@ -116,8 +114,8 @@ public class WhoisUtil {
                 returnList.add("&cOsho: WTF is going on here?");
             }
         } catch (Exception e) {
-            common.getLogger().warning(e.getMessage());
-            returnList.add("&cError making whois request: " + e.getMessage());
+            LoggingUtil.warning(e.getMessage());
+            returnList.add("&Oops! Something went wrong. Please try again later.");
         }
         return returnList;
     }

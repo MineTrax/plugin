@@ -1,7 +1,7 @@
 package com.xinecraft.minetrax.bukkit.threads.webquery.handlers;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.property.InputDataResult;
 import net.skinsrestorer.api.property.SkinProperty;

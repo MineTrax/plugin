@@ -3,8 +3,7 @@ package com.xinecraft.minetrax.bukkit.listeners;
 import com.google.gson.Gson;
 import com.viaversion.viaversion.api.Via;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.utils.HttpUtil;
-import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.bukkit.utils.VersionUtil;
 import com.xinecraft.minetrax.common.actions.FetchPlayerData;
 import com.xinecraft.minetrax.common.actions.ReportPlayerIntel;
@@ -164,11 +163,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 MinetraxBukkit.getPlugin().playerSessionIntelDataMap.put(playerSessionIntelData.session_uuid, playerSessionIntelData);
                 MinetraxBukkit.getPlugin().playersDataMap.put(playerData.uuid, playerData);
 
-                String playerSessionDataJson = MinetraxBukkit.getPlugin().getCommon().getGson().toJson(playerSessionIntelData);
-                LoggingUtil.info("--- STARTING SESSION FOR A PLAYER ---");
-                LoggingUtil.info(playerSessionDataJson);
-                GenericApiResponse sessionInitResponse = ReportPlayerIntel.initSessionSync(playerSessionIntelData);
-                LoggingUtil.info("Session Start Response: " + sessionInitResponse);
+                ReportPlayerIntel.initSessionSync(playerSessionIntelData);
             } catch (Exception e) {
                 MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
                 e.printStackTrace();
@@ -222,8 +217,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 @Override
                 public void run() {
                     try {
-                        GenericApiResponse response = ReportPlayerIntel.reportEventSync(leftPlayerSessionIntelData);
-                        LoggingUtil.info("Session End Response: " + response);
+                        ReportPlayerIntel.reportEventSync(leftPlayerSessionIntelData);
                     } catch (Exception e) {
                         MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
                     }

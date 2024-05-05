@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.actions.ReportPlayerIntel;
 import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
-import com.xinecraft.minetrax.common.responses.GenericApiResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -56,8 +55,7 @@ public class PlayerIntelUtil {
 
     private static void reportAndResetXminData(PlayerSessionIntelData playerSession) {
         try {
-            GenericApiResponse response = ReportPlayerIntel.reportEventSync(playerSession);
-            LoggingUtil.info("Report Event Response: " + response);
+            ReportPlayerIntel.reportEventSync(playerSession);
         } catch (Exception e) {
             MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
         }
@@ -65,12 +63,10 @@ public class PlayerIntelUtil {
     }
 
     private static void reportAndRemoveSessionFromDataMap(PlayerSessionIntelData playerSession) {
-        LoggingUtil.info("REPORT FINAL SESSION END FOR RARE CASE OF SESSION STILL IN DATA WHEN PLAYER ALREADY OFF");
         playerSession.session_ended_at = new Date().getTime();
         MinetraxBukkit.getPlugin().playerSessionIntelDataMap.remove(playerSession.session_uuid);
         try {
-            GenericApiResponse response = ReportPlayerIntel.reportEventSync(playerSession);
-            LoggingUtil.info("Report And Remove Response: " + response);
+            ReportPlayerIntel.reportEventSync(playerSession);
         } catch (Exception e) {
             MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
         }

@@ -1,6 +1,7 @@
 package com.xinecraft.minetrax.common.actions;
 
 import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.exceptions.HttpException;
 import com.xinecraft.minetrax.common.responses.GenericApiResponse;
 import com.xinecraft.minetrax.common.responses.HttpResponse;
 import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
@@ -16,8 +17,11 @@ public class LinkAccount {
         String payloadString = MinetraxCommon.getInstance().getGson().toJson(payload);
         HttpResponse resp = MinetraxHttpUtil.post(MinetraxHttpUtil.VERIFY_ACCOUNT_LINK_ROUTE, payloadString, null);
         String body = resp.body();
+        if (!resp.isSuccessful()) {
+            throw new HttpException(resp, "LinkAccount.link");
+        }
         if (body == null) {
-            throw new Exception("Empty response body");
+            throw new HttpException(resp, "LinkAccount.link");
         }
 
         GenericApiResponse response = MinetraxCommon.getInstance().getGson().fromJson(body, GenericApiResponse.class);

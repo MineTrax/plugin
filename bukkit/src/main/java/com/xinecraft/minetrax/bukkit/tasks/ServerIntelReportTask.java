@@ -2,7 +2,7 @@ package com.xinecraft.minetrax.bukkit.tasks;
 
 import com.sun.management.OperatingSystemMXBean;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.utils.LoggingUtil;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.bukkit.utils.SystemUtil;
 import com.xinecraft.minetrax.bukkit.utils.TPS;
 import com.xinecraft.minetrax.common.actions.ReportServerIntel;
@@ -74,6 +74,10 @@ public class ServerIntelReportTask implements Runnable {
         serverIntelData.server_id = MinetraxBukkit.getPlugin().getApiServerId();
 
         // Perform the API request
-        ReportServerIntel.reportSync(serverIntelData);
+        try {
+            ReportServerIntel.reportSync(serverIntelData);
+        } catch (Exception e) {
+            LoggingUtil.warning("Failed to report server intel: " + e.getMessage());
+        }
     }
 }

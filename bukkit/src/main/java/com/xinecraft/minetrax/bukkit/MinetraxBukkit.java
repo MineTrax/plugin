@@ -24,7 +24,7 @@ import com.xinecraft.minetrax.bukkit.tasks.ServerIntelReportTask;
 import com.xinecraft.minetrax.bukkit.threads.ConsoleMessageQueueWorker;
 import com.xinecraft.minetrax.bukkit.threads.webquery.NettyWebQueryServer;
 import com.xinecraft.minetrax.bukkit.utils.PluginUtil;
-import com.xinecraft.minetrax.bukkit.utils.UpdateChecker;
+import com.xinecraft.minetrax.common.utils.UpdateCheckUtil;
 import com.xinecraft.minetrax.bukkit.tasks.AccountLinkReminderTask;
 import com.xinecraft.minetrax.bukkit.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.minetrax.bukkit.utils.PlayerIntelUtil;
@@ -366,7 +366,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     }
 
     private void checkForPluginUpdates() {
-        new UpdateChecker(this, 102635).getVersion(version -> {
+        new UpdateCheckUtil(102635).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
                 getLogger().info("You are currently running the latest version of MineTrax");
             } else {
