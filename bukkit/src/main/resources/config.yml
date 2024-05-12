@@ -37,8 +37,6 @@ web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 remind-player-to-link: true
 # How often to send the reminder to player.  This value is in seconds (300 seconds = 5 minutes)
 remind-player-interval: 300
-# Shorten the link URL using link shorter service.  This will make the link shorter and easier to type.
-shorten-account-link-url: false
 # The message send to player to remind them to link their account
 remind-player-link-message:
   - "&lHey there! It seems you haven't linked your player in web yet."
@@ -60,7 +58,9 @@ player-link-success-message:
 enable-whois-on-player-join: true
 # If this is enabled players with permission can run the /webwhois or /ww command
 enable-whois-on-command: true
-# This is the name of the permission players need to be able to use /ww command
+# This is the name of the permission players need to be able to use /ww command. (Example: ww.use), empty will allow all players.
+whois-permission-name:
+# Give this permission to admins to whom you want to show extra information about players when run /ww command
 whois-admin-permission-name: ww.admin
 # Message that is sent when /ww finds no players
 whois-no-match-found-message: "&4&lNo matching player found with your whois query"

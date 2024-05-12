@@ -5,13 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.xinecraft.minetrax.bukkit.adapters.ItemStackGsonAdapter;
 import com.xinecraft.minetrax.bukkit.commands.AccountLinkCommand;
 import com.xinecraft.minetrax.bukkit.commands.PlayerWhoisCommand;
-import com.xinecraft.minetrax.bukkit.commands.WebSayCommand;
-import com.xinecraft.minetrax.bukkit.logging.BukkitLogger;
-import com.xinecraft.minetrax.bukkit.schedulers.BukkitScheduler;
-import com.xinecraft.minetrax.common.MinetraxCommon;
-import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
-import com.xinecraft.minetrax.common.data.PlayerData;
-import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.bukkit.hooks.chat.EpicCoreChatHook;
 import com.xinecraft.minetrax.bukkit.hooks.chat.VentureChatHook;
 import com.xinecraft.minetrax.bukkit.hooks.placeholderapi.MinetraxPlaceholderExpansion;
@@ -19,16 +12,23 @@ import com.xinecraft.minetrax.bukkit.hooks.skinsrestorer.SkinsRestorerHook;
 import com.xinecraft.minetrax.bukkit.listeners.*;
 import com.xinecraft.minetrax.bukkit.log4j.ConsoleAppender;
 import com.xinecraft.minetrax.bukkit.log4j.ConsoleMessage;
+import com.xinecraft.minetrax.bukkit.logging.BukkitLogger;
+import com.xinecraft.minetrax.bukkit.schedulers.BukkitScheduler;
+import com.xinecraft.minetrax.bukkit.tasks.AccountLinkReminderTask;
+import com.xinecraft.minetrax.bukkit.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.minetrax.bukkit.tasks.PlayerIntelReportTask;
 import com.xinecraft.minetrax.bukkit.tasks.ServerIntelReportTask;
 import com.xinecraft.minetrax.bukkit.threads.ConsoleMessageQueueWorker;
-import com.xinecraft.minetrax.bukkit.threads.webquery.NettyWebQueryServer;
-import com.xinecraft.minetrax.bukkit.utils.PluginUtil;
-import com.xinecraft.minetrax.common.utils.UpdateCheckUtil;
-import com.xinecraft.minetrax.bukkit.tasks.AccountLinkReminderTask;
-import com.xinecraft.minetrax.bukkit.tasks.PlayerAfkAndWorldIntelTrackerTask;
 import com.xinecraft.minetrax.bukkit.utils.PlayerIntelUtil;
+import com.xinecraft.minetrax.bukkit.utils.PluginUtil;
+import com.xinecraft.minetrax.bukkit.webquery.BukkitWebQuery;
+import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.xinecraft.minetrax.common.data.PlayerData;
+import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.common.enums.PlatformType;
+import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
+import com.xinecraft.minetrax.common.utils.UpdateCheckUtil;
+import com.xinecraft.minetrax.common.webquery.WebQueryServer;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -48,10 +48,8 @@ import java.util.*;
 
 @Getter
 public final class MinetraxBukkit extends JavaPlugin implements Listener, MinetraxPlugin {
-
     private ConsoleMessageQueueWorker consoleMessageQueueWorker;
-
-    private NettyWebQueryServer webQuerySocketServer;
+    private WebQueryServer webQueryServer;
 
     // Console
     private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
@@ -75,11 +73,11 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private List<String> whoisPlayerOnFirstJoinMessage;
     private List<String> whoisPlayerOnCommandMessage;
     private String whoisAdminPermissionName;
+    private String whoisPermissionName;
     private List<String> whoisPlayerOnAdminCommandMessage;
     private String whoisMultiplePlayersTitleMessage;
     private String whoisMultiplePlayersListMessage;
     private Boolean isRemindPlayerToLinkEnabled;
-    private Boolean isShortenAccountLinkUrl;
     private Boolean isServerIntelEnabled;
     private Boolean isPlayerIntelEnabled;
     private Long remindPlayerToLinkInterval;
@@ -99,21 +97,16 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public Boolean hasSkinRestorer = false;
     public SkinsRestorer skinsRestorerApi;
     public Boolean isSkinsRestorerHookEnabled;
-    public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
     public Gson gson = null;
     private MinetraxCommon common;
 
     private static Permission perms = null;
     private static Economy economy = null;
 
-    public static MinetraxBukkit getPlugin() {
-        return getPlugin(MinetraxBukkit.class);
-    }
-
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getLogger().info("Minetrax Plugin Enabled!");
+        getLogger().info("Enabling Minetrax Plugin...");
 
         // Gson Builder
         gson = new GsonBuilder()
@@ -129,13 +122,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         common.setGson(gson);
         common.setLogger(new BukkitLogger(this));
         common.setScheduler(new BukkitScheduler(this));
-
-        // bStats Metric,
-        int pluginId = 15485;
-        Metrics metrics = new Metrics(this, pluginId);
-
-        playersDataMap = new HashMap<>();
-        playerSessionIntelDataMap = new HashMap<>();
+        common.setWebQuery(new BukkitWebQuery(this));
 
         // Config
         this.saveDefaultConfig();
@@ -147,44 +134,10 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             return;
         }
 
-        apiHost = this.getConfig().getString("api-host");
-        if (apiHost != null) {
-            apiHost = StringUtils.strip(apiHost, "/");
-        }
-        isDebugMode = this.getConfig().getBoolean("debug-mode");
-        apiKey = this.getConfig().getString("api-key");
-        apiSecret = this.getConfig().getString("api-secret");
-        apiServerId = this.getConfig().getString("server-id");
-        isChatLogEnabled = this.getConfig().getBoolean("enable-chatlog");
-        isConsoleLogEnabled = this.getConfig().getBoolean("enable-consolelog");
-        webQueryHost = this.getConfig().getString("webquery-host");
-        webQueryPort = this.getConfig().getInt("webquery-port");
-        webMessageFormat = this.getConfig().getString("web-message-format");
-        isWhoisOnPlayerJoinEnabled = this.getConfig().getBoolean("enable-whois-on-player-join");
-        isWhoisOnCommandEnabled = this.getConfig().getBoolean("enable-whois-on-command");
-        whoisNoMatchFoundMessage = this.getConfig().getString("whois-no-match-found-message");
-        whoisPlayerOnJoinMessage = this.getConfig().getStringList("whois-player-on-join-message");
-        whoisPlayerOnFirstJoinMessage = this.getConfig().getStringList("whois-player-on-first-join-message");
-        whoisPlayerOnCommandMessage = this.getConfig().getStringList("whois-player-on-command-message");
-        whoisAdminPermissionName = this.getConfig().getString("whois-admin-permission-name");
-        whoisPlayerOnAdminCommandMessage = this.getConfig().getStringList("whois-player-on-admin-command-message");
-        whoisMultiplePlayersTitleMessage = this.getConfig().getString("whois-multiple-players-title-message");
-        whoisMultiplePlayersListMessage = this.getConfig().getString("whois-multiple-players-list-message");
-        isRemindPlayerToLinkEnabled = this.getConfig().getBoolean("remind-player-to-link");
-        isShortenAccountLinkUrl = this.getConfig().getBoolean("shorten-account-link-url");
-        isServerIntelEnabled = this.getConfig().getBoolean("report-server-intel");
-        isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
-        remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
-        remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
-        playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
-        playerLinkErrorMessage = this.getConfig().getStringList("player-link-error-message");
-        playerLinkSuccessMessage = this.getConfig().getStringList("player-link-success-message");
-        afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
-        isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
-        whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
-        isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
-        serverSessionId = UUID.randomUUID().toString();
-        isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
+        // bStats Metric,
+        initBstats();
+        // Initialize Variables
+        initVariables();
         // Disable plugin if host, key, secret or server-id is not there
         if (
                 apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
@@ -196,9 +149,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         }
 
         // Register Commands
-        getCommand("link-account").setExecutor(new AccountLinkCommand());
-        getCommand("websay").setExecutor(new WebSayCommand());
-        getCommand("ww").setExecutor(new PlayerWhoisCommand());
+        Objects.requireNonNull(getCommand("link-account")).setExecutor(new AccountLinkCommand());
+        Objects.requireNonNull(getCommand("ww")).setExecutor(new PlayerWhoisCommand());
 
         // Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerAdvancementDoneListener(), this);
@@ -254,9 +206,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             consoleMessageQueueWorker.start();
         }
 
-        // WebQuery Server
-        webQuerySocketServer = new NettyWebQueryServer(webQueryHost, webQueryPort);
-        webQuerySocketServer.runTaskAsynchronously(this);
+        // Start WebQuery Server
+        startWebQueryServer();
 
         // Vault API Setup
         boolean hasVaultPermission = setupVaultPermission();
@@ -301,16 +252,18 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             hasSkinRestorer = setupSkinsRestorer();
         }
 
-        // Update Checker
-        checkForPluginUpdates();
+        // Check for Plugin Updates.
+        UpdateCheckUtil.checkForUpdate(102635, this.getDescription().getVersion());
+
+        getLogger().info("Minetrax Plugin Enabled!");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Minetrax Plugin Disabled!");
-        if (webQuerySocketServer != null) {
-            webQuerySocketServer.shutdown();
+        if (webQueryServer != null) {
+            webQueryServer.shutdown();
         }
 
         if (isPlayerIntelEnabled) {
@@ -319,6 +272,60 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
                 PlayerIntelUtil.reportPlayerIntel(playerSessionData, true);
             }
         }
+    }
+
+    private void initBstats() {
+        int pluginId = 15485;
+        Metrics metrics = new Metrics(this, pluginId);
+    }
+
+    private void initVariables() {
+        playersDataMap = new HashMap<>();
+        playerSessionIntelDataMap = new HashMap<>();
+
+        apiHost = this.getConfig().getString("api-host");
+        if (apiHost != null) {
+            apiHost = StringUtils.strip(apiHost, "/");
+        }
+        isDebugMode = this.getConfig().getBoolean("debug-mode");
+        apiKey = this.getConfig().getString("api-key");
+        apiSecret = this.getConfig().getString("api-secret");
+        apiServerId = this.getConfig().getString("server-id");
+        isChatLogEnabled = this.getConfig().getBoolean("enable-chatlog");
+        isConsoleLogEnabled = this.getConfig().getBoolean("enable-consolelog");
+        webQueryHost = this.getConfig().getString("webquery-host");
+        webQueryPort = this.getConfig().getInt("webquery-port");
+        webMessageFormat = this.getConfig().getString("web-message-format");
+        isWhoisOnPlayerJoinEnabled = this.getConfig().getBoolean("enable-whois-on-player-join");
+        isWhoisOnCommandEnabled = this.getConfig().getBoolean("enable-whois-on-command");
+        whoisNoMatchFoundMessage = this.getConfig().getString("whois-no-match-found-message");
+        whoisPlayerOnJoinMessage = this.getConfig().getStringList("whois-player-on-join-message");
+        whoisPlayerOnFirstJoinMessage = this.getConfig().getStringList("whois-player-on-first-join-message");
+        whoisPlayerOnCommandMessage = this.getConfig().getStringList("whois-player-on-command-message");
+        whoisAdminPermissionName = this.getConfig().getString("whois-admin-permission-name");
+        whoisPermissionName = this.getConfig().getString("whois-permission-name");
+        whoisPlayerOnAdminCommandMessage = this.getConfig().getStringList("whois-player-on-admin-command-message");
+        whoisMultiplePlayersTitleMessage = this.getConfig().getString("whois-multiple-players-title-message");
+        whoisMultiplePlayersListMessage = this.getConfig().getString("whois-multiple-players-list-message");
+        isRemindPlayerToLinkEnabled = this.getConfig().getBoolean("remind-player-to-link");
+        isServerIntelEnabled = this.getConfig().getBoolean("report-server-intel");
+        isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
+        remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
+        remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
+        playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
+        playerLinkErrorMessage = this.getConfig().getStringList("player-link-error-message");
+        playerLinkSuccessMessage = this.getConfig().getStringList("player-link-success-message");
+        afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
+        isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
+        whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
+        isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
+        serverSessionId = UUID.randomUUID().toString();
+        isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
+    }
+
+    private void startWebQueryServer() {
+        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort);
+        webQueryServer.start();
     }
 
     private Boolean setupSkinsRestorer() {
@@ -365,21 +372,15 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         return economy != null;
     }
 
-    private void checkForPluginUpdates() {
-        new UpdateCheckUtil(102635).getVersion(version -> {
-            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                getLogger().info("You are currently running the latest version of MineTrax");
-            } else {
-                getLogger().info("There is a new update available. Please update to latest version " + version);
-            }
-        });
-    }
-
     public static Permission getVaultPermission() {
         return perms;
     }
 
     public static Economy getVaultEconomy() {
         return economy;
+    }
+
+    public static MinetraxBukkit getPlugin() {
+        return getPlugin(MinetraxBukkit.class);
     }
 }

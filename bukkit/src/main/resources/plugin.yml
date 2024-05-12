@@ -29,5 +29,3 @@ commands:
       - webwhois
       - mwhois
     description: Run a web whois against a player username.
-  websay:
-    description: This is just dumb.

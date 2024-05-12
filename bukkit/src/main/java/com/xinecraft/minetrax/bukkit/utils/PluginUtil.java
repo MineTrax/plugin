@@ -1,6 +1,7 @@
 package com.xinecraft.minetrax.bukkit.utils;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
@@ -57,7 +58,7 @@ public class PluginUtil {
             knownCommandsField.setAccessible(true);
             commands = (Map<String, Command>) knownCommandsField.get(commandMap);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            LoggingUtil.warntrace(e);
         }
 
         pluginManager.disablePlugin(plugin);
@@ -75,7 +76,7 @@ public class PluginUtil {
         }
 
         if (commandMap != null) {
-            for (Iterator<Map.Entry<String, Command>> it = commands.entrySet().iterator(); it.hasNext();) {
+            for (Iterator<Map.Entry<String, Command>> it = commands.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<String, Command> entry = it.next();
                 if (entry.getValue() instanceof PluginCommand) {
                     PluginCommand c = (PluginCommand) entry.getValue();
@@ -101,6 +102,7 @@ public class PluginUtil {
 
     /**
      * Check whether or not the given plugin is installed and enabled
+     *
      * @param pluginName The plugin name to check
      * @return Whether or not the plugin is installed and enabled
      */
@@ -110,6 +112,7 @@ public class PluginUtil {
 
     /**
      * Check whether or not the given plugin is installed and enabled
+     *
      * @param pluginName The plugin name to check
      * @param startsWith Whether or not to to {@link String#startsWith(String)} checking
      * @return Whether or not the plugin is installed and enabled

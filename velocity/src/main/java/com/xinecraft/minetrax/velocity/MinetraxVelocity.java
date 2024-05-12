@@ -71,7 +71,6 @@ public class MinetraxVelocity implements MinetraxPlugin {
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public Boolean hasSkinRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
-    public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {

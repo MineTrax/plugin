@@ -5,6 +5,7 @@ import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.interfaces.logging.CommonLogger;
 import com.xinecraft.minetrax.common.interfaces.schedulers.CommonScheduler;
+import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class MinetraxCommon {
     private static MinetraxCommon instance;
     private CommonLogger logger;
     private CommonScheduler scheduler;
+    private CommonWebQuery webQuery;
     private PlatformType platformType;
     private Gson gson;
     private MinetraxPlugin plugin;

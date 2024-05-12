@@ -73,7 +73,7 @@ public class WebQueryServer {
             });
         } catch (Exception e) {
             LoggingUtil.error("WebQuery Server interrupted: " + e.getMessage());
-            e.printStackTrace();
+            LoggingUtil.trace(e);
         }
     }
 

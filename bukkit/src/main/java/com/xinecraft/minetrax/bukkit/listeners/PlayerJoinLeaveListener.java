@@ -165,8 +165,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
                 ReportPlayerIntel.initSessionSync(playerSessionIntelData);
             } catch (Exception e) {
-                MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
-                e.printStackTrace();
+                LoggingUtil.warntrace(e);
             }
         });
     }

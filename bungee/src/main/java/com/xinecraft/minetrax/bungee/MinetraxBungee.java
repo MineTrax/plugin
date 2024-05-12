@@ -42,7 +42,6 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public Boolean hasSkinRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
-    public HashMap<String, String> skinRestorerValueCache = new HashMap<>();
     public Gson gson = null;
     private MinetraxCommon common;
 

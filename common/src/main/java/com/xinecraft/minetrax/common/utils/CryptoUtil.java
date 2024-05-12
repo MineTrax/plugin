@@ -17,7 +17,7 @@ import java.util.Base64;
 public class CryptoUtil {
     private static final MinetraxCommon common = MinetraxCommon.getInstance();
 
-    public static String encrypt(byte[] keyValue, String plaintext) throws Exception {
+    private static String encrypt(byte[] keyValue, String plaintext) throws Exception {
         Key key = new SecretKeySpec(keyValue, "AES");
 
         byte[] plaintextBytes = plaintext.getBytes(StandardCharsets.UTF_8);
@@ -46,7 +46,7 @@ public class CryptoUtil {
         return Base64.getEncoder().encodeToString(aesDataJson.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String decrypt(byte[] keyValue, String ivValue, String encryptedData, String macValue) throws Exception {
+    private static String decrypt(byte[] keyValue, String ivValue, String encryptedData, String macValue) throws Exception {
         Key key = new SecretKeySpec(keyValue, "AES");
         byte[] iv = Base64.getDecoder().decode(ivValue.getBytes(StandardCharsets.UTF_8));
         byte[] decodedValue = Base64.getDecoder().decode(encryptedData.getBytes(StandardCharsets.UTF_8));
@@ -110,5 +110,9 @@ public class CryptoUtil {
         }
 
         throw new RuntimeException("Failed to generate HMAC signature");
+    }
+
+    public static boolean verifyHmacSignature(String secretKey, String payload, String signature) {
+        return getHmacSignature(secretKey, payload).equals(signature);
     }
 }

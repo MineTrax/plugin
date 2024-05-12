@@ -28,4 +28,18 @@ public class LoggingUtil {
     public static void error(String message) {
         common.getLogger().error(message);
     }
+
+
+    public static void trace(Exception e) {
+        if (common.getPlugin().getIsDebugMode()) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void warntrace(Exception e) {
+        common.getLogger().warning(e.getMessage());
+        if (common.getPlugin().getIsDebugMode()) {
+            e.printStackTrace();
+        }
+    }
 }

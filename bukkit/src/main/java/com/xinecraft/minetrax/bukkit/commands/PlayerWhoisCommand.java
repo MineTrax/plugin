@@ -1,6 +1,7 @@
 package com.xinecraft.minetrax.bukkit.commands;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.utils.WhoisUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,6 +19,13 @@ public class PlayerWhoisCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] strings) {
         // Do nothing if the feature is disabled.
         if (!MinetraxBukkit.getPlugin().getIsWhoisOnCommandEnabled()) {
+            return false;
+        }
+
+        // check permission
+        String whoisPermission = MinetraxBukkit.getPlugin().getWhoisPermissionName();
+        if (whoisPermission != null && !whoisPermission.isBlank() && !commandSender.hasPermission(whoisPermission)) {
+            commandSender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return false;
         }
 
@@ -82,7 +90,7 @@ public class PlayerWhoisCommand implements CommandExecutor {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggingUtil.warntrace(e);
             }
         });
     }

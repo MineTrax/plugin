@@ -60,7 +60,7 @@ public class ConsoleMessageQueueWorker extends Thread {
 
                 Thread.sleep(sleepTimeMS);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LoggingUtil.warntrace(e);
                 return;
             }
         }

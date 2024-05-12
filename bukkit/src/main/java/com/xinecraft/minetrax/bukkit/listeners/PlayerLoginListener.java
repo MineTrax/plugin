@@ -33,8 +33,8 @@ public class PlayerLoginListener implements Listener {
                 LoggingUtil.info("Player " + event.getPlayer().getName() + " joined from " + address);
                 MinetraxBukkit.getPlugin().joinAddressCache.put(playerUUID.toString(), address);
             }
-        } catch(Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LoggingUtil.warntrace(e);
         }
     }
 }

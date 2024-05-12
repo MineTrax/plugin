@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit.utils;
 import com.google.gson.Gson;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.data.AesEncryptionData;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Cipher;
@@ -81,18 +82,17 @@ public class CryptoUtil {
                     aesEncryptedData.mac
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggingUtil.warntrace(e);
         }
         return decrypted;
     }
 
-    public static String getEncryptedString(String secretKey, String plainString)
-    {
+    public static String getEncryptedString(String secretKey, String plainString) {
         String encryptedString = null;
         try {
             encryptedString = CryptoUtil.encrypt(secretKey.getBytes(StandardCharsets.UTF_8), plainString);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggingUtil.warntrace(e);
         }
         return encryptedString;
     }
