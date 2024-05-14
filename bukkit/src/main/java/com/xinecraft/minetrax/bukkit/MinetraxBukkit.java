@@ -94,9 +94,10 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public List<String> whitelistedCommandsFromWeb;
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public boolean hasViaVersion;
-    public Boolean hasSkinRestorer = false;
+    private Boolean isSkinsRestorerHookEnabled;
+    public Boolean hasSkinsRestorer = false;
+    public Boolean hasSkinsRestorerInProxyMode = false;
     public SkinsRestorer skinsRestorerApi;
-    public Boolean isSkinsRestorerHookEnabled;
     public Gson gson = null;
     private MinetraxCommon common;
 
@@ -126,27 +127,26 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Config
         this.saveDefaultConfig();
-        isEnabled = this.getConfig().getBoolean("enabled");
+        // Initialize Variables
+        initVariables();
         // No need for anything if plugin is DISABLED
         if (!isEnabled) {
             getLogger().warning("Plugin disabled from config.yml");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        // bStats Metric,
-        initBstats();
-        // Initialize Variables
-        initVariables();
         // Disable plugin if host, key, secret or server-id is not there
         if (
                 apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
                         apiHost.isEmpty() || apiKey.isEmpty() || apiSecret.isEmpty() || apiServerId.isEmpty()
         ) {
-            getLogger().warning("Plugin disabled due to no API information");
+            getLogger().severe("Plugin disabled due to no API information");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        // bStats Metric,
+        initBstats();
 
         // Register Commands
         Objects.requireNonNull(getCommand("link-account")).setExecutor(new AccountLinkCommand());
@@ -249,7 +249,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Check if SkinsRestorer is installed
         if (PluginUtil.checkIfPluginEnabled("SkinsRestorer")) {
-            hasSkinRestorer = setupSkinsRestorer();
+            hasSkinsRestorer = setupSkinsRestorer();
         }
 
         // Check for Plugin Updates.
@@ -283,6 +283,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         playersDataMap = new HashMap<>();
         playerSessionIntelDataMap = new HashMap<>();
 
+        isEnabled = this.getConfig().getBoolean("enabled");
         apiHost = this.getConfig().getString("api-host");
         if (apiHost != null) {
             apiHost = StringUtils.strip(apiHost, "/");
@@ -334,7 +335,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             return false;
         }
 
-        getLogger().info("Hooking into SkinsRestorer.");
+        getLogger().info("Hooking into SkinsRestorer...");
 
         // Add SkinsRestorerHook
         try {
@@ -345,12 +346,13 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             if (!VersionProvider.isCompatibleWith("15")) {
                 getLogger().warning("MineTrax supports SkinsRestorer v15, but " + VersionProvider.getVersionInfo() + " is installed. There may be errors!");
             }
+            getLogger().info("Hooked into SkinsRestorer!");
             return true;
         } catch (Exception e) {
-            getLogger().warning("Error while hooking into SkinsRestorer. Maybe its in Proxy mode.");
-            getLogger().warning("Ignore this warning if you are using SkinsRestorer in Proxy mode.");
-            // TODO: Add support for Proxy mode
-            return false;
+            getLogger().warning("SkinsRestorer is found, but seems to be in Proxy mode.");
+            getLogger().info("Hooked into SkinsRestorer in Proxy mode!");
+            hasSkinsRestorerInProxyMode = true;
+            return true;
         }
     }
 
@@ -360,7 +362,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             return false;
         }
         perms = rsp.getProvider();
-        return perms != null;
+        return true;
     }
 
     private boolean setupVaultEconomy() {
@@ -369,7 +371,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             return false;
         }
         economy = rsp.getProvider();
-        return economy != null;
+        return true;
     }
 
     public static Permission getVaultPermission() {

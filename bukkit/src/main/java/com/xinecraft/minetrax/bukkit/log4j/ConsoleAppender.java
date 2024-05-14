@@ -1,8 +1,8 @@
 package com.xinecraft.minetrax.bukkit.log4j;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
-import com.xinecraft.minetrax.bukkit.utils.AnsiColor;
-import com.xinecraft.minetrax.bukkit.utils.TimeUtil;
+import com.xinecraft.minetrax.common.utils.AnsiColor;
+import com.xinecraft.minetrax.common.utils.TimeUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;

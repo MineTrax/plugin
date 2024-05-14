@@ -1,4 +1,4 @@
-package com.xinecraft.minetrax.bukkit.utils;
+package com.xinecraft.minetrax.common.utils;
 
 import java.util.HashMap;
 import java.util.Map;

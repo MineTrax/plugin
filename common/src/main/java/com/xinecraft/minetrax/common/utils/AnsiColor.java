@@ -1,4 +1,4 @@
-package com.xinecraft.minetrax.bukkit.utils;
+package com.xinecraft.minetrax.common.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

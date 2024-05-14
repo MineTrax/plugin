@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.viaversion.viaversion.api.Via;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import com.xinecraft.minetrax.bukkit.utils.VersionUtil;
+import com.xinecraft.minetrax.common.utils.VersionUtil;
 import com.xinecraft.minetrax.common.actions.FetchPlayerData;
 import com.xinecraft.minetrax.common.actions.ReportPlayerIntel;
 import com.xinecraft.minetrax.common.actions.ReportServerChat;
@@ -148,7 +148,7 @@ public class PlayerJoinLeaveListener implements Listener {
                     int playerProtocolVersion = Via.getAPI().getPlayerVersion(event.getPlayer().getUniqueId());
                     playerSessionIntelData.minecraft_version = VersionUtil.getMinecraftVersionFromProtoId(playerProtocolVersion);
                 }
-                if (MinetraxBukkit.getPlugin().hasSkinRestorer) {
+                if (MinetraxBukkit.getPlugin().hasSkinsRestorer) {
                     updateSkinDataInPlayerIntel(playerSessionIntelData, event.getPlayer());
                 }
 

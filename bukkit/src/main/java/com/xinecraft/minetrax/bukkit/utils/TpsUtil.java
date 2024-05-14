@@ -5,8 +5,8 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class TPS {
-    private TPS() {}
+public class TpsUtil {
+    private TpsUtil() {}
 
     public static double getTPS() {
         return getAverageTPS(1);

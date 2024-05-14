@@ -3,8 +3,8 @@ package com.xinecraft.minetrax.bukkit.tasks;
 import com.sun.management.OperatingSystemMXBean;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import com.xinecraft.minetrax.bukkit.utils.SystemUtil;
-import com.xinecraft.minetrax.bukkit.utils.TPS;
+import com.xinecraft.minetrax.common.utils.SystemUtil;
+import com.xinecraft.minetrax.bukkit.utils.TpsUtil;
 import com.xinecraft.minetrax.common.actions.ReportServerIntel;
 import com.xinecraft.minetrax.common.data.ServerIntelData;
 import com.xinecraft.minetrax.common.data.WorldData;
@@ -33,7 +33,7 @@ public class ServerIntelReportTask implements Runnable {
 
         double tps = 0.0;
         try {
-            tps = TPS.getTPS();
+            tps = TpsUtil.getTPS();
             DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
             DecimalFormat format = new DecimalFormat("##.##", decimalFormatSymbols);
             tps = Double.parseDouble(format.format(tps).replace(",", "."));

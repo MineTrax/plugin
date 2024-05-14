@@ -53,7 +53,7 @@ public class WebQueryServer {
             ServerBootstrap b = new ServerBootstrap();
             b.channel(USE_EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                     .group(bossGroup, workerGroup)
-                    .handler(new LoggingHandler(LogLevel.INFO))
+//                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new WebQueryServerInitializer());
 
             ChannelFuture serverChannelFuture;
