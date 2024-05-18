@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit.listeners;
 import com.google.gson.Gson;
 import com.viaversion.viaversion.api.Via;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.utils.VersionUtil;
 import com.xinecraft.minetrax.common.actions.FetchPlayerData;
@@ -59,6 +60,9 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Remove from joinAddressCache
         MinetraxBukkit.getPlugin().joinAddressCache.remove(event.getPlayer().getUniqueId().toString());
+
+        // Remove from playerSkinCache
+        MinetraxBukkit.getPlugin().getPlayerSkinCache().remove(event.getPlayer().getUniqueId().toString());
     }
 
     private void postSendChatlog(PlayerEvent event) {
@@ -144,11 +148,11 @@ public class PlayerJoinLeaveListener implements Listener {
                 }
                 playerSessionIntelData.player_ping = playerPing;
 
-                if (MinetraxBukkit.getPlugin().hasViaVersion) {
+                if (MinetraxBukkit.getPlugin().getHasViaVersion()) {
                     int playerProtocolVersion = Via.getAPI().getPlayerVersion(event.getPlayer().getUniqueId());
                     playerSessionIntelData.minecraft_version = VersionUtil.getMinecraftVersionFromProtoId(playerProtocolVersion);
                 }
-                if (MinetraxBukkit.getPlugin().hasSkinsRestorer) {
+                if (MinetraxBukkit.getPlugin().getHasSkinsRestorer()) {
                     updateSkinDataInPlayerIntel(playerSessionIntelData, event.getPlayer());
                 }
 
@@ -171,16 +175,20 @@ public class PlayerJoinLeaveListener implements Listener {
     }
 
     private void updateSkinDataInPlayerIntel(PlayerSessionIntelData playerSessionIntelData, Player player) {
-        SkinsRestorer skinsRestorerAPI = SkinsRestorerProvider.get();
-        PlayerStorage playerStorage = skinsRestorerAPI.getPlayerStorage();
-        try {
-            Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getName());
-            if (skin.isPresent()) {
-                playerSessionIntelData.skin_property = MinetraxBukkit.getPlugin().getGson().toJson(skin.get());
-                playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureUrlStripped(skin.get());
+        if (MinetraxBukkit.getPlugin().getHasSkinsRestorerInProxyMode()) {
+            // get from playerSkinCache (from Bungee)
+            String[] skinArr = MinetraxBukkit.getPlugin().getPlayerSkinCache().get(player.getUniqueId().toString());
+            if (skinArr != null) {
+                playerSessionIntelData.skin_property = skinArr[0];
+                playerSessionIntelData.skin_texture_id = skinArr[1];
             }
-        } catch (Exception e) {
-            MinetraxBukkit.getPlugin().getLogger().warning(e.getMessage());
+        } else {
+            // get from SkinsRestorer API
+            SkinProperty skin = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
+            if (skin != null) {
+                playerSessionIntelData.skin_property = MinetraxBukkit.getPlugin().getGson().toJson(skin);
+                playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureUrlStripped(skin);
+            }
         }
     }
 

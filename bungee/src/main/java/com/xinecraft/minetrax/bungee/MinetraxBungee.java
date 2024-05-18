@@ -2,6 +2,8 @@ package com.xinecraft.minetrax.bungee;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.xinecraft.minetrax.bungee.hooks.skinsrestorer.SkinsRestorerHook;
+import com.xinecraft.minetrax.bungee.listeners.ServerConnectedListener;
 import com.xinecraft.minetrax.bungee.logging.BungeeLogger;
 import com.xinecraft.minetrax.bungee.schedulers.BungeeScheduler;
 import com.xinecraft.minetrax.bungee.tasks.ServerIntelReportTask;
@@ -104,7 +106,13 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
             hasSkinsRestorer = setupSkinsRestorer();
         }
 
-        // Tasks
+        // Register Channels
+        getProxy().registerChannel("BungeeCord");
+
+        // Register Listeners
+        getProxy().getPluginManager().registerListener(this, new ServerConnectedListener());
+
+        // Register Tasks
         if (isServerIntelEnabled) {
             getProxy().getScheduler().schedule(this, new ServerIntelReportTask(), 60, 60, java.util.concurrent.TimeUnit.SECONDS);
         }
@@ -113,6 +121,9 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     @Override
     public void onDisable() {
         webQueryServer.shutdown();
+
+        // Unregister channels
+        getProxy().unregisterChannel("BungeeCord");
     }
 
     private void loadConfig() {
@@ -179,7 +190,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         // Add SkinsRestorerHook
         try {
             skinsRestorerApi = SkinsRestorerProvider.get();
-//            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
 
             // Warn if SkinsRestorer is not compatible with v15
             if (!VersionProvider.isCompatibleWith("15")) {

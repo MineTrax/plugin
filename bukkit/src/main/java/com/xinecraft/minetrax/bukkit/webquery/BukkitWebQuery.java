@@ -17,10 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class BukkitWebQuery implements CommonWebQuery {
     private final MinetraxBukkit plugin;
@@ -50,16 +47,10 @@ public class BukkitWebQuery implements CommonWebQuery {
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getAddress()).getHostString());
 
             // If SkinRestorer is enabled, then add skin data
-            // TODO: If SkinsRestorer is in Proxy mode then request the skin from the proxy server using Bungee plugin messaging channel, sr:messagechannel
-            // TODO: Extract to auto common method which choose depending, so we can use in other places too. (eg: player join and reporting)
             if (this.plugin.getHasSkinsRestorer()) {
-                SkinsRestorer skinsRestorerApi = this.plugin.getSkinsRestorerApi();
-                PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
-                try {
-                    Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getName());
-                    skin.ifPresent(skinProperty -> playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skinProperty)));
-                } catch (Exception e) {
-                    LoggingUtil.info("[WebQuery -> status] Error getting skin for player: " + player.getName());
+                String skinTextureId = SkinUtil.getSkinTextureId(player.getUniqueId(), player.getName());
+                if (skinTextureId != null) {
+                    playerJsonObject.addProperty("skin_texture_id", skinTextureId);
                 }
             }
 

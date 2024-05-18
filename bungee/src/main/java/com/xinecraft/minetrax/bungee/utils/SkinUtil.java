@@ -1,6 +1,7 @@
 package com.xinecraft.minetrax.bungee.utils;
 
 import com.xinecraft.minetrax.bungee.MinetraxBungee;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.skinsrestorer.api.SkinsRestorer;
@@ -70,5 +71,19 @@ public class SkinUtil {
         if (player != null) {
             skinsRestorerApi.getSkinApplier(ProxiedPlayer.class).applySkin(player);
         }
+    }
+
+    public static SkinProperty getSkinForPlayer(UUID playerUuid, String playerName) {
+        SkinsRestorer skinsRestorerAPI = MinetraxBungee.getPlugin().getSkinsRestorerApi();
+        PlayerStorage playerStorage = skinsRestorerAPI.getPlayerStorage();
+        try {
+            Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(playerUuid, playerName);
+            if (skin.isPresent()) {
+                return skin.get();
+            }
+        } catch (Exception e) {
+            LoggingUtil.warntrace(e);
+        }
+        return null;
     }
 }

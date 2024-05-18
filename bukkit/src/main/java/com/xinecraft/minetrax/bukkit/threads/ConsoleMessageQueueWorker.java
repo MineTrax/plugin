@@ -32,7 +32,7 @@ public class ConsoleMessageQueueWorker extends Thread {
                     final String formattedMessage = consoleMessage.toString();
 
                     // skip adding if from ReportServerConsole or HttpDebug
-                    if (formattedMessage.contains("[HttpDebug]") || formattedMessage.contains("ReportServerConsole")) {
+                    if (formattedMessage.contains("[HttpDebug]") || formattedMessage.contains("ReportServerConsole") || formattedMessage.contains("Failed to connect to")) {
                         queue.poll();
                         continue;
                     }

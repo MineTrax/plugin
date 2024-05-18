@@ -93,11 +93,12 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public Boolean isSendInventoryDataToPlayerIntel;
     public List<String> whitelistedCommandsFromWeb;
     public HashMap<String, String> joinAddressCache = new HashMap<>();
-    public boolean hasViaVersion;
+    public Boolean hasViaVersion;
     private Boolean isSkinsRestorerHookEnabled;
     public Boolean hasSkinsRestorer = false;
     public Boolean hasSkinsRestorerInProxyMode = false;
     public SkinsRestorer skinsRestorerApi;
+    public HashMap<String, String[]> playerSkinCache = new HashMap<>();
     public Gson gson = null;
     private MinetraxCommon common;
 
@@ -147,6 +148,9 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // bStats Metric,
         initBstats();
+
+        // Register Channels
+        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeePluginMessageListener());
 
         // Register Commands
         Objects.requireNonNull(getCommand("link-account")).setExecutor(new AccountLinkCommand());

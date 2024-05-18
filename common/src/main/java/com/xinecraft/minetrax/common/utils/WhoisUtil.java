@@ -115,7 +115,9 @@ public class WhoisUtil {
             }
         } catch (Exception e) {
             LoggingUtil.warning(e.getMessage());
-            returnList.add("&Oops! Something went wrong. Please try again later.");
+            if (!shouldBroadcast) {
+                returnList.add("&cOops! Something went wrong. Please try again later.");
+            }
         }
         return returnList;
     }
