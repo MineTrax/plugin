@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit.webquery;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.bukkit.utils.PlayerUtil;
 import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
 import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
@@ -31,7 +32,13 @@ public class BukkitWebQuery implements CommonWebQuery {
         JsonArray jsonArray = new JsonArray();
         // Get list of online players
         List<Player> playerList = new ArrayList<>(Bukkit.getOnlinePlayers());
+        int playerCount = 0;
         for (Player player : playerList) {
+            // ignore if player is vanished
+            if (PlayerUtil.isVanished(player)) {
+                continue;
+            }
+
             JsonObject playerJsonObject = new JsonObject();
             playerJsonObject.addProperty("username", player.getName());
             playerJsonObject.addProperty("display_name", player.getDisplayName());
@@ -55,11 +62,12 @@ public class BukkitWebQuery implements CommonWebQuery {
             }
 
             jsonArray.add(playerJsonObject);
+            playerCount++;
         }
 
         // Add total online players count
         JsonObject response = new JsonObject();
-        response.addProperty("online_players", playerList.size());
+        response.addProperty("online_players", playerCount);
         response.addProperty("max_players", Bukkit.getMaxPlayers());
         response.add("players", jsonArray);
 

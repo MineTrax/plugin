@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit.listeners;
 import com.google.gson.Gson;
 import com.viaversion.viaversion.api.Via;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.bukkit.utils.PlayerUtil;
 import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.utils.VersionUtil;
@@ -41,13 +42,14 @@ public class PlayerJoinLeaveListener implements Listener {
         // Make playerDataList and add it to list.
         this.addPlayerToPlayerDataMapAndStartSession(event);
 
-        // TODO: Ignore Chatlog & Broadcast Whois if Player is Vanished.
+        // Only send whois if player is not vanished
+        if (!PlayerUtil.isVanished(p)) {
+            // send chatlog to web
+            this.postSendChatlog(event);
 
-        // send chatlog to web
-        this.postSendChatlog(event);
-
-        // perform whois & add player to list of linkedPlayers hashmap
-        this.broadcastWhoisForPlayer(event.getPlayer());
+            // perform whois & add player to list of linkedPlayers hashmap
+            this.broadcastWhoisForPlayer(event.getPlayer());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
