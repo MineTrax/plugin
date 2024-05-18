@@ -108,6 +108,11 @@ public class BukkitWebQuery implements CommonWebQuery {
 
     @Override
     public String handleSetPlayerSkin(String playerUuid, String commandType, String value) throws MineSkinException, DataRequestException {
+        // Ignore if not has skins restorer or skins restorer in proxy mode
+        if (!this.plugin.getHasSkinsRestorer() || this.plugin.getHasSkinsRestorerInProxyMode()) {
+            return "ok";
+        }
+
         switch (commandType) {
             case "url":
             case "username":

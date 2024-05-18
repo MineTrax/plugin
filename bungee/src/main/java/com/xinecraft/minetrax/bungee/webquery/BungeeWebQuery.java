@@ -107,6 +107,11 @@ public class BungeeWebQuery implements CommonWebQuery {
 
     @Override
     public String handleSetPlayerSkin(String playerUuid, String commandType, String value) throws Exception {
+        // Ignore if not has skins restorer
+        if (!this.plugin.getHasSkinsRestorer()) {
+            return "ok";
+        }
+
         switch (commandType) {
             case "url":
             case "username":

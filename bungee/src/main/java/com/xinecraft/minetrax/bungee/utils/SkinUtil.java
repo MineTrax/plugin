@@ -29,7 +29,7 @@ public class SkinUtil {
         playerStorage.setSkinIdOfPlayer(UUID.fromString(playerUuid), result.get().getIdentifier());
 
         // Instantly apply skin to the player without requiring the player to rejoin, if online
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(playerUuid);
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(UUID.fromString(playerUuid));
         if (player != null) {
             skinsRestorerApi.getSkinApplier(ProxiedPlayer.class).applySkin(player);
         }
@@ -55,7 +55,7 @@ public class SkinUtil {
         playerStorage.setSkinIdOfPlayer(UUID.fromString(playerUuid), result.get().getIdentifier());
 
         // Instantly apply skin to the player without requiring the player to rejoin, if online
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(playerUuid);
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(UUID.fromString(playerUuid));
         if (player != null) {
             skinsRestorerApi.getSkinApplier(ProxiedPlayer.class).applySkin(player);
         }
@@ -67,7 +67,7 @@ public class SkinUtil {
         playerStorage.removeSkinIdOfPlayer(UUID.fromString(playerUuid));
 
         // Instantly apply skin to the player without requiring the player to rejoin, if online
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(playerUuid);
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(UUID.fromString(playerUuid));
         if (player != null) {
             skinsRestorerApi.getSkinApplier(ProxiedPlayer.class).applySkin(player);
         }

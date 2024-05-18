@@ -34,10 +34,13 @@ public class PlayerMoveListener implements Listener {
             return;
         }
 
-        double distance = from.distance(to);
-
         PlayerSessionIntelData playerSessionIntelData = MinetraxBukkit.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
+        if (playerSessionIntelData == null) {
+            return;
+        }
+
         // Track total distance travelled
+        double distance = from.distance(to);
         playerSessionIntelData.distance_traveled_xmin += distance;
 
         boolean isSwimming = false;
