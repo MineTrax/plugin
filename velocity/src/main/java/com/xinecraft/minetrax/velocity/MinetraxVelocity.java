@@ -63,8 +63,8 @@ public class MinetraxVelocity implements MinetraxPlugin {
     private Boolean isConsoleLogEnabled;
     private String webQueryHost;
     private int webQueryPort;
+    private List<String> webQueryWhitelistedIps;
     private Boolean isServerIntelEnabled;
-    private Boolean isPlayerIntelEnabled;
     public String serverSessionId;
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     public List<String> whitelistedCommandsFromWeb;
@@ -94,6 +94,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
         apiHost = config.getString("api-host", null);
         webQueryHost = config.getString("webquery-host", null);
         webQueryPort = config.getInt("webquery-port", 25575);
+        webQueryWhitelistedIps = config.getStringList("webquery-whitelisted-ips");
 
         // Setup Common
         common = new MinetraxCommon();
@@ -108,7 +109,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
     }
 
     private void startWebQueryServer() {
-        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort);
+        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort, webQueryWhitelistedIps);
         webQueryServer.start();
     }
 

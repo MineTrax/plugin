@@ -21,6 +21,8 @@ server-id:
 webquery-host: 0.0.0.0
 # The port that you opened so plugin and website can communicate. Make sure this port is not already take and can be open.
 webquery-port: 25569
+# Webquery whitelisted IPs. This is an array of IPs that are allowed to connect to the webquery port.  Leave empty to allow all IPs.
+webquery-whitelisted-ips:
 # This enables the sending of console logs to web.
 enable-consolelog: true
 # This enables the in-game chat feature.
@@ -58,10 +60,6 @@ player-link-success-message:
 enable-whois-on-player-join: true
 # If this is enabled players with permission can run the /webwhois or /ww command
 enable-whois-on-command: true
-# This is the name of the permission players need to be able to use /ww command. (Example: ww.use), empty will allow all players.
-whois-permission-name:
-# Give this permission to admins to whom you want to show extra information about players when run /ww command
-whois-admin-permission-name: ww.admin
 # Message that is sent when /ww finds no players
 whois-no-match-found-message: "&4&lNo matching player found with your whois query"
 # This is the format of message sent when someone joins the server for the first time
@@ -89,7 +87,7 @@ whois-player-on-admin-command-message:
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
   - "&e&o{URL}&r"
-# This is the message sent when there are more than 1 players found
+# This is the message sent when there are more than 1 player found
 whois-multiple-players-title-message: '&a&lThere is total &e&l{COUNT}&r &a&lplayers found.'
 # This is the message sent to show list of players found
 whois-multiple-players-list-message: '&6#{POSITION}&r - &b{USERNAME}&r'

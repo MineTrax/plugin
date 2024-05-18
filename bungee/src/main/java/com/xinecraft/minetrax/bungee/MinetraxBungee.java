@@ -50,6 +50,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     private Boolean isConsoleLogEnabled;
     private String webQueryHost;
     private int webQueryPort;
+    private List<String> webQueryWhitelistedIps;
     private Boolean isServerIntelEnabled;
     public String serverSessionId;
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
@@ -163,6 +164,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         apiHost = config.getString("api-host", null);
         webQueryHost = config.getString("webquery-host", null);
         webQueryPort = config.getInt("webquery-port", 25575);
+        webQueryWhitelistedIps = config.getStringList("webquery-whitelisted-ips");
         isServerIntelEnabled = config.getBoolean("report-server-intel", false);
         isConsoleLogEnabled = config.getBoolean("enable-consolelog", true);
         isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", false);
@@ -175,7 +177,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     }
 
     private void startWebQueryServer() {
-        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort);
+        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort, webQueryWhitelistedIps);
         webQueryServer.start();
     }
 

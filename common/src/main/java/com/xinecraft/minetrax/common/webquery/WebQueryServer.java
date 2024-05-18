@@ -16,6 +16,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.FastThreadLocalThread;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
@@ -24,13 +25,15 @@ public class WebQueryServer {
 
     private final String host;
     private final int port;
+    private final List<String> whitelistedIps;
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
     private Channel serverChannel;
 
-    public WebQueryServer(String host, int port) {
+    public WebQueryServer(String host, int port, List<String> whitelistedIps) {
         this.host = host;
         this.port = port;
+        this.whitelistedIps = whitelistedIps;
         if (USE_EPOLL) {
             bossGroup = new EpollEventLoopGroup(1, createThreadFactory("WebQueryServer epoll boss"));
             workerGroup = new EpollEventLoopGroup(3, createThreadFactory("WebQueryServer epoll worker"));
@@ -54,7 +57,7 @@ public class WebQueryServer {
             b.channel(USE_EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                     .group(bossGroup, workerGroup)
 //                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new WebQueryServerInitializer());
+                    .childHandler(new WebQueryServerInitializer(this.whitelistedIps));
 
             ChannelFuture serverChannelFuture;
             if (host != null && !host.isEmpty()) {

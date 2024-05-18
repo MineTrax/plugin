@@ -17,6 +17,7 @@ softdepend: [
 ]
 commands:
   account-link:
+    permission: minetrax.link.use
     description: Link player to an account in web
     aliases:
       - link-account
@@ -25,7 +26,19 @@ commands:
       - websitelink
       - verify
   ww:
+    permission: minetrax.ww.use
     aliases:
       - webwhois
       - mwhois
     description: Run a web whois against a player username.
+
+permissions:
+    minetrax.ww.use:
+        description: Allows player to run /ww command
+        default: op
+    minetrax.link.use:
+        description: Allows player to run /account-link command
+        default: true
+    minetrax.admin:
+        description: Player with this permission will be consider admin and can run minetrax admin commands
+        default: op

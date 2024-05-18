@@ -65,6 +65,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private Boolean isConsoleLogEnabled;
     private String webQueryHost;
     private int webQueryPort;
+    private List<String> webQueryWhitelistedIps;
     private String webMessageFormat;
     private Boolean isWhoisOnPlayerJoinEnabled;
     private Boolean isWhoisOnCommandEnabled;
@@ -72,8 +73,6 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private List<String> whoisPlayerOnJoinMessage;
     private List<String> whoisPlayerOnFirstJoinMessage;
     private List<String> whoisPlayerOnCommandMessage;
-    private String whoisAdminPermissionName;
-    private String whoisPermissionName;
     private List<String> whoisPlayerOnAdminCommandMessage;
     private String whoisMultiplePlayersTitleMessage;
     private String whoisMultiplePlayersListMessage;
@@ -300,6 +299,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isConsoleLogEnabled = this.getConfig().getBoolean("enable-consolelog");
         webQueryHost = this.getConfig().getString("webquery-host");
         webQueryPort = this.getConfig().getInt("webquery-port");
+        webQueryWhitelistedIps = this.getConfig().getStringList("webquery-whitelisted-ips");
         webMessageFormat = this.getConfig().getString("web-message-format");
         isWhoisOnPlayerJoinEnabled = this.getConfig().getBoolean("enable-whois-on-player-join");
         isWhoisOnCommandEnabled = this.getConfig().getBoolean("enable-whois-on-command");
@@ -307,8 +307,6 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         whoisPlayerOnJoinMessage = this.getConfig().getStringList("whois-player-on-join-message");
         whoisPlayerOnFirstJoinMessage = this.getConfig().getStringList("whois-player-on-first-join-message");
         whoisPlayerOnCommandMessage = this.getConfig().getStringList("whois-player-on-command-message");
-        whoisAdminPermissionName = this.getConfig().getString("whois-admin-permission-name");
-        whoisPermissionName = this.getConfig().getString("whois-permission-name");
         whoisPlayerOnAdminCommandMessage = this.getConfig().getStringList("whois-player-on-admin-command-message");
         whoisMultiplePlayersTitleMessage = this.getConfig().getString("whois-multiple-players-title-message");
         whoisMultiplePlayersListMessage = this.getConfig().getString("whois-multiple-players-list-message");
@@ -329,7 +327,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     }
 
     private void startWebQueryServer() {
-        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort);
+        webQueryServer = new WebQueryServer(webQueryHost, webQueryPort, webQueryWhitelistedIps);
         webQueryServer.start();
     }
 

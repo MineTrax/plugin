@@ -22,13 +22,6 @@ public class PlayerWhoisCommand implements CommandExecutor {
             return false;
         }
 
-        // check permission
-        String whoisPermission = MinetraxBukkit.getPlugin().getWhoisPermissionName();
-        if (whoisPermission != null && !whoisPermission.isBlank() && !commandSender.hasPermission(whoisPermission)) {
-            commandSender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
-            return false;
-        }
-
         String username = null;
         if (strings.length > 0) {
             username = strings[0];
@@ -67,7 +60,7 @@ public class PlayerWhoisCommand implements CommandExecutor {
         Bukkit.getScheduler().runTaskAsynchronously(MinetraxBukkit.getPlugin(), () -> {
             try {
                 Boolean isFromJoinEvent = false;
-                Boolean isRanByAdminPlayer = senderPlayer != null && (senderPlayer.hasPermission(MinetraxBukkit.getPlugin().getWhoisAdminPermissionName()) || senderPlayer.isOp());
+                Boolean isRanByAdminPlayer = senderPlayer != null && senderPlayer.hasPermission("minetrax.admin");
                 List<String> sayList = WhoisUtil.forPlayerSync(
                         username,
                         uuid,

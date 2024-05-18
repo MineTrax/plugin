@@ -21,14 +21,12 @@ server-id:
 webquery-host: 0.0.0.0
 # The port that you opened so plugin and website can communicate. Make sure this port is not already take and can be open.
 webquery-port: 25569
+# Webquery whitelisted IPs. This is an array of IPs that are allowed to connect to the webquery port.  Leave empty to allow all IPs.
+webquery-whitelisted-ips:
 # This enables the sending of console logs to web.
 enable-consolelog: true
 # Sends server intel reports like cpu usage, memory etc. to website.
 report-server-intel: true
-# Sends player intel to website for better analysis.
-report-player-intel: true
-# Sends player inventory to Intel for better analysis.
-send-inventory-data-to-player-intel: false
 # Message format that will be sent when sending message from website to game
 web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 # If enabled the plugin will send more log data in console for better debugging.
@@ -36,7 +34,9 @@ debug-mode: false
 # If enabled only whitelisted commands (whitelisted-commands-from-web) can be sent from web. other custom command will be discarded.
 allow-only-whitelisted-commands-from-web: false
 whitelisted-commands-from-web:
-  - kick
-  - ban
+  - alert
+  - alertraw
+  - bungee
+  - glist
 # If enabled this will let minetrax hook into skinsrestorer plugin if available.
 enable-skinsrestorer-hook: true
