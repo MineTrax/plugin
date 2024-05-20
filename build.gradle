@@ -28,6 +28,7 @@ allprojects {
         maven { url 'https://repo.viaversion.com' }
         maven { url 'https://repo.codemc.org/repository/maven-public/' }
         maven { url 'https://repo.maven.apache.org/maven2/' }
+        maven { url 'https://repo.minebench.de' }
     }
 }
 

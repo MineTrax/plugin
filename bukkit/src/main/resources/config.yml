@@ -41,14 +41,12 @@ remind-player-to-link: true
 remind-player-interval: 300
 # The message send to player to remind them to link their account
 remind-player-link-message:
-  - "&lHey there! It seems you haven't linked your player in web yet."
-  - "&lLink now and earn rewards & perks!"
-  - "&lType /account-link to begin"
-  - "&oIf you have already linked and getting this message try rejoining the server"
+  - "&6Hey there! It seems you haven't linked your player in web yet. Please visit the link below to start the process."
+  - "&6**[{LINK_URL}]({LINK_URL} Click to visit)**"
 # Message when player send /account-link without otp parameter
 player-link-init-message:
-  - "&6.Please visit below link and follow the steps there to continue linking your account."
-  - "{LINK_URL}"
+  - "&6Please visit below link and follow the steps there to continue linking your account."
+  - "&6**[{LINK_URL}]({LINK_URL} Click to visit)**"
 # If get error message response from server
 player-link-error-message:
   - "&c&lOops! Some error occurred while linking your account:"

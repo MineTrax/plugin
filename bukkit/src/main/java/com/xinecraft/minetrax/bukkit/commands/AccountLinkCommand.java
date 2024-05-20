@@ -4,8 +4,8 @@ import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.actions.LinkAccount;
 import com.xinecraft.minetrax.common.responses.GenericApiResponse;
 import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
+import de.themoep.minedown.adventure.MineDown;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,8 +24,7 @@ public class AccountLinkCommand implements CommandExecutor {
         if (strings.length == 0) {
             for (String line : MinetraxBukkit.getPlugin().getPlayerLinkInitMessage()) {
                 line = line.replace("{LINK_URL}", MinetraxHttpUtil.getUrl(MinetraxHttpUtil.ACCOUNT_LINK_ROUTE));
-                line = ChatColor.translateAlternateColorCodes('&', line);
-                player.sendMessage(line);
+                MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
             }
             return true;
         }
@@ -44,23 +43,20 @@ public class AccountLinkCommand implements CommandExecutor {
                 if (response.getCode() != 200) {
                     for (String line : MinetraxBukkit.getPlugin().getPlayerLinkErrorMessage()) {
                         line = line.replace("{ERROR_MESSAGE}", response.getMessage());
-                        line = ChatColor.translateAlternateColorCodes('&', line);
-                        player.sendMessage(line);
+                        MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
                     }
                     return;
                 } else {
                     for (String line : MinetraxBukkit.getPlugin().getPlayerLinkSuccessMessage()) {
                         line = line.replace("{LINK_URL}", MinetraxHttpUtil.getUrl(MinetraxHttpUtil.ACCOUNT_LINK_ROUTE));
-                        line = ChatColor.translateAlternateColorCodes('&', line);
-                        player.sendMessage(line);
+                        MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
                     }
                 }
             } catch (Exception e) {
                 for (String line : MinetraxBukkit.getPlugin().getPlayerLinkErrorMessage()) {
                     line = line.replace("{WEB_URL}", MinetraxBukkit.getPlugin().getApiHost());
                     line = line.replace("{ERROR_MESSAGE}", " ");
-                    line = ChatColor.translateAlternateColorCodes('&', line);
-                    player.sendMessage(line);
+                    MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
                 }
             }
         });

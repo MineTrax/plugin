@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit.commands;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.utils.WhoisUtil;
+import de.themoep.minedown.adventure.MineDown;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -78,7 +79,6 @@ public class PlayerWhoisCommand implements CommandExecutor {
                 );
                 if (sayList != null) {
                     for (String line : sayList) {
-                        line = ChatColor.translateAlternateColorCodes('&', line);
                         Tell(senderPlayer, line);
                     }
                 }
@@ -90,9 +90,9 @@ public class PlayerWhoisCommand implements CommandExecutor {
 
     private void Tell(Player player, String message) {
         if (player == null) {
-            Bukkit.getServer().broadcastMessage(message);
+            MinetraxBukkit.getPlugin().adventure().players().sendMessage(MineDown.parse(message));
         } else {
-            player.sendMessage(message);
+            MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(message));
         }
     }
 }

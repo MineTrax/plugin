@@ -30,6 +30,8 @@ import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.utils.UpdateCheckUtil;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
 import lombok.Getter;
+import lombok.NonNull;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.skinsrestorer.api.SkinsRestorer;
@@ -50,6 +52,7 @@ import java.util.*;
 public final class MinetraxBukkit extends JavaPlugin implements Listener, MinetraxPlugin {
     private ConsoleMessageQueueWorker consoleMessageQueueWorker;
     private WebQueryServer webQueryServer;
+    private BukkitAudiences adventure;
 
     // Console
     private final Deque<ConsoleMessage> consoleMessageQueue = new LinkedList<>();
@@ -108,6 +111,9 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("Enabling Minetrax Plugin...");
+
+        // Initialize an audiences instance for the plugin
+        this.adventure = BukkitAudiences.create(this);
 
         // Gson Builder
         gson = new GsonBuilder()
@@ -275,6 +281,11 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
                 PlayerIntelUtil.reportPlayerIntel(playerSessionData, true);
             }
         }
+
+        if (this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
     }
 
     private void initBstats() {
@@ -386,5 +397,12 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
     public static MinetraxBukkit getPlugin() {
         return getPlugin(MinetraxBukkit.class);
+    }
+
+    public @NonNull BukkitAudiences adventure() {
+        if (this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
     }
 }
