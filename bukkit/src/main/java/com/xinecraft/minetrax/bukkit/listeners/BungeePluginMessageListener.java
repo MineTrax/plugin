@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit.listeners;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
+import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class BungeePluginMessageListener implements PluginMessageListener {
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] bytes) {
-        if (!channel.equals("BungeeCord")) {
+        if (!channel.equals(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL)) {
             return;
         }
 

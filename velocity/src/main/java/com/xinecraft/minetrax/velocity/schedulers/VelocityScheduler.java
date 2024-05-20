@@ -12,11 +12,11 @@ public class VelocityScheduler implements CommonScheduler {
 
     @Override
     public void run(Runnable runnable) {
-        plugin.getServer().getScheduler().buildTask(plugin, runnable).schedule();
+        plugin.getProxyServer().getScheduler().buildTask(plugin, runnable).schedule();
     }
 
     @Override
     public void runAsync(Runnable runnable) {
-        plugin.getServer().getScheduler().buildTask(plugin, runnable).schedule();
+        plugin.getProxyServer().getScheduler().buildTask(plugin, runnable).schedule();
     }
 }

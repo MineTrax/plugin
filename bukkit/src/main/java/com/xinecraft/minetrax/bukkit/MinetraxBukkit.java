@@ -149,7 +149,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         initBstats();
 
         // Register Channels
-        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeePluginMessageListener());
+        getServer().getMessenger().registerIncomingPluginChannel(this, MinetraxCommon.PLUGIN_MESSAGE_CHANNEL, new BungeePluginMessageListener());
 
         // Register Commands
         Objects.requireNonNull(getCommand("link-account")).setExecutor(new AccountLinkCommand());
@@ -322,8 +322,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
-        serverSessionId = UUID.randomUUID().toString();
         isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
+        serverSessionId = UUID.randomUUID().toString();
     }
 
     private void startWebQueryServer() {

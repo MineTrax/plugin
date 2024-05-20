@@ -108,7 +108,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         }
 
         // Register Channels
-        getProxy().registerChannel("BungeeCord");
+        getProxy().registerChannel(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL);
 
         // Register Listeners
         getProxy().getPluginManager().registerListener(this, new ServerConnectedListener());
@@ -124,7 +124,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         webQueryServer.shutdown();
 
         // Unregister channels
-        getProxy().unregisterChannel("BungeeCord");
+        getProxy().unregisterChannel(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL);
     }
 
     private void loadConfig() {

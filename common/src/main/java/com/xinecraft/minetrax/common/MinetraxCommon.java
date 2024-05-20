@@ -20,6 +20,7 @@ public class MinetraxCommon {
     private PlatformType platformType;
     private Gson gson;
     private MinetraxPlugin plugin;
+    public static String PLUGIN_MESSAGE_CHANNEL = "minetrax:main";
 
     public MinetraxCommon() {
         instance = this;

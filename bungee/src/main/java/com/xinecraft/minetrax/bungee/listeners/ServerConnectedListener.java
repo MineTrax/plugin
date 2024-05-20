@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.xinecraft.minetrax.bungee.MinetraxBungee;
 import com.xinecraft.minetrax.bungee.utils.SkinUtil;
+import com.xinecraft.minetrax.common.MinetraxCommon;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -33,7 +34,7 @@ public class ServerConnectedListener implements Listener {
             out.writeUTF(skinTextureId);
 
             MinetraxBungee.getPlugin().getProxy().getScheduler().runAsync(MinetraxBungee.getPlugin(), () -> {
-                event.getServer().sendData("BungeeCord", out.toByteArray());
+                event.getServer().sendData(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL, out.toByteArray());
             });
         }
     }

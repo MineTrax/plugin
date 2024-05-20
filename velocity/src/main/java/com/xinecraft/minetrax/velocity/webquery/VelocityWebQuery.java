@@ -1,59 +1,60 @@
-package com.xinecraft.minetrax.bungee.webquery;
+package com.xinecraft.minetrax.velocity.webquery;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.xinecraft.minetrax.bungee.MinetraxBungee;
-import com.xinecraft.minetrax.bungee.utils.SkinUtil;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import com.xinecraft.minetrax.velocity.MinetraxVelocity;
+import com.xinecraft.minetrax.velocity.utils.SkinUtil;
+import net.kyori.adventure.text.Component;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-public class BungeeWebQuery implements CommonWebQuery {
+public class VelocityWebQuery implements CommonWebQuery {
+    private final MinetraxVelocity plugin;
 
-    private final MinetraxBungee plugin;
-
-    public BungeeWebQuery(MinetraxBungee plugin) {
+    public VelocityWebQuery(MinetraxVelocity plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public String handleStatus() throws Exception {
         JsonArray jsonArray = new JsonArray();
-        ProxyServer proxyServer = this.plugin.getProxy();
+        ProxyServer proxyServer = this.plugin.getProxyServer();
 
-        Collection<ProxiedPlayer> playerList = proxyServer.getPlayers();
-        for (ProxiedPlayer player : playerList) {
+        Collection<Player> playerList = proxyServer.getAllPlayers();
+        for (Player player : playerList) {
             JsonObject playerJsonObject = new JsonObject();
-            playerJsonObject.addProperty("username", player.getName());
-            playerJsonObject.addProperty("display_name", player.getDisplayName());
+            playerJsonObject.addProperty("username", player.getUsername());
+            playerJsonObject.addProperty("display_name", player.getUsername());
             playerJsonObject.addProperty("id", player.getUniqueId().toString());
             playerJsonObject.addProperty("is_op", false);
             int playerPing;
             try {
-                playerPing = player.getPing();
+                playerPing = (int) player.getPing();
             } catch (NoSuchMethodError e) {
                 playerPing = 0;
             }
             playerJsonObject.addProperty("ping", playerPing);
-            playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getAddress()).getHostString());
+            playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getRemoteAddress()).getHostString());
 
             if (this.plugin.getHasSkinsRestorer()) {
                 SkinsRestorer skinsRestorerApi = this.plugin.getSkinsRestorerApi();
                 PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
                 try {
-                    Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getName());
+                    Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getUsername());
                     skin.ifPresent(skinProperty -> playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skinProperty)));
                 } catch (Exception e) {
-                    LoggingUtil.info("[WebQuery -> status] Error getting skin for player: " + player.getName());
+                    LoggingUtil.info("[WebQuery -> status] Error getting skin for player: " + player.getUsername());
                 }
             }
 
@@ -63,7 +64,7 @@ public class BungeeWebQuery implements CommonWebQuery {
         // Add total online players count
         JsonObject response = new JsonObject();
         response.addProperty("online_players", playerList.size());
-        response.addProperty("max_players", proxyServer.getConfig().getPlayerLimit());
+        response.addProperty("max_players", proxyServer.getConfiguration().getShowMaxPlayers());
         response.add("players", jsonArray);
 
         return this.plugin.getGson().toJson(response);
@@ -76,8 +77,8 @@ public class BungeeWebQuery implements CommonWebQuery {
 
     @Override
     public String handleBroadcast(String message) throws Exception {
-        BaseComponent[] messageComponent = TextComponent.fromLegacyText(message);
-        this.plugin.getProxy().broadcast(messageComponent);
+        Component messageComponent = Component.text(message);
+        this.plugin.getProxyServer().getAllPlayers().forEach(player -> player.sendMessage(messageComponent));
         return "ok";
     }
 
@@ -101,7 +102,7 @@ public class BungeeWebQuery implements CommonWebQuery {
             throw new Exception("Command: " + command + " is not whitelisted.");
         }
 
-        this.plugin.getProxy().getPluginManager().dispatchCommand(this.plugin.getProxy().getConsole(), command);
+        this.plugin.getProxyServer().getCommandManager().executeAsync(this.plugin.getProxyServer().getConsoleCommandSource(), command);
         return "ok";
     }
 

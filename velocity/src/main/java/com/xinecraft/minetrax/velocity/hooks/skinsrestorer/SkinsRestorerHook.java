@@ -1,11 +1,10 @@
-package com.xinecraft.minetrax.bungee.hooks.skinsrestorer;
+package com.xinecraft.minetrax.velocity.hooks.skinsrestorer;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.xinecraft.minetrax.bungee.MinetraxBungee;
-import com.xinecraft.minetrax.common.MinetraxCommon;
+import com.velocitypowered.api.proxy.Player;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import com.xinecraft.minetrax.velocity.MinetraxVelocity;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.event.SkinApplyEvent;
 import net.skinsrestorer.api.property.SkinProperty;
@@ -19,11 +18,11 @@ public class SkinsRestorerHook implements Consumer<SkinApplyEvent> {
         if (event.isCancelled()) {
             return;
         }
-        ProxiedPlayer player = event.getPlayer(ProxiedPlayer.class);
+        Player player = event.getPlayer(Player.class);
         SkinProperty skinProperty = event.getProperty();
 
         if (player != null && !skinProperty.getValue().isEmpty()) {
-            String skinPropertyJson = MinetraxBungee.getPlugin().getGson().toJson(skinProperty);
+            String skinPropertyJson = MinetraxVelocity.getPlugin().getGson().toJson(skinProperty);
             String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
             String playerUuid = player.getUniqueId().toString();
 
@@ -33,8 +32,10 @@ public class SkinsRestorerHook implements Consumer<SkinApplyEvent> {
             out.writeUTF(skinPropertyJson);
             out.writeUTF(skinTextureId);
 
-            MinetraxBungee.getPlugin().getProxy().getScheduler().runAsync(MinetraxBungee.getPlugin(), () -> {
-                player.getServer().sendData(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL, out.toByteArray());
+            MinetraxVelocity.getPlugin().getCommon().getScheduler().runAsync(() -> {
+                player.getCurrentServer().ifPresent(connection -> {
+                    connection.getServer().sendPluginMessage(MinetraxVelocity.PLUGIN_MESSAGE_CHANNEL, out.toByteArray());
+                });
             });
         }
     }
