@@ -167,6 +167,8 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         webQueryWhitelistedIps = config.getStringList("webquery-whitelisted-ips");
         isServerIntelEnabled = config.getBoolean("report-server-intel", false);
         isConsoleLogEnabled = config.getBoolean("enable-consolelog", true);
+        isAllowOnlyWhitelistedCommandsFromWeb = config.getBoolean("allow-only-whitelisted-commands-from-web", false);
+        whitelistedCommandsFromWeb = config.getStringList("whitelisted-commands-from-web");
         isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", false);
         serverSessionId = UUID.randomUUID().toString();
     }
