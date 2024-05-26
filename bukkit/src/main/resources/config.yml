@@ -70,21 +70,21 @@ whois-player-on-join-message:
   - "&6Position&r: &b&l#{POSITION}&r - &6Rank&r: &b&l{RANK}&r"
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
-  - "&e&o{URL}&r"
+  - "&e&o[{URL}]({URL})&r"
 # This is the format of message that is sent when player runs /ww command
 whois-player-on-command-message:
   - "&a&l{USERNAME}&r is from &a&l{COUNTRY}&r"
   - "&6Position&r: &b&l#{POSITION}&r - &6Rank&r: &b&l{RANK}&r"
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
-  - "&e&o{URL}&r"
+  - "&e&o[{URL}]({URL})&r"
 # This is the format of message that is sent when admin runs /ww command
 whois-player-on-admin-command-message:
   - "&a&l{USERNAME}&r is from &a&l{GEO}&r"
   - "&6Position&r: &b&l#{POSITION}&r - &6Rank&r: &b&l{RANK}&r"
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
-  - "&e&o{URL}&r"
+  - "&e&o[{URL}]({URL})&r"
 # This is the message sent when there are more than 1 player found
 whois-multiple-players-title-message: '&a&lThere is total &e&l{COUNT}&r &a&lplayers found.'
 # This is the message sent to show list of players found

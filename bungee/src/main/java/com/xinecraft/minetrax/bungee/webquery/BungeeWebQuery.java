@@ -78,7 +78,7 @@ public class BungeeWebQuery implements CommonWebQuery {
     public String handleBroadcast(String message) throws Exception {
         BaseComponent[] messageComponent = TextComponent.fromLegacyText(message);
         this.plugin.getProxy().broadcast(messageComponent);
-        return "ok";
+        return "true";
     }
 
     @Override
@@ -102,14 +102,14 @@ public class BungeeWebQuery implements CommonWebQuery {
         }
 
         this.plugin.getProxy().getPluginManager().dispatchCommand(this.plugin.getProxy().getConsole(), command);
-        return "ok";
+        return "true";
     }
 
     @Override
     public String handleSetPlayerSkin(String playerUuid, String commandType, String value) throws Exception {
         // Ignore if not has skins restorer
         if (!this.plugin.getHasSkinsRestorer()) {
-            return "ok";
+            return "false";
         }
 
         switch (commandType) {
@@ -127,11 +127,17 @@ public class BungeeWebQuery implements CommonWebQuery {
                 break;
         }
 
-        return "ok";
+        return "true";
     }
 
     @Override
     public String handleAccountLinkSuccess(String playerUuid, String userId) throws Exception {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public String handleCheckPlayerOnline(String playerUuid) throws Exception {
+        ProxiedPlayer player = this.plugin.getProxy().getPlayer(UUID.fromString(playerUuid));
+        return player != null ? "true" : "false";
     }
 }

@@ -53,6 +53,10 @@ public class WebQueryProtocol {
                 String userId = payloadJson.get("user_id").getAsString();
                 response = common.getWebQuery().handleAccountLinkSuccess(pUuid, userId);
                 break;
+            case "check-player-online":
+                String playerUuidForCheck = payloadJson.get("player_uuid").getAsString();
+                response = common.getWebQuery().handleCheckPlayerOnline(playerUuidForCheck);
+                break;
             default:
                 throw new Exception("Invalid webquery command type");
         }

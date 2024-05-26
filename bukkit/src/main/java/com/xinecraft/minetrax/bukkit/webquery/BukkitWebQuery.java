@@ -81,13 +81,13 @@ public class BukkitWebQuery implements CommonWebQuery {
         messageFormat = ChatColor.translateAlternateColorCodes('&', messageFormat);
         messageFormat = messageFormat.replace("{MESSAGE}", message);
         Bukkit.getServer().broadcastMessage(messageFormat);
-        return "ok";
+        return "true";
     }
 
     @Override
     public String handleBroadcast(String message) {
         this.plugin.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', message));
-        return "ok";
+        return "true";
     }
 
     @Override
@@ -111,7 +111,7 @@ public class BukkitWebQuery implements CommonWebQuery {
         }
 
         Bukkit.getScheduler().callSyncMethod(this.plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)).get();
-        return "ok";
+        return "true";
     }
 
     @Override
@@ -136,7 +136,7 @@ public class BukkitWebQuery implements CommonWebQuery {
                 break;
         }
 
-        return "ok";
+        return "true";
     }
 
     @Override
@@ -145,6 +145,16 @@ public class BukkitWebQuery implements CommonWebQuery {
         if (playerData != null) {
             playerData.is_verified = true;
         }
-        return "ok";
+        return "true";
+    }
+
+    @Override
+    public String handleCheckPlayerOnline(String playerUuid) throws Exception {
+        Player player = Bukkit.getPlayer(UUID.fromString(playerUuid));
+        if (player != null && player.isOnline()) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 }

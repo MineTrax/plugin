@@ -14,10 +14,7 @@ import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class VelocityWebQuery implements CommonWebQuery {
     private final MinetraxVelocity plugin;
@@ -79,7 +76,7 @@ public class VelocityWebQuery implements CommonWebQuery {
     public String handleBroadcast(String message) throws Exception {
         Component messageComponent = Component.text(message);
         this.plugin.getProxyServer().getAllPlayers().forEach(player -> player.sendMessage(messageComponent));
-        return "ok";
+        return "true";
     }
 
     @Override
@@ -103,14 +100,14 @@ public class VelocityWebQuery implements CommonWebQuery {
         }
 
         this.plugin.getProxyServer().getCommandManager().executeAsync(this.plugin.getProxyServer().getConsoleCommandSource(), command);
-        return "ok";
+        return "true";
     }
 
     @Override
     public String handleSetPlayerSkin(String playerUuid, String commandType, String value) throws Exception {
         // Ignore if not has skins restorer
         if (!this.plugin.getHasSkinsRestorer()) {
-            return "ok";
+            return "false";
         }
 
         switch (commandType) {
@@ -128,11 +125,21 @@ public class VelocityWebQuery implements CommonWebQuery {
                 break;
         }
 
-        return "ok";
+        return "true";
     }
 
     @Override
     public String handleAccountLinkSuccess(String playerUuid, String userId) throws Exception {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public String handleCheckPlayerOnline(String playerUuid) throws Exception {
+        Optional<Player> player = this.plugin.getProxyServer().getPlayer(UUID.fromString(playerUuid));
+        if (player.isPresent()) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 }
