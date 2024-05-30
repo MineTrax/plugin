@@ -39,7 +39,6 @@ public class AccountLinkCommand implements CommandExecutor {
                         MinetraxBukkit.getPlugin().getApiServerId()
                 );
 
-                // not-found
                 if (response.getCode() != 200) {
                     for (String line : MinetraxBukkit.getPlugin().getPlayerLinkErrorMessage()) {
                         line = line.replace("{ERROR_MESSAGE}", response.getMessage());
@@ -55,7 +54,7 @@ public class AccountLinkCommand implements CommandExecutor {
             } catch (Exception e) {
                 for (String line : MinetraxBukkit.getPlugin().getPlayerLinkErrorMessage()) {
                     line = line.replace("{WEB_URL}", MinetraxBukkit.getPlugin().getApiHost());
-                    line = line.replace("{ERROR_MESSAGE}", " ");
+                    line = line.replace("{ERROR_MESSAGE}", "Unknown error! Please contact admin.");
                     MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
                 }
             }

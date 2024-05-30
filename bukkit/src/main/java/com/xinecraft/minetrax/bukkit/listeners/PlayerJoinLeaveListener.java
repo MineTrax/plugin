@@ -15,6 +15,7 @@ import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.common.data.PlayerWorldStatsIntelData;
 import com.xinecraft.minetrax.common.responses.GenericApiResponse;
 import com.xinecraft.minetrax.common.utils.WhoisUtil;
+import de.themoep.minedown.adventure.MineDown;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
@@ -113,8 +114,7 @@ public class PlayerJoinLeaveListener implements Listener {
             );
             if (sayList != null) {
                 for (String line : sayList) {
-                    line = ChatColor.translateAlternateColorCodes('&', line);
-                    Bukkit.getServer().broadcastMessage(line);
+                    MinetraxBukkit.getPlugin().adventure().players().sendMessage(MineDown.parse(line));
                 }
             }
         });

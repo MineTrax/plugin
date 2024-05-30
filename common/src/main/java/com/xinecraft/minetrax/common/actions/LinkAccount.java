@@ -17,9 +17,6 @@ public class LinkAccount {
         String payloadString = MinetraxCommon.getInstance().getGson().toJson(payload);
         HttpResponse resp = MinetraxHttpUtil.post(MinetraxHttpUtil.VERIFY_ACCOUNT_LINK_ROUTE, payloadString, null);
         String body = resp.body();
-        if (!resp.isSuccessful()) {
-            throw new HttpException(resp, "LinkAccount.link");
-        }
         if (body == null) {
             throw new HttpException(resp, "LinkAccount.link");
         }

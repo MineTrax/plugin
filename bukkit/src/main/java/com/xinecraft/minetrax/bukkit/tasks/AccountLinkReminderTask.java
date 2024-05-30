@@ -2,6 +2,7 @@ package com.xinecraft.minetrax.bukkit.tasks;
 
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.data.PlayerData;
+import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
 import de.themoep.minedown.adventure.MineDown;
 import org.bukkit.entity.Player;
 
@@ -14,6 +15,7 @@ public class AccountLinkReminderTask implements Runnable {
             if (playerData != null && playerData.is_verified) continue;
 
             for (String line : MinetraxBukkit.getPlugin().getRemindPlayerToLinkMessage()) {
+                line = line.replace("{LINK_URL}", MinetraxHttpUtil.getUrl(MinetraxHttpUtil.ACCOUNT_LINK_ROUTE));
                 MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
             }
         }
