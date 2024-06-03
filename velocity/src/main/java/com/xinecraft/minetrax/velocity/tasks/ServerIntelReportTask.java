@@ -15,7 +15,7 @@ public class ServerIntelReportTask implements Runnable {
 
     @Override
     public void run() {
-        LoggingUtil.info("--- SENDING SERVER INTEL ---");
+        LoggingUtil.debug("--- SENDING SERVER INTEL ---");
         ServerIntelData serverIntelData = new ServerIntelData();
         ProxyServer proxyServer = MinetraxVelocity.getPlugin().getProxyServer();
 

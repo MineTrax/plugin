@@ -200,7 +200,7 @@ public class PlayerJoinLeaveListener implements Listener {
 
         PlayerData playerData = MinetraxBukkit.getPlugin().playersDataMap.get(key);
         if (playerData != null) {
-            LoggingUtil.info("REPORT FINAL SESSION END ON PLAYER QUIT");
+            LoggingUtil.debug("REPORT FINAL SESSION END ON PLAYER QUIT");
             PlayerSessionIntelData leftPlayerSessionIntelData = MinetraxBukkit.getPlugin().playerSessionIntelDataMap.get(playerData.session_uuid);
             leftPlayerSessionIntelData.session_ended_at = new Date().getTime();
 

@@ -16,13 +16,19 @@ public class PlayerMoveListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+        if (event.getFrom().getBlockX() == event.getTo().getBlockY() && event.getFrom().getBlockZ() == event.getTo().getBlockZ() && event.getFrom().getBlockY() == event.getTo().getBlockY()) {
+            return;
+        }
 
+        Player player = event.getPlayer();
         PlayerData playerData = MinetraxBukkit.getPlugin().playersDataMap.get(player.getUniqueId().toString());
         if (playerData != null) {
             playerData.last_active_timestamp = System.currentTimeMillis();
 
-            trackDistanceTravelled(event, player, playerData);
+            // Track distance travelled if not disabled.
+            if (! MinetraxBukkit.getPlugin().isDisablePlayerMovementTracking) {
+                trackDistanceTravelled(event, player, playerData);
+            }
         }
     }
 

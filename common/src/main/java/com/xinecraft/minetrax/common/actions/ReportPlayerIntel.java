@@ -14,7 +14,7 @@ public class ReportPlayerIntel {
     private static final MinetraxCommon common = MinetraxCommon.getInstance();
 
     public static void initSessionSync(PlayerSessionIntelData data) throws Exception {
-        LoggingUtil.info("--- STARTING SESSION FOR A PLAYER ---");
+        LoggingUtil.debug("--- STARTING SESSION FOR A PLAYER ---");
         JsonObject payload = new JsonObject();
         String payloadString = common.getGson().toJson(data);
         HttpResponse resp = MinetraxHttpUtil.post(MinetraxHttpUtil.PLAYER_INTEL_SESSION_INIT_ROUTE, payloadString, null);

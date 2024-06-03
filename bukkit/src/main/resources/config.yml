@@ -33,6 +33,8 @@ report-server-intel: true
 report-player-intel: true
 # Sends player inventory to Intel for better analysis.
 send-inventory-data-to-player-intel: false
+# Disable tracking of player movement (used for reporting distance travelled). Useful for servers with large player base which want to optimize performance.
+disable-player-movement-tracking: false
 # Message format that will be sent when sending message from website to game
 web-message-format: '&b[WEB]&r {USERNAME}: {MESSAGE}&r'
 # Sends a reminder to player to link their account to website.
@@ -41,12 +43,14 @@ remind-player-to-link: true
 remind-player-interval: 300
 # The message send to player to remind them to link their account
 remind-player-link-message:
-  - "&6Hey there! It seems you haven't linked your player in web yet. Please visit the link below to start the process."
-  - "&6**[{LINK_URL}]({LINK_URL} Click to visit)**"
+  - "&eHey there! It seems you haven't linked your player in web yet. Please visit the link below to start the process."
+  - ""
+  - "&e**[{LINK_URL}]({LINK_URL} Click to visit)**"
 # Message when player send /account-link without otp parameter
 player-link-init-message:
-  - "&6Please visit below link and follow the steps there to continue linking your account."
-  - "&6**[{LINK_URL}]({LINK_URL} Click to visit)**"
+  - "&bPlease visit below link and follow the steps there to continue linking your account."
+  - ""
+  - "&b**[{LINK_URL}]({LINK_URL} Click to visit)**"
 # If get error message response from server
 player-link-error-message:
   - "&c&lOops! Some error occurred while linking your account:"

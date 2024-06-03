@@ -22,7 +22,7 @@ public class ServerIntelReportTask implements Runnable {
 
     @Override
     public void run() {
-        LoggingUtil.info("--- SENDING SERVER INTEL ---");
+        LoggingUtil.debug("--- SENDING SERVER INTEL ---");
         ServerIntelData serverIntelData = new ServerIntelData();
 
         serverIntelData.max_players = MinetraxBukkit.getPlugin().getServer().getMaxPlayers();

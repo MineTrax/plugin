@@ -93,6 +93,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public String serverSessionId;
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     public Boolean isSendInventoryDataToPlayerIntel;
+    public Boolean isDisablePlayerMovementTracking;
     public List<String> whitelistedCommandsFromWeb;
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public Boolean hasViaVersion;
@@ -333,6 +334,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
+        isDisablePlayerMovementTracking = this.getConfig().getBoolean("disable-player-movement-tracking");
         isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
         serverSessionId = UUID.randomUUID().toString();
     }
