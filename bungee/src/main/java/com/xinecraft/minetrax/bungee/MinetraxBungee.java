@@ -13,7 +13,6 @@ import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;

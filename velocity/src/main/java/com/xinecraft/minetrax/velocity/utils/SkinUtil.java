@@ -4,6 +4,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.velocity.MinetraxVelocity;
 import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.exception.DataRequestException;
 import net.skinsrestorer.api.exception.MineSkinException;
 import net.skinsrestorer.api.property.InputDataResult;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 public class SkinUtil {
     public static void setPlayerSkinUsingUrlOrName(String playerUuid, String value) throws MineSkinException, DataRequestException {
-        SkinsRestorer skinsRestorerApi = MinetraxVelocity.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = SkinsRestorerProvider.get();
         SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
         Optional<InputDataResult> result = skinStorage.findOrCreateSkinData(value);
@@ -35,7 +36,7 @@ public class SkinUtil {
     }
 
     public static void setPlayerSkinUsingCustom(String playerUuid, String value) throws DataRequestException {
-        SkinsRestorer skinsRestorerApi = MinetraxVelocity.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = SkinsRestorerProvider.get();
         SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
 
@@ -61,7 +62,7 @@ public class SkinUtil {
     }
 
     public static void clearPlayerSkin(String playerUuid) throws DataRequestException {
-        SkinsRestorer skinsRestorerApi = MinetraxVelocity.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = SkinsRestorerProvider.get();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
         playerStorage.removeSkinIdOfPlayer(UUID.fromString(playerUuid));
 
@@ -73,7 +74,7 @@ public class SkinUtil {
     }
 
     public static SkinProperty getSkinForPlayer(UUID playerUuid, String playerName) {
-        SkinsRestorer skinsRestorerAPI = MinetraxVelocity.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerAPI = SkinsRestorerProvider.get();
         PlayerStorage playerStorage = skinsRestorerAPI.getPlayerStorage();
         try {
             Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(playerUuid, playerName);

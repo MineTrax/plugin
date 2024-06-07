@@ -11,6 +11,7 @@ import com.xinecraft.minetrax.velocity.utils.SkinUtil;
 import net.kyori.adventure.text.Component;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
 
@@ -45,7 +46,7 @@ public class VelocityWebQuery implements CommonWebQuery {
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getRemoteAddress()).getHostString());
 
             if (this.plugin.getHasSkinsRestorer()) {
-                SkinsRestorer skinsRestorerApi = this.plugin.getSkinsRestorerApi();
+                SkinsRestorer skinsRestorerApi = SkinsRestorerProvider.get();
                 PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
                 try {
                     Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getUsername());

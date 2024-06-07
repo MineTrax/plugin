@@ -30,7 +30,6 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import lombok.Getter;
-import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.VersionProvider;
 import net.skinsrestorer.api.event.SkinApplyEvent;
@@ -93,11 +92,11 @@ public class MinetraxVelocity implements MinetraxPlugin {
     public HashMap<String, String> joinAddressCache = new HashMap<>();
     public Boolean hasSkinsRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
-    public SkinsRestorer skinsRestorerApi;
     public static final MinecraftChannelIdentifier PLUGIN_MESSAGE_CHANNEL = MinecraftChannelIdentifier.from(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL);
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        System.out.println("Minetrax plugin is starting...");
         // GSON builder
         gson = new GsonBuilder()
                 .serializeNulls()
@@ -136,6 +135,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
         // Start web query server
         startWebQueryServer();
 
+        System.out.println("Checking skinsrestoareraasdf" + PluginUtil.checkIfPluginEnabled("skinsrestorer"));
         // Hook into plugins
         if (PluginUtil.checkIfPluginEnabled("skinsrestorer")) {
             hasSkinsRestorer = setupSkinsRestorer();
@@ -209,8 +209,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
 
         // Add SkinsRestorerHook
         try {
-            skinsRestorerApi = SkinsRestorerProvider.get();
-            skinsRestorerApi.getEventBus().subscribe(pluginContainer, SkinApplyEvent.class, new SkinsRestorerHook());
+            SkinsRestorerProvider.get().getEventBus().subscribe(pluginContainer, SkinApplyEvent.class, new SkinsRestorerHook());
 
             // Warn if SkinsRestorer is not compatible with v15
             if (!VersionProvider.isCompatibleWith("15")) {
