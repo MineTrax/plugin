@@ -29,6 +29,9 @@ public class WebQueryProtocol {
             case "status":
                response = common.getWebQuery().handleStatus();
                break;
+            case "ping":
+                response = common.getWebQuery().handlePing();
+                break;
             case "user-say":
                 String username = payloadJson.get("username").getAsString();
                 String message = payloadJson.get("message").getAsString();

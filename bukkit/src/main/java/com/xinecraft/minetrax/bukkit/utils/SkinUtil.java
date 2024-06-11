@@ -4,10 +4,13 @@ import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.exception.DataRequestException;
 import net.skinsrestorer.api.exception.MineSkinException;
 import net.skinsrestorer.api.property.InputDataResult;
+import net.skinsrestorer.api.property.SkinIdentifier;
 import net.skinsrestorer.api.property.SkinProperty;
+import net.skinsrestorer.api.storage.CacheStorage;
 import net.skinsrestorer.api.storage.PlayerStorage;
 import net.skinsrestorer.api.storage.SkinStorage;
 import org.bukkit.Bukkit;
@@ -88,6 +91,25 @@ public class SkinUtil {
         return null;
     }
 
+    public static SkinProperty getSkinOfPlayerFromCache(UUID playerUuid, String playerName) {
+        SkinsRestorer skinsRestorerApi = MinetraxBukkit.getPlugin().getSkinsRestorerApi();
+        PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
+        SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
+        CacheStorage cacheStorage = skinsRestorerApi.getCacheStorage();
+        try {
+            SkinIdentifier skinIdentifier;
+            Optional<SkinIdentifier> tempIdentifier = playerStorage.getSkinIdOfPlayer(playerUuid);
+            UUID cacheUuid = cacheStorage.getUUID(playerName, true).orElseGet(() -> playerUuid);
+            skinIdentifier = tempIdentifier.orElseGet(() -> SkinIdentifier.ofPlayer(cacheUuid));
+            Optional<SkinProperty> skin = skinStorage.getSkinDataByIdentifier(skinIdentifier);
+            if (skin.isPresent()) {
+                return skin.get();
+            }
+        } catch (Exception e) {
+            LoggingUtil.debug("[SkinUtil] Error getting cached skin for player: " + playerName + " : " + e.getMessage());
+        }
+        return null;
+    }
 
     public static String getSkinTextureId(UUID playerUuid, String playerName) {
         try {
@@ -99,7 +121,7 @@ public class SkinUtil {
                 }
             } else {
                 // get from SkinsRestorer API
-                SkinProperty skin = SkinUtil.getSkinForPlayer(playerUuid, playerName);
+                SkinProperty skin = getSkinOfPlayerFromCache(playerUuid, playerName);
                 if (skin != null) {
                     return PropertyUtils.getSkinTextureUrlStripped(skin);
                 }

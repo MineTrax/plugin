@@ -75,6 +75,15 @@ public class BukkitWebQuery implements CommonWebQuery {
     }
 
     @Override
+    public String handlePing() throws Exception {
+        JsonObject response = new JsonObject();
+        response.addProperty("online_players", Bukkit.getOnlinePlayers().size());
+        response.addProperty("max_players", Bukkit.getMaxPlayers());
+
+        return this.plugin.gson.toJson(response);
+    }
+
+    @Override
     public String handleUserSay(String user, String message) {
         String messageFormat = this.plugin.getWebMessageFormat();
         messageFormat = messageFormat.replace("{USERNAME}", user);

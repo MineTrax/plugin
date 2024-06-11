@@ -96,7 +96,6 @@ public class MinetraxVelocity implements MinetraxPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        System.out.println("Minetrax plugin is starting...");
         // GSON builder
         gson = new GsonBuilder()
                 .serializeNulls()
@@ -135,7 +134,6 @@ public class MinetraxVelocity implements MinetraxPlugin {
         // Start web query server
         startWebQueryServer();
 
-        System.out.println("Checking skinsrestoareraasdf" + PluginUtil.checkIfPluginEnabled("skinsrestorer"));
         // Hook into plugins
         if (PluginUtil.checkIfPluginEnabled("skinsrestorer")) {
             hasSkinsRestorer = setupSkinsRestorer();

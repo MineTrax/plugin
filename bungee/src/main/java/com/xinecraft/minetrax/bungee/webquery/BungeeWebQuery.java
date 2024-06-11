@@ -47,13 +47,9 @@ public class BungeeWebQuery implements CommonWebQuery {
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getAddress()).getHostString());
 
             if (this.plugin.getHasSkinsRestorer()) {
-                SkinsRestorer skinsRestorerApi = this.plugin.getSkinsRestorerApi();
-                PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
-                try {
-                    Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getName());
-                    skin.ifPresent(skinProperty -> playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skinProperty)));
-                } catch (Exception e) {
-                    LoggingUtil.info("[WebQuery -> status] Error getting skin for player: " + player.getName());
+                SkinProperty skin = SkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getName());
+                if (skin != null) {
+                    playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skin));
                 }
             }
 
@@ -65,6 +61,16 @@ public class BungeeWebQuery implements CommonWebQuery {
         response.addProperty("online_players", playerList.size());
         response.addProperty("max_players", proxyServer.getConfig().getPlayerLimit());
         response.add("players", jsonArray);
+
+        return this.plugin.getGson().toJson(response);
+    }
+
+    @Override
+    public String handlePing() throws Exception {
+        ProxyServer proxyServer = this.plugin.getProxy();
+        JsonObject response = new JsonObject();
+        response.addProperty("online_players", proxyServer.getOnlineCount());
+        response.addProperty("max_players", proxyServer.getConfig().getPlayerLimit());
 
         return this.plugin.getGson().toJson(response);
     }

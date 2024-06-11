@@ -5,15 +5,11 @@ import com.google.gson.JsonObject;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
-import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.velocity.MinetraxVelocity;
 import com.xinecraft.minetrax.velocity.utils.SkinUtil;
 import net.kyori.adventure.text.Component;
 import net.skinsrestorer.api.PropertyUtils;
-import net.skinsrestorer.api.SkinsRestorer;
-import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.PlayerStorage;
 
 import java.util.*;
 
@@ -46,13 +42,9 @@ public class VelocityWebQuery implements CommonWebQuery {
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getRemoteAddress()).getHostString());
 
             if (this.plugin.getHasSkinsRestorer()) {
-                SkinsRestorer skinsRestorerApi = SkinsRestorerProvider.get();
-                PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
-                try {
-                    Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(player.getUniqueId(), player.getUsername());
-                    skin.ifPresent(skinProperty -> playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skinProperty)));
-                } catch (Exception e) {
-                    LoggingUtil.info("[WebQuery -> status] Error getting skin for player: " + player.getUsername());
+                SkinProperty skin = SkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getUsername());
+                if (skin != null) {
+                    playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skin));
                 }
             }
 
@@ -64,6 +56,16 @@ public class VelocityWebQuery implements CommonWebQuery {
         response.addProperty("online_players", playerList.size());
         response.addProperty("max_players", proxyServer.getConfiguration().getShowMaxPlayers());
         response.add("players", jsonArray);
+
+        return this.plugin.getGson().toJson(response);
+    }
+
+    @Override
+    public String handlePing() throws Exception {
+        ProxyServer proxyServer = this.plugin.getProxyServer();
+        JsonObject response = new JsonObject();
+        response.addProperty("online_players", proxyServer.getPlayerCount());
+        response.addProperty("max_players", proxyServer.getConfiguration().getShowMaxPlayers());
 
         return this.plugin.getGson().toJson(response);
     }
