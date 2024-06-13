@@ -96,7 +96,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public Boolean isDisablePlayerMovementTracking;
     public List<String> whitelistedCommandsFromWeb;
     public HashMap<String, String> joinAddressCache = new HashMap<>();
-    public Boolean hasViaVersion;
+    public Boolean hasViaVersion = false;
     private Boolean isSkinsRestorerHookEnabled;
     public Boolean hasSkinsRestorer = false;
     public Boolean hasSkinsRestorerInProxyMode = false;
