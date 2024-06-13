@@ -11,7 +11,7 @@ public class DebugUtil {
 
     public static void endTimer(String key) {
         if (!debugTimeMap.containsKey(key)) {
-            System.out.println("Error: start time for key \"" + key + "\" was not set.");
+            LoggingUtil.error("[DebugTimer] Error: start time for key \"" + key + "\" was not set.");
             return;
         }
 
@@ -22,7 +22,7 @@ public class DebugUtil {
         // Convert nanoseconds to milliseconds for easier reading
         double elapsedTimeInMillis = elapsedTime / 1_000_000.0;
 
-        System.out.println("[DebugTimer] Time taken for \"" + key + "\": " + elapsedTimeInMillis + " ms");
+        LoggingUtil.info("[DebugTimer] Time taken for \"" + key + "\": " + elapsedTimeInMillis + " ms");
         debugTimeMap.remove(key);  // Remove the flag after calculating the time
     }
 }

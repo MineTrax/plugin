@@ -13,7 +13,7 @@ public class WebQueryProtocol {
         // Decrypt the input to plain text and map in JSON object.
         WebQueryRequestData requestData = decryptRequest(input);
 
-        LoggingUtil.debug("Received webquery request: " + requestData.toString());
+        LoggingUtil.debug("[WebQuery] Request: " + requestData.toString());
 
         // Validate signature.
         if (!validateSignature(requestData)) {
@@ -64,6 +64,7 @@ public class WebQueryProtocol {
                 throw new Exception("Invalid webquery command type");
         }
 
+        LoggingUtil.debug("[WebQuery] Plain Response: " + response);
         // Encrypt the response and return.
         return encryptResponse(response);
     }
