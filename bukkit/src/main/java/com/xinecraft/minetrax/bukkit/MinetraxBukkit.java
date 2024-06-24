@@ -163,7 +163,6 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         Objects.requireNonNull(getCommand("ww")).setExecutor(new PlayerWhoisCommand());
 
         // Register Listeners
-        getServer().getPluginManager().registerEvents(new PlayerAdvancementDoneListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinLeaveListener(), this);

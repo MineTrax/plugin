@@ -20,23 +20,20 @@ public class ServerConnectedListener {
 
         Player player = event.getPlayer();
         RegisteredServer server = event.getServer();
-        SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getUsername());
+        MinetraxVelocity.getPlugin().getProxyServer().getScheduler().buildTask(MinetraxVelocity.getPlugin(), () -> {
+            SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getUsername());
+            if (skinProperty != null) {
+                String skinPropertyJson = MinetraxVelocity.getPlugin().getGson().toJson(skinProperty);
+                String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
+                String playerUuid = player.getUniqueId().toString();
 
-        if (skinProperty != null) {
-            String skinPropertyJson = MinetraxVelocity.getPlugin().getGson().toJson(skinProperty);
-            String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
-            String playerUuid = player.getUniqueId().toString();
-
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("UpdatePlayerSkin");
-            out.writeUTF(playerUuid);
-            out.writeUTF(skinPropertyJson);
-            out.writeUTF(skinTextureId);
-
-            // Run after 1 seconds as plugin message channel is not ready yet.
-            MinetraxVelocity.getPlugin().getProxyServer().getScheduler().buildTask(MinetraxVelocity.getPlugin(), () -> {
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("UpdatePlayerSkin");
+                out.writeUTF(playerUuid);
+                out.writeUTF(skinPropertyJson);
+                out.writeUTF(skinTextureId);
                 server.sendPluginMessage(MinetraxVelocity.PLUGIN_MESSAGE_CHANNEL, out.toByteArray());
-            }).delay(1, java.util.concurrent.TimeUnit.SECONDS).schedule();
-        }
+            }
+        }).delay(1, java.util.concurrent.TimeUnit.SECONDS).schedule();  // Run after 1 seconds as plugin message channel is not ready yet.
     }
 }

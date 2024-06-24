@@ -20,22 +20,20 @@ public class ServerConnectedListener implements Listener {
         }
 
         ProxiedPlayer player = event.getPlayer();
-        SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
+        MinetraxBungee.getPlugin().getProxy().getScheduler().runAsync(MinetraxBungee.getPlugin(), () -> {
+            SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
+            if (skinProperty != null) {
+                String skinPropertyJson = MinetraxBungee.getPlugin().getGson().toJson(skinProperty);
+                String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
+                String playerUuid = player.getUniqueId().toString();
 
-        if (skinProperty != null) {
-            String skinPropertyJson = MinetraxBungee.getPlugin().getGson().toJson(skinProperty);
-            String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
-            String playerUuid = player.getUniqueId().toString();
-
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("UpdatePlayerSkin");
-            out.writeUTF(playerUuid);
-            out.writeUTF(skinPropertyJson);
-            out.writeUTF(skinTextureId);
-
-            MinetraxBungee.getPlugin().getProxy().getScheduler().runAsync(MinetraxBungee.getPlugin(), () -> {
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("UpdatePlayerSkin");
+                out.writeUTF(playerUuid);
+                out.writeUTF(skinPropertyJson);
+                out.writeUTF(skinTextureId);
                 event.getServer().sendData(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL, out.toByteArray());
-            });
-        }
+            }
+        });
     }
 }
