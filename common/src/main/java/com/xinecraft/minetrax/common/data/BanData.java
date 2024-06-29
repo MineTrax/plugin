@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class BanData {
-
+    private String type;
 }

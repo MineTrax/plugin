@@ -47,16 +47,20 @@ remind-player-link-message:
   - ""
   - "&e**[{LINK_URL}]({LINK_URL} Click to visit)**"
 # Keep sending reminder to player even if they are already linked.
-remind-player-when-already-linked: true
+remind-player-when-already-linked: false
 # The message send to player to remind them that their account is already linked
 remind-player-already-linked-message:
     - "&aYay! Your player is already linked."
-    - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to see your stats and more."
+    - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to view your stats and more."
 # Message when player send /account-link without otp parameter
 player-link-init-message:
   - "&bPlease visit below link and follow the steps there to continue linking your account."
   - ""
   - "&b**[{LINK_URL}]({LINK_URL} Click to visit)**"
+# Message when player send /account-link while player is already linked
+player-link-init-already-linked-message:
+  - "&aYay! Your player is already linked."
+  - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to view your stats and more."
 # If get error message response from server
 player-link-error-message:
   - "&c&lOops! Some error occurred while linking your account:"

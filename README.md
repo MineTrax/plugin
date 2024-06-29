@@ -18,6 +18,11 @@ Supported placeholder-api supported variables:
 %minetrax_player_rank_name%
 %minetrax_player_rating%
 %minetrax_player_total_score%
+%minetrax_player_total_mob_kills%
+%minetrax_player_total_player_kills%
+%minetrax_player_total_deaths%
+%minetrax_player_play_time%
+%minetrax_player_afk_time%
 %minetrax_player_position%
 %minetrax_player_first_seen_at%
 %minetrax_player_last_seen_at%

@@ -87,6 +87,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private Boolean isRemindPlayerWhenAlreadyLinkedEnabled;
     private List<String> remindPlayerWhenAlreadyLinkedMessage;
     private List<String> playerLinkInitMessage;
+    private List<String> playerLinkInitAlreadyLinkedMessage;
     private List<String> playerLinkErrorMessage;
     private List<String> playerLinkSuccessMessage;
     private long afkThresholdInMs;
@@ -331,6 +332,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isRemindPlayerWhenAlreadyLinkedEnabled = this.getConfig().getBoolean("remind-player-when-already-linked", false);
         remindPlayerWhenAlreadyLinkedMessage = this.getConfig().getStringList("remind-player-already-linked-message");
         playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
+        playerLinkInitAlreadyLinkedMessage = this.getConfig().getStringList("player-link-init-already-linked-message");
         playerLinkErrorMessage = this.getConfig().getStringList("player-link-error-message");
         playerLinkSuccessMessage = this.getConfig().getStringList("player-link-success-message");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
