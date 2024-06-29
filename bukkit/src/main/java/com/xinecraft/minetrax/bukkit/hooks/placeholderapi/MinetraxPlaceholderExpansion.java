@@ -70,6 +70,26 @@ public class MinetraxPlaceholderExpansion extends PlaceholderExpansion {
             return String.valueOf(playerData.total_score);
         }
 
+        if(params.equalsIgnoreCase("player_total_mob_kills")) {
+            return String.valueOf(playerData.total_mob_kills);
+        }
+
+        if(params.equalsIgnoreCase("player_total_player_kills")) {
+            return String.valueOf(playerData.total_player_kills);
+        }
+
+        if(params.equalsIgnoreCase("player_total_deaths")) {
+            return String.valueOf(playerData.total_deaths);
+        }
+
+        if(params.equalsIgnoreCase("player_play_time")) {
+            return String.valueOf(playerData.play_time);
+        }
+
+        if(params.equalsIgnoreCase("player_afk_time")) {
+            return String.valueOf(playerData.afk_time);
+        }
+
         if(params.equalsIgnoreCase("player_position")) {
             return String.valueOf(playerData.position);
         }

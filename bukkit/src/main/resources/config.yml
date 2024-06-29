@@ -46,6 +46,12 @@ remind-player-link-message:
   - "&eHey there! It seems you haven't linked your player in web yet. Please visit the link below to start the process."
   - ""
   - "&e**[{LINK_URL}]({LINK_URL} Click to visit)**"
+# Keep sending reminder to player even if they are already linked.
+remind-player-when-already-linked: true
+# The message send to player to remind them that their account is already linked
+remind-player-already-linked-message:
+    - "&aYay! Your player is already linked."
+    - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to see your stats and more."
 # Message when player send /account-link without otp parameter
 player-link-init-message:
   - "&bPlease visit below link and follow the steps there to continue linking your account."
@@ -109,3 +115,5 @@ whitelisted-commands-from-web:
   - broadcast
 # If enabled this will let minetrax hook into skinsrestorer plugin if available.
 enable-skinsrestorer-hook: true
+# If enabled this will let minetrax hook into your ban plugin and sync bans to website.
+enable-banwarden: true

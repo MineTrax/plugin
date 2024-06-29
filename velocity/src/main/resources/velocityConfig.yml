@@ -40,3 +40,5 @@ whitelisted-commands-from-web:
   - glist
 # If enabled this will let minetrax hook into skinsrestorer plugin if available.
 enable-skinsrestorer-hook: true
+# If enabled this will let minetrax hook into your ban plugin and sync bans to website.
+enable-banwarden: true

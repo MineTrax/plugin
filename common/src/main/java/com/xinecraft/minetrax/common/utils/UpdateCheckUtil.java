@@ -31,10 +31,10 @@ public class UpdateCheckUtil {
     public static void checkForUpdate(int resourceId, String currentVersion) {
         new UpdateCheckUtil(resourceId).getVersion(version -> {
             if (!currentVersion.equals(version)) {
-                MinetraxCommon.getInstance().getLogger().info("A new version of Minetrax is available. Please update to latest version " + version);
-                MinetraxCommon.getInstance().getLogger().info("Download https://www.github.com/minetrax/plugin/releases/latest");
+                MinetraxCommon.getInstance().getLogger().warning("A new version of Minetrax is available. Please update to latest version " + version);
+                MinetraxCommon.getInstance().getLogger().warning("Download https://www.github.com/minetrax/plugin/releases/latest");
             } else {
-                MinetraxCommon.getInstance().getLogger().info("Yay! Minetrax is up to date.");
+                MinetraxCommon.getInstance().getLogger().info("Yay! You are using the latest version of Minetrax.");
             }
         });
     }

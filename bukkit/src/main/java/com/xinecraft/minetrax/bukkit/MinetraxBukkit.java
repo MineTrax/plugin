@@ -84,6 +84,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private Boolean isPlayerIntelEnabled;
     private Long remindPlayerToLinkInterval;
     private List<String> remindPlayerToLinkMessage;
+    private Boolean isRemindPlayerWhenAlreadyLinkedEnabled;
+    private List<String> remindPlayerWhenAlreadyLinkedMessage;
     private List<String> playerLinkInitMessage;
     private List<String> playerLinkErrorMessage;
     private List<String> playerLinkSuccessMessage;
@@ -326,6 +328,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isPlayerIntelEnabled = this.getConfig().getBoolean("report-player-intel");
         remindPlayerToLinkInterval = this.getConfig().getLong("remind-player-interval");
         remindPlayerToLinkMessage = this.getConfig().getStringList("remind-player-link-message");
+        isRemindPlayerWhenAlreadyLinkedEnabled = this.getConfig().getBoolean("remind-player-when-already-linked", false);
+        remindPlayerWhenAlreadyLinkedMessage = this.getConfig().getStringList("remind-player-already-linked-message");
         playerLinkInitMessage = this.getConfig().getStringList("player-link-init-message");
         playerLinkErrorMessage = this.getConfig().getStringList("player-link-error-message");
         playerLinkSuccessMessage = this.getConfig().getStringList("player-link-success-message");
