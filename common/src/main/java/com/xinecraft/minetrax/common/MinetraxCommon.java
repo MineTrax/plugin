@@ -25,4 +25,5 @@ public class MinetraxCommon {
     public MinetraxCommon() {
         instance = this;
     }
+
 }

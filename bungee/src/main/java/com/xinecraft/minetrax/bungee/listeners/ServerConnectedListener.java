@@ -3,7 +3,7 @@ package com.xinecraft.minetrax.bungee.listeners;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.xinecraft.minetrax.bungee.MinetraxBungee;
-import com.xinecraft.minetrax.bungee.utils.SkinUtil;
+import com.xinecraft.minetrax.bungee.utils.BungeeSkinUtil;
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
@@ -21,7 +21,7 @@ public class ServerConnectedListener implements Listener {
 
         ProxiedPlayer player = event.getPlayer();
         MinetraxBungee.getPlugin().getProxy().getScheduler().runAsync(MinetraxBungee.getPlugin(), () -> {
-            SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
+            SkinProperty skinProperty = BungeeSkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
             if (skinProperty != null) {
                 String skinPropertyJson = MinetraxBungee.getPlugin().getGson().toJson(skinProperty);
                 String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
