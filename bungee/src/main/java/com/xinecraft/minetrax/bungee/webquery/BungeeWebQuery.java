@@ -3,17 +3,14 @@ package com.xinecraft.minetrax.bungee.webquery;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.bungee.MinetraxBungee;
-import com.xinecraft.minetrax.bungee.utils.SkinUtil;
+import com.xinecraft.minetrax.bungee.utils.BungeeSkinUtil;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
-import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.skinsrestorer.api.PropertyUtils;
-import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.PlayerStorage;
 
 import java.util.*;
 
@@ -47,7 +44,7 @@ public class BungeeWebQuery implements CommonWebQuery {
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getAddress()).getHostString());
 
             if (this.plugin.getHasSkinsRestorer()) {
-                SkinProperty skin = SkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getName());
+                SkinProperty skin = BungeeSkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getName());
                 if (skin != null) {
                     playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skin));
                 }
@@ -121,13 +118,13 @@ public class BungeeWebQuery implements CommonWebQuery {
         switch (commandType) {
             case "url":
             case "username":
-                SkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
+                BungeeSkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
                 break;
             case "upload":
-                SkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
+                BungeeSkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
                 break;
             case "clear":
-                SkinUtil.clearPlayerSkin(playerUuid);
+                BungeeSkinUtil.clearPlayerSkin(playerUuid);
                 break;
             default:
                 break;

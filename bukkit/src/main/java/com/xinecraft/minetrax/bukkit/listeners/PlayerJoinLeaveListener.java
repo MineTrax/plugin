@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.viaversion.viaversion.api.Via;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.bukkit.utils.PlayerUtil;
-import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
+import com.xinecraft.minetrax.bukkit.utils.BukkitSkinUtil;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.utils.VersionUtil;
 import com.xinecraft.minetrax.common.actions.FetchPlayerData;
@@ -17,10 +17,7 @@ import com.xinecraft.minetrax.common.responses.GenericApiResponse;
 import com.xinecraft.minetrax.common.utils.WhoisUtil;
 import de.themoep.minedown.adventure.MineDown;
 import net.skinsrestorer.api.PropertyUtils;
-import net.skinsrestorer.api.SkinsRestorer;
-import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.PlayerStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -186,7 +183,7 @@ public class PlayerJoinLeaveListener implements Listener {
             }
         } else {
             // get from SkinsRestorer API
-            SkinProperty skin = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
+            SkinProperty skin = BukkitSkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
             if (skin != null) {
                 playerSessionIntelData.skin_property = MinetraxBukkit.getPlugin().getGson().toJson(skin);
                 playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureUrlStripped(skin);

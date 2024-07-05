@@ -6,7 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import com.xinecraft.minetrax.velocity.MinetraxVelocity;
-import com.xinecraft.minetrax.velocity.utils.SkinUtil;
+import com.xinecraft.minetrax.velocity.utils.VelocitySkinUtil;
 import net.kyori.adventure.text.Component;
 import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.property.SkinProperty;
@@ -42,7 +42,7 @@ public class VelocityWebQuery implements CommonWebQuery {
             playerJsonObject.addProperty("ip_address", Objects.requireNonNull(player.getRemoteAddress()).getHostString());
 
             if (this.plugin.getHasSkinsRestorer()) {
-                SkinProperty skin = SkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getUsername());
+                SkinProperty skin = VelocitySkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getUsername());
                 if (skin != null) {
                     playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skin));
                 }
@@ -116,13 +116,13 @@ public class VelocityWebQuery implements CommonWebQuery {
         switch (commandType) {
             case "url":
             case "username":
-                SkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
+                VelocitySkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
                 break;
             case "upload":
-                SkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
+                VelocitySkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
                 break;
             case "clear":
-                SkinUtil.clearPlayerSkin(playerUuid);
+                VelocitySkinUtil.clearPlayerSkin(playerUuid);
                 break;
             default:
                 break;

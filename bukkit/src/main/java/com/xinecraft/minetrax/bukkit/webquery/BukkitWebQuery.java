@@ -4,16 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.bukkit.utils.PlayerUtil;
-import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
+import com.xinecraft.minetrax.bukkit.utils.BukkitSkinUtil;
 import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
-import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import net.skinsrestorer.api.PropertyUtils;
-import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.exception.DataRequestException;
 import net.skinsrestorer.api.exception.MineSkinException;
-import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.PlayerStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -55,7 +50,7 @@ public class BukkitWebQuery implements CommonWebQuery {
 
             // If SkinRestorer is enabled, then add skin data
             if (this.plugin.getHasSkinsRestorer()) {
-                String skinTextureId = SkinUtil.getSkinTextureId(player.getUniqueId(), player.getName());
+                String skinTextureId = BukkitSkinUtil.getSkinTextureId(player.getUniqueId(), player.getName());
                 if (skinTextureId != null) {
                     playerJsonObject.addProperty("skin_texture_id", skinTextureId);
                 }
@@ -133,13 +128,13 @@ public class BukkitWebQuery implements CommonWebQuery {
         switch (commandType) {
             case "url":
             case "username":
-                SkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
+                BukkitSkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
                 break;
             case "upload":
-                SkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
+                BukkitSkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
                 break;
             case "clear":
-                SkinUtil.clearPlayerSkin(playerUuid);
+                BukkitSkinUtil.clearPlayerSkin(playerUuid);
                 break;
             default:
                 break;
