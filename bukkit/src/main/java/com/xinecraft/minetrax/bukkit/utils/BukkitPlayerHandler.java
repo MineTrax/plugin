@@ -19,7 +19,13 @@ public class BukkitPlayerHandler implements PlayerHandler {
     @Override
     public void applySkin(Object player) {
         if (player instanceof Player) {
-            MinetraxBukkit.getPlugin().getSkinsRestorerApi().getSkinApplier(Player.class).applySkin((Player) player);
+            MinetraxBukkit plugin = MinetraxBukkit.getPlugin();
+            if (plugin != null && plugin.getSkinsRestorerApi() != null) {
+                plugin.getSkinsRestorerApi().getSkinApplier(Player.class).applySkin((Player) player);
+            } else {
+                // Log an error message if the SkinsRestorer API is not available
+                plugin.getLogger().severe("SkinsRestorer API is not initialized.");
+            }
         }
     }
 }
