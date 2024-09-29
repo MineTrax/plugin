@@ -24,7 +24,7 @@ webquery-port: 25569
 # Webquery whitelisted IPs. This is an array of IPs that are allowed to connect to the webquery port.  Leave empty to allow all IPs.
 webquery-whitelisted-ips:
 # This enables the sending of console logs to web.
-enable-consolelog: true
+enable-consolelog: false
 # This enables the in-game chat feature.
 enable-chatlog: true
 # Sends server intel reports like cpu usage, memory etc. to website.

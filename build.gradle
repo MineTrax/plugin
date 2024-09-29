@@ -29,6 +29,17 @@ allprojects {
         maven { url 'https://repo.codemc.org/repository/maven-public/' }
         maven { url 'https://repo.maven.apache.org/maven2/' }
         maven { url 'https://repo.minebench.de' }
+
+        // LibertyBans
+        maven { url 'https://mvn-repo.arim.space/lesser-gpl3/' }
+        maven { url 'https://mvn-repo.arim.space/gpl3/' }
+        maven { url 'https://mvn-repo.arim.space/affero-gpl3/' }
+
+        // LiteBans - jitpack
+
+        // AdvancedBan - jitpack
+
+        // BanManager
     }
 }
 
@@ -53,6 +64,11 @@ subprojects {
         implementation 'com.google.code.gson:gson:2.10.1'
         compileOnly 'net.skinsrestorer:skinsrestorer-api:15.0.13'
         implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+        // BanWarden
+        compileOnly "space.arim.libertybans:bans-api:1.0.4"
+        compileOnly "com.gitlab.ruany:LiteBansAPI:0.5.0"
+        compileOnly "com.github.DevLeoko.AdvancedBan:AdvancedBan:v2.3.0"
     }
 
     def targetJavaVersion = project.ext.targetJavaVersion as int

@@ -29,6 +29,19 @@ Supported placeholder-api supported variables:
 %minetrax_player_profile_link%
 ```
 
+# Permissions
+```
+    minetrax.ww.use:
+        description: Allows player to run /ww command
+        default: op
+    minetrax.link.use:
+        description: Allows player to run /account-link or /link command
+        default: true
+    minetrax.admin:
+        description: Player with this permission will be consider admin and can run minetrax admin commands
+        default: op
+```
+
 # Links
 https://www.spigotmc.org/resources/minetrax-suite.102378/
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.xinecraft.minetrax.bukkit.adapters.ItemStackGsonAdapter;
 import com.xinecraft.minetrax.bukkit.commands.AccountLinkCommand;
+import com.xinecraft.minetrax.bukkit.commands.MinetraxAdminCommand;
 import com.xinecraft.minetrax.bukkit.commands.PlayerWhoisCommand;
 import com.xinecraft.minetrax.bukkit.hooks.chat.EpicCoreChatHook;
 import com.xinecraft.minetrax.bukkit.hooks.chat.VentureChatHook;
@@ -25,6 +26,7 @@ import com.xinecraft.minetrax.bukkit.webquery.BukkitWebQuery;
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
+import com.xinecraft.minetrax.common.enums.BanWardenPluginType;
 import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.utils.UpdateCheckUtil;
@@ -34,7 +36,6 @@ import lombok.NonNull;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.VersionProvider;
 import net.skinsrestorer.api.event.SkinApplyEvent;
@@ -47,6 +48,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public final class MinetraxBukkit extends JavaPlugin implements Listener, MinetraxPlugin {
@@ -91,20 +93,20 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private List<String> playerLinkErrorMessage;
     private List<String> playerLinkSuccessMessage;
     private long afkThresholdInMs;
-    public HashMap<String, PlayerData> playersDataMap;
-    public HashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
+    public ConcurrentHashMap<String, PlayerData> playersDataMap;
+    public ConcurrentHashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
     public String serverSessionId;
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     public Boolean isSendInventoryDataToPlayerIntel;
     public Boolean isDisablePlayerMovementTracking;
     public List<String> whitelistedCommandsFromWeb;
-    public HashMap<String, String> joinAddressCache = new HashMap<>();
+    public ConcurrentHashMap<String, String> joinAddressCache = new ConcurrentHashMap<>();
     public Boolean hasViaVersion = false;
     private Boolean isSkinsRestorerHookEnabled;
     public Boolean hasSkinsRestorer = false;
     public Boolean hasSkinsRestorerInProxyMode = false;
-    public SkinsRestorer skinsRestorerApi;
-    public HashMap<String, String[]> playerSkinCache = new HashMap<>();
+    public ConcurrentHashMap<String, String[]> playerSkinCache = new ConcurrentHashMap<>();
+    public Boolean isBanWardenEnabled = false;
     public Gson gson = null;
     private MinetraxCommon common;
 
@@ -118,22 +120,6 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Initialize an audiences instance for the plugin
         this.adventure = BukkitAudiences.create(this);
-
-        // Gson Builder
-        gson = new GsonBuilder()
-                .registerTypeHierarchyAdapter(ItemStack.class, new ItemStackGsonAdapter())
-                .serializeNulls()
-                .disableHtmlEscaping()
-                .create();
-
-        // Setup Common
-        common = new MinetraxCommon();
-        common.setPlugin(this);
-        common.setPlatformType(PlatformType.BUKKIT);
-        common.setGson(gson);
-        common.setLogger(new BukkitLogger(this));
-        common.setScheduler(new BukkitScheduler(this));
-        common.setWebQuery(new BukkitWebQuery(this));
 
         // Config
         this.saveDefaultConfig();
@@ -155,6 +141,23 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             return;
         }
 
+        // Gson Builder
+        gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(ItemStack.class, new ItemStackGsonAdapter())
+                .serializeNulls()
+                .disableHtmlEscaping()
+                .create();
+
+        // Setup Common
+        common = new MinetraxCommon();
+        common.setPlugin(this);
+        common.setPlatformType(PlatformType.BUKKIT);
+        common.setGson(gson);
+        common.setLogger(new BukkitLogger(this));
+        common.setScheduler(new BukkitScheduler(this));
+        common.setWebQuery(new BukkitWebQuery(this));
+        initBanWarden(common);
+
         // bStats Metric,
         initBstats();
 
@@ -164,6 +167,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         // Register Commands
         Objects.requireNonNull(getCommand("link-account")).setExecutor(new AccountLinkCommand());
         Objects.requireNonNull(getCommand("ww")).setExecutor(new PlayerWhoisCommand());
+        Objects.requireNonNull(getCommand("minetrax")).setExecutor(new MinetraxAdminCommand());
 
         // Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
@@ -297,8 +301,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     }
 
     private void initVariables() {
-        playersDataMap = new HashMap<>();
-        playerSessionIntelDataMap = new HashMap<>();
+        playersDataMap = new ConcurrentHashMap<>();
+        playerSessionIntelDataMap = new ConcurrentHashMap<>();
 
         isEnabled = this.getConfig().getBoolean("enabled");
         apiHost = this.getConfig().getString("api-host");
@@ -342,6 +346,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isDisablePlayerMovementTracking = this.getConfig().getBoolean("disable-player-movement-tracking");
         isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
         serverSessionId = UUID.randomUUID().toString();
+        isBanWardenEnabled = this.getConfig().getBoolean("enable-banwarden");
     }
 
     private void startWebQueryServer() {
@@ -359,8 +364,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Add SkinsRestorerHook
         try {
-            skinsRestorerApi = SkinsRestorerProvider.get();
-            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+            common.setSkinsRestorerApi(SkinsRestorerProvider.get());
+            common.getSkinsRestorerApi().getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
 
             // Warn if SkinsRestorer is not compatible with v15
             if (!VersionProvider.isCompatibleWith("15")) {
@@ -411,5 +416,25 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
         }
         return this.adventure;
+    }
+
+    private void initBanWarden(MinetraxCommon common) {
+        if (!isBanWardenEnabled) {
+            getLogger().warning("[BanWarden] BanWarden is disabled in config.yml");
+            return;
+        }
+
+        // set which ban plugin is enabled.
+        if (PluginUtil.checkIfPluginEnabled("LiteBans")) {
+            common.initBanWarden(BanWardenPluginType.LITEBANS);
+        } else if (PluginUtil.checkIfPluginEnabled("LibertyBans")) {
+            common.initBanWarden(BanWardenPluginType.LIBERTYBANS);
+        } else if (PluginUtil.checkIfPluginEnabled("AdvancedBan")) {
+            common.initBanWarden(BanWardenPluginType.ADVANCEDBAN);
+        } else {
+            isBanWardenEnabled = false;
+            getLogger().warning("[BanWarden] No supported BanWarden plugin found.");
+            return;
+        }
     }
 }

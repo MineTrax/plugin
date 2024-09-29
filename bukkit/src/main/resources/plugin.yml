@@ -13,7 +13,9 @@ softdepend: [
   # Permissions plugins
   LuckPerms,
   # Misc. plugins
-  ViaVersion, SkinsRestorer, Multiverse-Core, PlaceholderAPI, mcMMO, dynmap, Skript
+  ViaVersion, SkinsRestorer, Multiverse-Core, PlaceholderAPI, mcMMO, dynmap, Skript,
+  # Ban plugins
+  LiteBans, LibertyBans, AdvancedBan
 ]
 commands:
   account-link:
@@ -31,6 +33,11 @@ commands:
       - webwhois
       - mwhois
     description: Run a web whois against a player username.
+  minetrax:
+    permission: minetrax.admin
+    description: Minetrax admin commands
+    aliases:
+      - mtx
 
 permissions:
     minetrax.ww.use:

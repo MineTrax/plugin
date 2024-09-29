@@ -26,6 +26,8 @@ public class MinetraxHttpUtil {
     public static final String PLAYER_INTEL_EVENT_REPORT_ROUTE = "/api/v1/intel/player/report/event";
     public static final String PLAYER_INTEL_REPORT_PVP_KILL_ROUTE = "/api/v1/intel/player/report/pvp-kill";
     public static final String PLAYER_INTEL_REPORT_DEATH_ROUTE = "/api/v1/intel/player/report/death";
+    public static final String BANWARDEN_REPORT_PUNISHMENT_ROUTE = "/api/v1/banwarden/report/punishment";
+    public static final String BANWARDEN_SYNC_PUNISHMENT_ROUTE = "/api/v1/banwarden/sync/punishment";
 
     public static HttpResponse get(String path, Map<String, String> params, Map<String, String> headers) throws IOException {
         String minetraxApiHost = common.getPlugin().getApiHost();

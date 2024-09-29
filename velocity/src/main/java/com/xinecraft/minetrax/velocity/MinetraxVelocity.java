@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -89,7 +90,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
     public String serverSessionId;
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     public List<String> whitelistedCommandsFromWeb;
-    public HashMap<String, String> joinAddressCache = new HashMap<>();
+    public ConcurrentHashMap<String, String> joinAddressCache = new ConcurrentHashMap<>();
     public Boolean hasSkinsRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
     public static final MinecraftChannelIdentifier PLUGIN_MESSAGE_CHANNEL = MinecraftChannelIdentifier.from(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL);
@@ -207,7 +208,8 @@ public class MinetraxVelocity implements MinetraxPlugin {
 
         // Add SkinsRestorerHook
         try {
-            SkinsRestorerProvider.get().getEventBus().subscribe(pluginContainer, SkinApplyEvent.class, new SkinsRestorerHook());
+            common.setSkinsRestorerApi(SkinsRestorerProvider.get());
+            common.getSkinsRestorerApi().getEventBus().subscribe(pluginContainer, SkinApplyEvent.class, new SkinsRestorerHook());
 
             // Warn if SkinsRestorer is not compatible with v15
             if (!VersionProvider.isCompatibleWith("15")) {

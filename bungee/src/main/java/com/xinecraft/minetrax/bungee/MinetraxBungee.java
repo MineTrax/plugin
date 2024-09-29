@@ -31,6 +31,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
@@ -54,10 +55,9 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     public String serverSessionId;
     public Boolean isAllowOnlyWhitelistedCommandsFromWeb;
     public List<String> whitelistedCommandsFromWeb;
-    public HashMap<String, String> joinAddressCache = new HashMap<>();
+    public ConcurrentHashMap<String, String> joinAddressCache = new ConcurrentHashMap<>();
     public Boolean hasSkinsRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
-    public SkinsRestorer skinsRestorerApi;
     public Gson gson = null;
     private MinetraxCommon common;
 
@@ -192,8 +192,8 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
 
         // Add SkinsRestorerHook
         try {
-            skinsRestorerApi = SkinsRestorerProvider.get();
-            skinsRestorerApi.getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
+            common.setSkinsRestorerApi(SkinsRestorerProvider.get());
+            common.getSkinsRestorerApi().getEventBus().subscribe(this, SkinApplyEvent.class, new SkinsRestorerHook());
 
             // Warn if SkinsRestorer is not compatible with v15
             if (!VersionProvider.isCompatibleWith("15")) {

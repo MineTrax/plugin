@@ -5,7 +5,7 @@ import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.bukkit.utils.PlayerIntelUtil;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerIntelReportTask implements Runnable {
     public final Gson gson;
@@ -17,7 +17,7 @@ public class PlayerIntelReportTask implements Runnable {
     @Override
     public void run() {
         // Get list of all session
-        HashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap = MinetraxBukkit.getPlugin().getPlayerSessionIntelDataMap();
+        Map<String, PlayerSessionIntelData> playerSessionIntelDataMap = MinetraxBukkit.getPlugin().getPlayerSessionIntelDataMap();
 
         // Loop thru each
         for (PlayerSessionIntelData playerSessionData : playerSessionIntelDataMap.values()) {

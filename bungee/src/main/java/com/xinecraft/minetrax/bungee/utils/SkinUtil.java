@@ -1,6 +1,7 @@
 package com.xinecraft.minetrax.bungee.utils;
 
 import com.xinecraft.minetrax.bungee.MinetraxBungee;
+import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 public class SkinUtil {
     public static void setPlayerSkinUsingUrlOrName(String playerUuid, String value) throws MineSkinException, DataRequestException {
-        SkinsRestorer skinsRestorerApi = MinetraxBungee.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = MinetraxCommon.getInstance().getSkinsRestorerApi();
         SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
         Optional<InputDataResult> result = skinStorage.findOrCreateSkinData(value);
@@ -39,7 +40,7 @@ public class SkinUtil {
     }
 
     public static void setPlayerSkinUsingCustom(String playerUuid, String value) throws DataRequestException {
-        SkinsRestorer skinsRestorerApi = MinetraxBungee.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = MinetraxCommon.getInstance().getSkinsRestorerApi();
         SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
 
@@ -65,7 +66,7 @@ public class SkinUtil {
     }
 
     public static void clearPlayerSkin(String playerUuid) throws DataRequestException {
-        SkinsRestorer skinsRestorerApi = MinetraxBungee.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = MinetraxCommon.getInstance().getSkinsRestorerApi();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
         playerStorage.removeSkinIdOfPlayer(UUID.fromString(playerUuid));
 
@@ -77,7 +78,7 @@ public class SkinUtil {
     }
 
     public static SkinProperty getSkinForPlayer(UUID playerUuid, String playerName) {
-        SkinsRestorer skinsRestorerAPI = MinetraxBungee.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerAPI = MinetraxCommon.getInstance().getSkinsRestorerApi();
         PlayerStorage playerStorage = skinsRestorerAPI.getPlayerStorage();
         try {
             Optional<SkinProperty> skin = playerStorage.getSkinForPlayer(playerUuid, playerName);
@@ -91,7 +92,7 @@ public class SkinUtil {
     }
 
     public static SkinProperty getSkinOfPlayerFromCache(UUID playerUuid, String playerName) {
-        SkinsRestorer skinsRestorerApi = MinetraxBungee.getPlugin().getSkinsRestorerApi();
+        SkinsRestorer skinsRestorerApi = MinetraxCommon.getInstance().getSkinsRestorerApi();
         PlayerStorage playerStorage = skinsRestorerApi.getPlayerStorage();
         SkinStorage skinStorage = skinsRestorerApi.getSkinStorage();
         CacheStorage cacheStorage = skinsRestorerApi.getCacheStorage();
