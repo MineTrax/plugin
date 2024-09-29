@@ -43,7 +43,7 @@ public class MinetraxAdminCommand implements CommandExecutor {
     private void banwardenSyncBans(String typeString) {
         BanWardenSyncType syncType = switch (typeString) {
             case "active" -> BanWardenSyncType.ACTIVE;
-            case "expired" -> BanWardenSyncType.EXPIRED;
+            case "inactive" -> BanWardenSyncType.INACTIVE;
             default -> BanWardenSyncType.ALL;
         };
         MinetraxCommon.getInstance().getBanWarden().sync(syncType);

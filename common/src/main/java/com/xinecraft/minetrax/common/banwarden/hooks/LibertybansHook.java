@@ -9,10 +9,14 @@ import com.xinecraft.minetrax.common.enums.BanWardenSyncType;
 import com.xinecraft.minetrax.common.interfaces.banwarden.BanWardenHook;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import space.arim.libertybans.api.*;
+import space.arim.libertybans.api.event.PostPardonEvent;
+import space.arim.libertybans.api.event.PostPunishEvent;
 import space.arim.libertybans.api.punish.Punishment;
 import space.arim.libertybans.api.select.SelectionPredicate;
 import space.arim.omnibus.Omnibus;
 import space.arim.omnibus.OmnibusProvider;
+import space.arim.omnibus.events.EventConsumer;
+import space.arim.omnibus.events.ListenerPriorities;
 import space.arim.omnibus.util.concurrent.ReactionStage;
 
 import java.util.ArrayList;
@@ -32,6 +36,8 @@ public class LibertybansHook implements BanWardenHook {
     public LibertybansHook() {
         this.omnibus = OmnibusProvider.getOmnibus();
         this.libertyBans = omnibus.getRegistry().getProvider(LibertyBans.class).orElseThrow();
+
+        registerEventListeners();
     }
 
     @Override
@@ -54,12 +60,53 @@ public class LibertybansHook implements BanWardenHook {
             // info that LibertyBans only supports active bans syncing atm
             LoggingUtil.warning("[BanWarden] Note: LibertyBans integration only supports syncing active bans atm.");
         }
-        syncPunishments().thenAccept(aVoid -> {
-            LoggingUtil.info("[BanWarden] Syncing of punishments from LibertyBans completed.");
+
+        syncActivePunishments().thenAccept(aVoid -> {
+            LoggingUtil.debug("[BanWarden] Syncing of punishments from LibertyBans completed.");
         });
     }
 
-    private CompletableFuture<Void> syncPunishments() {
+    private void registerEventListeners() {
+        EventConsumer<PostPunishEvent> punishListener = new EventConsumer<>() {
+            @Override
+            public void accept(PostPunishEvent event) {
+                Punishment punishment = event.getPunishment();
+                MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
+                    try {
+                        PunishmentData data = convertPunishmentToData(punishment, true, null);
+                        List<PunishmentData> punishmentDataList = new ArrayList<>();
+                        punishmentDataList.add(data);
+                        ReportPlayerPunishment.syncSync(punishmentDataList);
+                    } catch (Exception e) {
+                        LoggingUtil.error("[BanWarden] PunishEvent -> Error reporting event to Minetrax: " + e.getMessage());
+                    }
+                });
+            }
+        };
+
+        EventConsumer<PostPardonEvent> pardonListener = new EventConsumer<>() {
+            @Override
+            public void accept(PostPardonEvent event) {
+                Punishment punishment = event.getPunishment();
+                Operator operator = event.getOperator();
+                MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
+                    try {
+                        PunishmentData data = convertPunishmentToData(punishment, false, operator);
+                        List<PunishmentData> punishmentDataList = new ArrayList<>();
+                        punishmentDataList.add(data);
+                        ReportPlayerPunishment.syncSync(punishmentDataList);
+                    } catch (Exception e) {
+                        LoggingUtil.error("[BanWarden] PardonEvent -> Error reporting event to Minetrax: " + e.getMessage());
+                    }
+                });
+            }
+        };
+
+        omnibus.getEventBus().registerListener(PostPunishEvent.class, ListenerPriorities.NORMAL, punishListener);
+        omnibus.getEventBus().registerListener(PostPardonEvent.class, ListenerPriorities.NORMAL, pardonListener);
+    }
+
+    private CompletableFuture<Void> syncActivePunishments() {
         AtomicInteger totalPunishments = new AtomicInteger(0);
         AtomicInteger offset = new AtomicInteger(0);
 
@@ -74,47 +121,8 @@ public class LibertybansHook implements BanWardenHook {
                             // Process the current chunk
                             List<PunishmentData> punishmentDataList = new ArrayList<>();
                             punishmentList.forEach(punishment -> {
-                                PunishmentData punishmentData = new PunishmentData();
-                                punishmentData.plugin_name = BanWardenPluginType.LIBERTYBANS.name().toLowerCase();
-                                punishmentData.plugin_punishment_id = String.valueOf(punishment.getIdentifier());
-                                punishmentData.type = getBanWardenPunishmentType(punishment.getType()).name().toLowerCase();
-                                punishmentData.is_active = true;
-                                punishmentData.start_at = punishment.getStartDateSeconds() * 1000;
-                                punishmentData.end_at = punishment.getEndDateSeconds() * 1000;
-                                punishmentData.reason = punishment.getReason();
-
-                                // Server scope
-                                if (punishment.getScope().appliesTo("*")) {
-                                    punishmentData.server_scope = "*";
-                                } else {
-                                    punishmentData.server_scope = "local";
-                                }
-
-                                // victim
-                                if (punishment.getVictim().getType() == Victim.VictimType.PLAYER) {
-                                    PlayerVictim victim = (PlayerVictim) punishment.getVictim();
-                                    punishmentData.uuid = victim.getUUID().toString();
-                                    punishmentData.is_ipban = false;
-                                } else if (punishment.getVictim().getType() == Victim.VictimType.COMPOSITE) {
-                                    CompositeVictim victim = (CompositeVictim) punishment.getVictim();
-                                    punishmentData.uuid = victim.getUUID().toString();
-                                    punishmentData.ip_address = victim.getAddress().toInetAddress().getHostAddress();
-                                    punishmentData.is_ipban = true;
-                                } else {
-                                    AddressVictim victim = (AddressVictim) punishment.getVictim();
-                                    punishmentData.ip_address = victim.getAddress().toInetAddress().getHostAddress();
-                                    punishmentData.is_ipban = true;
-                                }
-
-                                // creator
-                                if (punishment.getOperator().getType() == Operator.OperatorType.PLAYER) {
-                                    PlayerOperator operator = (PlayerOperator) punishment.getOperator();
-                                    punishmentData.creator_uuid = operator.getUUID().toString();
-                                    punishmentData.creator_username = null;
-                                }
-
-                                // push to list
-                                punishmentDataList.add(punishmentData);
+                                PunishmentData data = convertPunishmentToData(punishment, true, null);
+                                punishmentDataList.add(data);
                             });
 
                             // Report to Minetrax with API
@@ -168,5 +176,60 @@ public class LibertybansHook implements BanWardenHook {
             case KICK -> BanWardenPunishmentType.KICK;
             default -> BanWardenPunishmentType.UNKNOWN;
         };
+    }
+
+    private PunishmentData convertPunishmentToData(Punishment punishment, boolean isActive, Operator pardonOperator) {
+        PunishmentData punishmentData = new PunishmentData();
+        punishmentData.plugin_name = BanWardenPluginType.LIBERTYBANS.name().toLowerCase();
+        punishmentData.plugin_punishment_id = String.valueOf(punishment.getIdentifier());
+        punishmentData.type = getBanWardenPunishmentType(punishment.getType()).name().toLowerCase();
+        punishmentData.start_at = punishment.getStartDateSeconds() * 1000;
+        punishmentData.end_at = punishment.getEndDateSeconds() * 1000;
+        punishmentData.reason = punishment.getReason();
+        punishmentData.is_active = isActive;
+
+        // Server scope
+        if (punishment.getScope().appliesTo("*")) {
+            punishmentData.server_scope = "*";
+        } else {
+            punishmentData.server_scope = "local";
+        }
+
+        // victim
+        if (punishment.getVictim().getType() == Victim.VictimType.PLAYER) {
+            PlayerVictim victim = (PlayerVictim) punishment.getVictim();
+            punishmentData.uuid = victim.getUUID().toString();
+            punishmentData.is_ipban = false;
+        } else if (punishment.getVictim().getType() == Victim.VictimType.COMPOSITE) {
+            CompositeVictim victim = (CompositeVictim) punishment.getVictim();
+            punishmentData.uuid = victim.getUUID().toString();
+            punishmentData.ip_address = victim.getAddress().toInetAddress().getHostAddress();
+            punishmentData.is_ipban = true;
+        } else {
+            AddressVictim victim = (AddressVictim) punishment.getVictim();
+            punishmentData.ip_address = victim.getAddress().toInetAddress().getHostAddress();
+            punishmentData.is_ipban = true;
+        }
+
+        // creator
+        if (punishment.getOperator().getType() == Operator.OperatorType.PLAYER) {
+            PlayerOperator operator = (PlayerOperator) punishment.getOperator();
+            punishmentData.creator_uuid = operator.getUUID().toString();
+            punishmentData.creator_username = null;
+        }
+
+        // pardon operator
+        if (pardonOperator != null) {
+            punishmentData.removed_at = System.currentTimeMillis();
+            if (pardonOperator.getType() == Operator.OperatorType.PLAYER) {
+                PlayerOperator operator = (PlayerOperator) pardonOperator;
+                punishmentData.remover_uuid = operator.getUUID().toString();
+                punishmentData.remover_username = null;
+            } else {
+                punishmentData.remover_username = "CONSOLE";
+            }
+        }
+
+        return punishmentData;
     }
 }
