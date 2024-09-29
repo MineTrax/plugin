@@ -16,6 +16,7 @@ import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import lombok.Getter;
 import lombok.Setter;
 import net.skinsrestorer.api.SkinsRestorer;
+import okhttp3.OkHttpClient;
 
 @Setter
 @Getter
@@ -32,6 +33,7 @@ public class MinetraxCommon {
     private BanWardenPluginType banWardenPluginType;
     private BanWarden banWarden;
     public static String PLUGIN_MESSAGE_CHANNEL = "minetrax:main";
+    public OkHttpClient httpClient = new OkHttpClient();
 
     public MinetraxCommon() {
         instance = this;

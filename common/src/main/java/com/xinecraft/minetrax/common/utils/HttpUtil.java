@@ -12,7 +12,7 @@ public class HttpUtil {
     public static final MinetraxCommon common = MinetraxCommon.getInstance();
 
     public static HttpResponse get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = common.getHttpClient();
 
         // Build the URL with parameters
         HttpUrl.Builder httpBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
@@ -56,7 +56,7 @@ public class HttpUtil {
     }
 
     public static HttpResponse post(String url, String json, Map<String, String> headers) throws IOException {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = common.getHttpClient();
 
         // Build the request with headers
         Request.Builder requestBuilder = new Request.Builder()
