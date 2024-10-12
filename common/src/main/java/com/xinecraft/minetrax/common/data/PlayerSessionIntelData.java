@@ -100,4 +100,14 @@ public class PlayerSessionIntelData {
         this.pvp_damage_given_xmin = 0;
         this.pvp_damage_taken_xmin = 0;
     }
+
+    public void resetStats() {
+        this.mob_kills = 0;
+        this.player_kills = 0;
+        this.deaths = 0;
+        this.afk_time = 0;
+        this.play_time = 0;
+        this.is_kicked = false;
+        this.is_banned = false;
+    }
 }

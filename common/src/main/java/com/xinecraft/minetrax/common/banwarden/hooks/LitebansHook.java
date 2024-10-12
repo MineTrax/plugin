@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +61,7 @@ public class LitebansHook implements BanWardenHook {
             @Override
             public void entryAdded(Entry entry) {
                 try {
-                    PunishmentData data = convertEntryToData(entry);
+                    PunishmentData data = convertEntryToData(entry, false);
                     ReportPlayerPunishment.reportSync(data);
                 } catch (Exception e) {
                     LoggingUtil.error("[BanWarden] EntryAdded -> Error reporting event to Minetrax: " + e.getMessage());
@@ -70,7 +71,7 @@ public class LitebansHook implements BanWardenHook {
             @Override
             public void entryRemoved(Entry entry) {
                 try {
-                    PunishmentData data = convertEntryToData(entry);
+                    PunishmentData data = convertEntryToData(entry, true);
                     ReportPlayerPunishment.reportSync(data);
                 } catch (Exception e) {
                     LoggingUtil.error("[BanWarden] EntryRemoved -> Error reporting event to Minetrax: " + e.getMessage());
@@ -152,7 +153,7 @@ public class LitebansHook implements BanWardenHook {
         });
     }
 
-    private PunishmentData convertEntryToData(Entry entry) {
+    private PunishmentData convertEntryToData(Entry entry, boolean isRemoved) {
         String type = getBanWardenPunishmentType(entry.getType()).name().toLowerCase();
         PunishmentData punishmentData = new PunishmentData();
         punishmentData.plugin_name = BanWardenPluginType.LITEBANS.name().toLowerCase();
@@ -162,17 +163,20 @@ public class LitebansHook implements BanWardenHook {
         punishmentData.end_at = entry.getDateEnd();
         punishmentData.reason = entry.getReason();
         punishmentData.is_active = entry.isActive();
-        punishmentData.server_scope = entry.getServerScope();
+        punishmentData.server_scope = Objects.equals(entry.getServerScope(), "global") ? "*" : entry.getServerScope();
         punishmentData.origin_server_name = entry.getServerOrigin();
         punishmentData.uuid = entry.getUuid();
         punishmentData.ip_address = entry.getIp();
-        punishmentData.is_ipban = entry.getType().equalsIgnoreCase("ipban");
+        punishmentData.is_ipban = entry.isIpban();
         punishmentData.creator_uuid = entry.getExecutorUUID();
         punishmentData.creator_username = entry.getExecutorName();
 
-        punishmentData.removed_at = 0; // TODO
-        punishmentData.remover_uuid = entry.getRemovedByUUID();
-        punishmentData.remover_username = entry.getRemovedByName();
+        if (isRemoved) {
+            punishmentData.removed_at = System.currentTimeMillis();
+            punishmentData.remover_uuid = entry.getRemovedByUUID();
+            punishmentData.remover_username = entry.getRemovedByName();
+            punishmentData.removed_reason = entry.getRemovalReason();
+        }
 
         return punishmentData;
     }
@@ -185,13 +189,21 @@ public class LitebansHook implements BanWardenHook {
         punishmentData.start_at = rs.getLong("time");
         punishmentData.end_at = rs.getLong("until");
         punishmentData.reason = rs.getString("reason");
-        punishmentData.is_active = true;
+        punishmentData.is_active = rs.getBoolean("active");
         punishmentData.server_scope = rs.getString("server_scope");
+        punishmentData.origin_server_name = rs.getString("server_origin");
         punishmentData.uuid = rs.getString("uuid");
         punishmentData.ip_address = rs.getString("ip");
-        punishmentData.is_ipban = punishmentData.type.equals("ban") && rs.getBoolean("ipban");
+        punishmentData.is_ipban = rs.getBoolean("ipban");
         punishmentData.creator_uuid = rs.getString("banned_by_uuid");
         punishmentData.creator_username = rs.getString("banned_by_name");
+
+        if (rs.getTimestamp("removed_by_date") != null) {
+            punishmentData.removed_at = rs.getTimestamp("removed_by_date").getTime();
+            punishmentData.remover_uuid = rs.getString("removed_by_uuid");
+            punishmentData.remover_username = rs.getString("removed_by_name");
+            punishmentData.removed_reason = rs.getString("removed_by_reason");
+        }
 
         return punishmentData;
     }

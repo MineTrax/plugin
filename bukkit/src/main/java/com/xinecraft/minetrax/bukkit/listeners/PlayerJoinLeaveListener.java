@@ -136,6 +136,7 @@ public class PlayerJoinLeaveListener implements Listener {
                 playerSessionIntelData.display_name = ChatColor.stripColor(event.getPlayer().getDisplayName());
                 playerSessionIntelData.session_started_at = new Date().getTime();
                 playerSessionIntelData.is_op = event.getPlayer().isOp();
+                playerSessionIntelData.resetStats(); // Becoz play_time, afk_time is getting set as total of player from api response.
                 try {
                     playerSessionIntelData.join_address = MinetraxBukkit.getPlugin().joinAddressCache.get(event.getPlayer().getUniqueId().toString());
                 } catch (Exception e) {
