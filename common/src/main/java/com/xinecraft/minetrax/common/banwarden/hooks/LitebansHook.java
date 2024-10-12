@@ -138,10 +138,6 @@ public class LitebansHook implements BanWardenHook {
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    // Print fetched data.
-                    String s = rs.getString("id") + rs.getString("uuid") + ", " + rs.getString("reason") + ", " + rs.getString("server_origin");
-                    System.out.println(s);
-
                     PunishmentData data = convertResultSetToData(rs);
                     punishmentDataList.add(data);
                 }
@@ -166,7 +162,7 @@ public class LitebansHook implements BanWardenHook {
         punishmentData.server_scope = Objects.equals(entry.getServerScope(), "global") ? "*" : entry.getServerScope();
         punishmentData.origin_server_name = entry.getServerOrigin();
         punishmentData.uuid = entry.getUuid();
-        punishmentData.ip_address = entry.getIp();
+        punishmentData.ip_address = Objects.equals(entry.getIp(), "#") ? null : entry.getIp();
         punishmentData.is_ipban = entry.isIpban();
         punishmentData.creator_uuid = entry.getExecutorUUID();
         punishmentData.creator_username = entry.getExecutorName();
@@ -193,7 +189,7 @@ public class LitebansHook implements BanWardenHook {
         punishmentData.server_scope = rs.getString("server_scope");
         punishmentData.origin_server_name = rs.getString("server_origin");
         punishmentData.uuid = rs.getString("uuid");
-        punishmentData.ip_address = rs.getString("ip");
+        punishmentData.ip_address = Objects.equals(rs.getString("ip"), "#") ? null : rs.getString("ip");
         punishmentData.is_ipban = rs.getBoolean("ipban");
         punishmentData.creator_uuid = rs.getString("banned_by_uuid");
         punishmentData.creator_username = rs.getString("banned_by_name");
