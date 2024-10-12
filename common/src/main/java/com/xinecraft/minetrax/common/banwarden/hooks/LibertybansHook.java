@@ -30,7 +30,7 @@ public class LibertybansHook implements BanWardenHook {
     public static final MinetraxCommon common = MinetraxCommon.getInstance();
     private final Omnibus omnibus;
     private final LibertyBans libertyBans;
-    private static final int RATE_LIMIT_DELAY_SECONDS = 1; // TODO change to 1 seconds
+    private static final int RATE_LIMIT_DELAY_SECONDS = 1;
     private static final int CHUNK_SIZE = 50;
 
     public LibertybansHook() {
@@ -74,9 +74,7 @@ public class LibertybansHook implements BanWardenHook {
                 MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
                     try {
                         PunishmentData data = convertPunishmentToData(punishment, true, null);
-                        List<PunishmentData> punishmentDataList = new ArrayList<>();
-                        punishmentDataList.add(data);
-                        ReportPlayerPunishment.syncSync(punishmentDataList);
+                        ReportPlayerPunishment.reportSync(data);
                     } catch (Exception e) {
                         LoggingUtil.error("[BanWarden] PunishEvent -> Error reporting event to Minetrax: " + e.getMessage());
                     }
@@ -92,9 +90,7 @@ public class LibertybansHook implements BanWardenHook {
                 MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
                     try {
                         PunishmentData data = convertPunishmentToData(punishment, false, operator);
-                        List<PunishmentData> punishmentDataList = new ArrayList<>();
-                        punishmentDataList.add(data);
-                        ReportPlayerPunishment.syncSync(punishmentDataList);
+                        ReportPlayerPunishment.reportSync(data);
                     } catch (Exception e) {
                         LoggingUtil.error("[BanWarden] PardonEvent -> Error reporting event to Minetrax: " + e.getMessage());
                     }
@@ -192,7 +188,7 @@ public class LibertybansHook implements BanWardenHook {
         if (punishment.getScope().appliesTo("*")) {
             punishmentData.server_scope = "*";
         } else {
-            punishmentData.server_scope = "local";
+            punishmentData.server_scope = "local"; // TODO: how to get which server this ban apply to. (ie, server_origin)
         }
 
         // victim
@@ -216,6 +212,8 @@ public class LibertybansHook implements BanWardenHook {
             PlayerOperator operator = (PlayerOperator) punishment.getOperator();
             punishmentData.creator_uuid = operator.getUUID().toString();
             punishmentData.creator_username = null;
+        } else {
+            punishmentData.creator_username = "CONSOLE";
         }
 
         // pardon operator

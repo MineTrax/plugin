@@ -25,16 +25,14 @@ public class ReportPlayerPunishment {
         }
     }
 
-    public static void upsertSync(PunishmentData data) throws HttpException, IOException {
-        JsonObject payload = new JsonObject();
-        payload.addProperty("type", data.getType());
-        // todo
+    public static void reportSync(PunishmentData data) throws HttpException, IOException {
+        JsonObject payload = common.getGson().toJsonTree(data).getAsJsonObject();
         payload.addProperty("server_id", common.getPlugin().getApiServerId());
 
         HttpResponse response = MinetraxHttpUtil.post(MinetraxHttpUtil.BANWARDEN_REPORT_PUNISHMENT_ROUTE, payload.toString(), null);
 
         if (!response.isSuccessful()) {
-            throw new HttpException(response, "ReportServerChat.reportAsync");
+            throw new HttpException(response, "ReportServerChat.upsertSync");
         }
     }
 }

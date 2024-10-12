@@ -1,11 +1,13 @@
 package com.xinecraft.minetrax.bukkit.commands;
 
+import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.enums.BanWardenSyncType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class MinetraxAdminCommand implements CommandExecutor {
@@ -23,6 +25,11 @@ public class MinetraxAdminCommand implements CommandExecutor {
         }
 
         if (firstArg.equalsIgnoreCase("banwarden:sync")) {
+            if (!(commandSender instanceof ConsoleCommandSender)) {
+                commandSender.sendMessage(ChatColor.RED + "This command can only be run from console.");
+                return false;
+            }
+
             String secondArg = strings.length > 1 ? strings[1].toLowerCase() : "all";
             commandSender.sendMessage(ChatColor.GREEN + "[BanWarden] Syncing " + secondArg + " ban data to web, plz check server logs for progress...");
             banwardenSyncBans(secondArg);
@@ -41,12 +48,16 @@ public class MinetraxAdminCommand implements CommandExecutor {
     }
 
     private void banwardenSyncBans(String typeString) {
+        if (!MinetraxBukkit.getPlugin().getIsBanWardenEnabled()) {
+            MinetraxBukkit.getPlugin().getLogger().warning("BanWarden is not enabled, cannot sync bans.");
+            return;
+        }
+
         BanWardenSyncType syncType = switch (typeString) {
             case "active" -> BanWardenSyncType.ACTIVE;
             case "inactive" -> BanWardenSyncType.INACTIVE;
             default -> BanWardenSyncType.ALL;
         };
         MinetraxCommon.getInstance().getBanWarden().sync(syncType);
-        return;
     }
 }
