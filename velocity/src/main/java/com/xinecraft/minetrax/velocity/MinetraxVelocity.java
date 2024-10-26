@@ -17,6 +17,7 @@ import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
+import com.xinecraft.minetrax.velocity.commands.MinetraxAdminCommand;
 import com.xinecraft.minetrax.velocity.hooks.skinsrestorer.SkinsRestorerHook;
 import com.xinecraft.minetrax.velocity.listeners.ServerConnectedListener;
 import com.xinecraft.minetrax.velocity.logging.VelocityLogger;
@@ -47,15 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Getter
-@Plugin(
-        id = "minetrax",
-        name = "Minetrax",
-        authors = {"Xinecraft"},
-        version = BuildConstants.VERSION,
-        dependencies = {
-                @Dependency(id = "skinsrestorer", optional = true)
-        }
-)
+@Plugin(id = "minetrax", name = "Minetrax", authors = {"Xinecraft"}, version = BuildConstants.VERSION, dependencies = {@Dependency(id = "skinsrestorer", optional = true)})
 public class MinetraxVelocity implements MinetraxPlugin {
     @Inject
     private Logger logger;
@@ -108,19 +101,13 @@ public class MinetraxVelocity implements MinetraxPlugin {
             return;
         }
         // Disable plugin if host, key, secret or server-id is not there
-        if (
-                apiHost == null || apiKey == null || apiSecret == null || apiServerId == null ||
-                        apiHost.isEmpty() || apiKey.isEmpty() || apiSecret.isEmpty() || apiServerId.isEmpty()
-        ) {
+        if (apiHost == null || apiKey == null || apiSecret == null || apiServerId == null || apiHost.isEmpty() || apiKey.isEmpty() || apiSecret.isEmpty() || apiServerId.isEmpty()) {
             logger.error("Plugin disabled due to no API information");
             return;
         }
 
         // GSON builder
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .disableHtmlEscaping()
-                .create();
+        gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().create();
 
         // Setup Common
         common = new MinetraxCommon();
@@ -149,13 +136,12 @@ public class MinetraxVelocity implements MinetraxPlugin {
         // Register Listeners
         proxyServer.getEventManager().register(this, new ServerConnectedListener());
 
+        // Register Commands
+        proxyServer.getCommandManager().register("minetraxv", new MinetraxAdminCommand(this), "mtxv");
+
         // Register Tasks
         if (isServerIntelEnabled) {
-            proxyServer.getScheduler()
-                    .buildTask(plugin, new ServerIntelReportTask())
-                    .delay(60L, TimeUnit.SECONDS)
-                    .repeat(60L, TimeUnit.SECONDS)
-                    .schedule();
+            proxyServer.getScheduler().buildTask(plugin, new ServerIntelReportTask()).delay(60L, TimeUnit.SECONDS).repeat(60L, TimeUnit.SECONDS).schedule();
         }
     }
 
@@ -167,9 +153,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
     private void loadConfig() {
         // Create and update the file
         try {
-            config = YamlDocument.create(new File(getDataPath().toFile(), "config.yml"),
-                    Objects.requireNonNull(getClass().getResourceAsStream("/velocityConfig.yml")),
-                    GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("file-version")).build());
+            config = YamlDocument.create(new File(getDataPath().toFile(), "config.yml"), Objects.requireNonNull(getClass().getResourceAsStream("/velocityConfig.yml")), GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("file-version")).build());
         } catch (IOException ex) {
             LoggingUtil.warntrace(ex);
         }

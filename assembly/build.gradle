@@ -22,6 +22,12 @@ shadowJar {
     relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
     relocate('okio', 'com.xinecraft.minetrax.libs.okio')
     relocate('okhttp3', 'com.xinecraft.minetrax.libs.okhttp3')
-    relocate('net.kyori', 'com.xinecraft.minetrax.libs.kyori')
     relocate('de.themoep', 'com.xinecraft.minetrax.libs.themoep')
+
+    /**
+     * Note: Kyori's relocation causes issue with Velocity.
+     * We can't use adventure functions in velocity if its relocated.
+     * Keeping it commented for sometime to see if not relocating it fixes the issue with Bukkit.
+     */
+     // relocate('net.kyori', 'com.xinecraft.minetrax.libs.kyori')
 }
