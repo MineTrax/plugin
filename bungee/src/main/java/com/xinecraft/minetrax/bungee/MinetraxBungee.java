@@ -10,15 +10,15 @@ import com.xinecraft.minetrax.bungee.tasks.ServerIntelReportTask;
 import com.xinecraft.minetrax.bungee.utils.PluginUtil;
 import com.xinecraft.minetrax.bungee.webquery.BungeeWebQuery;
 import com.xinecraft.minetrax.common.MinetraxCommon;
-import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
+import com.xinecraft.minetrax.common.enums.BanWardenPluginType;
 import com.xinecraft.minetrax.common.enums.PlatformType;
+import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.VersionProvider;
 import net.skinsrestorer.api.event.SkinApplyEvent;
@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,25 +57,12 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     public ConcurrentHashMap<String, String> joinAddressCache = new ConcurrentHashMap<>();
     public Boolean hasSkinsRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
+    public Boolean isBanWardenEnabled = false;
     public Gson gson = null;
     private MinetraxCommon common;
 
     @Override
     public void onEnable() {
-        // GSON builder
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .disableHtmlEscaping()
-                .create();
-
-        // Setup Common
-        common = new MinetraxCommon();
-        common.setPlugin(this);
-        common.setPlatformType(PlatformType.BUNGEE);
-        common.setGson(gson);
-        common.setLogger(new BungeeLogger(this));
-        common.setScheduler(new BungeeScheduler(this));
-        common.setWebQuery(new BungeeWebQuery(this));
         plugin = this;
 
         // Load configuration
@@ -94,6 +80,22 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
             getLogger().severe("Plugin disabled due to no API information");
             return;
         }
+
+        // GSON builder
+        gson = new GsonBuilder()
+                .serializeNulls()
+                .disableHtmlEscaping()
+                .create();
+
+        // Setup Common
+        common = new MinetraxCommon();
+        common.setPlugin(this);
+        common.setPlatformType(PlatformType.BUNGEE);
+        common.setGson(gson);
+        common.setLogger(new BungeeLogger(this));
+        common.setScheduler(new BungeeScheduler(this));
+        common.setWebQuery(new BungeeWebQuery(this));
+        initBanWarden(common);
 
         // init Bstats
         initBstats();
@@ -169,6 +171,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         isAllowOnlyWhitelistedCommandsFromWeb = config.getBoolean("allow-only-whitelisted-commands-from-web", false);
         whitelistedCommandsFromWeb = config.getStringList("whitelisted-commands-from-web");
         isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", false);
+        isBanWardenEnabled = config.getBoolean("enable-banwarden", false);
         serverSessionId = UUID.randomUUID().toString();
     }
 
@@ -205,6 +208,26 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
             getLogger().warning("MineTrax failed to hook into SkinsRestorer!");
             getLogger().warning("Error: " + e.getMessage());
             return false;
+        }
+    }
+
+    private void initBanWarden(MinetraxCommon common) {
+        if (!isBanWardenEnabled) {
+            getLogger().warning("[BanWarden] BanWarden is disabled in config.yml");
+            return;
+        }
+
+        // set which ban plugin is enabled.
+        if (PluginUtil.checkIfPluginEnabled("LiteBans")) {
+            common.initBanWarden(BanWardenPluginType.LITEBANS);
+        } else if (PluginUtil.checkIfPluginEnabled("LibertyBans")) {
+            common.initBanWarden(BanWardenPluginType.LIBERTYBANS);
+        } else if (PluginUtil.checkIfPluginEnabled("AdvancedBan")) {
+            common.initBanWarden(BanWardenPluginType.ADVANCEDBAN);
+        } else {
+            isBanWardenEnabled = false;
+            getLogger().warning("[BanWarden] No supported BanWarden plugin found.");
+            return;
         }
     }
 }

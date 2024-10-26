@@ -31,7 +31,7 @@ public class MinetraxAdminCommand implements CommandExecutor {
             }
 
             String secondArg = strings.length > 1 ? strings[1].toLowerCase() : "all";
-            commandSender.sendMessage(ChatColor.GREEN + "[BanWarden] Syncing " + secondArg + " ban data to web, plz check server logs for progress...");
+            commandSender.sendMessage(ChatColor.GREEN + "[BanWarden] Syncing " + secondArg + " punishments to web, plz check server logs for progress...");
             banwardenSyncBans(secondArg);
             return true;
         }

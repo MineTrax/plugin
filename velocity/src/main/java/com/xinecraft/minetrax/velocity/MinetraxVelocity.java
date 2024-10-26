@@ -3,8 +3,8 @@ package com.xinecraft.minetrax.velocity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
@@ -12,8 +12,9 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.xinecraft.minetrax.common.MinetraxCommon;
-import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
+import com.xinecraft.minetrax.common.enums.BanWardenPluginType;
 import com.xinecraft.minetrax.common.enums.PlatformType;
+import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
 import com.xinecraft.minetrax.velocity.hooks.skinsrestorer.SkinsRestorerHook;
@@ -39,7 +40,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -93,24 +93,11 @@ public class MinetraxVelocity implements MinetraxPlugin {
     public ConcurrentHashMap<String, String> joinAddressCache = new ConcurrentHashMap<>();
     public Boolean hasSkinsRestorer = false;
     public Boolean isSkinsRestorerHookEnabled;
+    public Boolean isBanWardenEnabled = false;
     public static final MinecraftChannelIdentifier PLUGIN_MESSAGE_CHANNEL = MinecraftChannelIdentifier.from(MinetraxCommon.PLUGIN_MESSAGE_CHANNEL);
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        // GSON builder
-        gson = new GsonBuilder()
-                .serializeNulls()
-                .disableHtmlEscaping()
-                .create();
-
-        // Setup Common
-        common = new MinetraxCommon();
-        common.setPlugin(this);
-        common.setPlatformType(PlatformType.VELOCITY);
-        common.setGson(gson);
-        common.setLogger(new VelocityLogger(this));
-        common.setScheduler(new VelocityScheduler(this));
-        common.setWebQuery(new VelocityWebQuery(this));
         plugin = this;
 
         // Load config
@@ -128,6 +115,22 @@ public class MinetraxVelocity implements MinetraxPlugin {
             logger.error("Plugin disabled due to no API information");
             return;
         }
+
+        // GSON builder
+        gson = new GsonBuilder()
+                .serializeNulls()
+                .disableHtmlEscaping()
+                .create();
+
+        // Setup Common
+        common = new MinetraxCommon();
+        common.setPlugin(this);
+        common.setPlatformType(PlatformType.VELOCITY);
+        common.setGson(gson);
+        common.setLogger(new VelocityLogger(this));
+        common.setScheduler(new VelocityScheduler(this));
+        common.setWebQuery(new VelocityWebQuery(this));
+        initBanWarden(common);
 
         // init Bstats
         initBstats();
@@ -190,6 +193,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
         isAllowOnlyWhitelistedCommandsFromWeb = config.getBoolean("allow-only-whitelisted-commands-from-web", false);
         whitelistedCommandsFromWeb = config.getStringList("whitelisted-commands-from-web");
         isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", false);
+        isBanWardenEnabled = config.getBoolean("enable-banwarden", false);
         serverSessionId = UUID.randomUUID().toString();
     }
 
@@ -221,6 +225,27 @@ public class MinetraxVelocity implements MinetraxPlugin {
             logger.warn("MineTrax failed to hook into SkinsRestorer!");
             logger.warn("Error: " + e.getMessage());
             return false;
+        }
+    }
+
+
+    private void initBanWarden(MinetraxCommon common) {
+        if (!isBanWardenEnabled) {
+            logger.warn("[BanWarden] BanWarden is disabled in config.yml");
+            return;
+        }
+
+        // set which ban plugin is enabled.
+        if (PluginUtil.checkIfPluginEnabled("litebans")) {
+            common.initBanWarden(BanWardenPluginType.LITEBANS);
+        } else if (PluginUtil.checkIfPluginEnabled("libertybans")) {
+            common.initBanWarden(BanWardenPluginType.LIBERTYBANS);
+        } else if (PluginUtil.checkIfPluginEnabled("advancedban")) {
+            common.initBanWarden(BanWardenPluginType.ADVANCEDBAN);
+        } else {
+            isBanWardenEnabled = false;
+            logger.warn("[BanWarden] No supported BanWarden plugin found.");
+            return;
         }
     }
 }

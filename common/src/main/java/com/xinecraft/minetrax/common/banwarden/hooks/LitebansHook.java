@@ -61,7 +61,7 @@ public class LitebansHook implements BanWardenHook {
             @Override
             public void entryAdded(Entry entry) {
                 try {
-                    PunishmentData data = convertEntryToData(entry, false);
+                    PunishmentData data = convertEntryToData(entry, false, "punish");
                     ReportPlayerPunishment.reportSync(data);
                 } catch (Exception e) {
                     LoggingUtil.error("[BanWarden] EntryAdded -> Error reporting event to Minetrax: " + e.getMessage());
@@ -71,7 +71,7 @@ public class LitebansHook implements BanWardenHook {
             @Override
             public void entryRemoved(Entry entry) {
                 try {
-                    PunishmentData data = convertEntryToData(entry, true);
+                    PunishmentData data = convertEntryToData(entry, true, "pardon");
                     ReportPlayerPunishment.reportSync(data);
                 } catch (Exception e) {
                     LoggingUtil.error("[BanWarden] EntryRemoved -> Error reporting event to Minetrax: " + e.getMessage());
@@ -130,7 +130,7 @@ public class LitebansHook implements BanWardenHook {
     private CompletionStage<List<PunishmentData>> fetchPunishmentChunk(int limit, int offset) {
         return CompletableFuture.supplyAsync(() -> {
             List<PunishmentData> punishmentDataList = new ArrayList<>();
-            String sql = "SELECT id, uuid, ip, reason, banned_by_uuid, banned_by_name, removed_by_uuid, removed_by_name, removed_by_reason, removed_by_date, time, until, template, server_scope, server_origin, silent, ipban, ipban_wildcard, active,'ban'as type FROM litebans_bans UNION ALL SELECT id, uuid, ip, reason, banned_by_uuid, banned_by_name, removed_by_uuid, removed_by_name, removed_by_reason, removed_by_date, time, until, template, server_scope, server_origin, silent, ipban, ipban_wildcard, active,'mute'as type FROM litebans_mutes UNION ALL SELECT id, uuid, ip, reason, banned_by_uuid, banned_by_name, removed_by_uuid, removed_by_name, removed_by_reason, removed_by_date, time, until, template, server_scope, server_origin, silent, ipban, ipban_wildcard, active,'warn'as type FROM litebans_warnings ORDER BY id ASC LIMIT ? OFFSET ?";
+            String sql = "SELECT id, uuid, ip, reason, banned_by_uuid, banned_by_name, removed_by_uuid, removed_by_name, removed_by_reason, removed_by_date, time, until, template, server_scope, server_origin, silent, ipban, ipban_wildcard, active,'ban' as type FROM litebans_bans UNION ALL SELECT id, uuid, ip, reason, banned_by_uuid, banned_by_name, removed_by_uuid, removed_by_name, removed_by_reason, removed_by_date, time, until, template, server_scope, server_origin, silent, ipban, ipban_wildcard, active,'mute' as type FROM litebans_mutes UNION ALL SELECT id, uuid, ip, reason, banned_by_uuid, banned_by_name, removed_by_uuid, removed_by_name, removed_by_reason, removed_by_date, time, until, template, server_scope, server_origin, silent, ipban, ipban_wildcard, active,'warn' as type FROM litebans_warnings ORDER BY TIME ASC, id ASC LIMIT ? OFFSET ?";
 
             try (PreparedStatement stmt = Database.get().prepareStatement(sql)) {
                 stmt.setInt(1, limit);
@@ -138,7 +138,7 @@ public class LitebansHook implements BanWardenHook {
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
-                    PunishmentData data = convertResultSetToData(rs);
+                    PunishmentData data = convertResultSetToData(rs, "sync");
                     punishmentDataList.add(data);
                 }
             } catch (SQLException e) {
@@ -149,7 +149,7 @@ public class LitebansHook implements BanWardenHook {
         });
     }
 
-    private PunishmentData convertEntryToData(Entry entry, boolean isRemoved) {
+    private PunishmentData convertEntryToData(Entry entry, boolean isRemoved, String fromEvent) {
         String type = getBanWardenPunishmentType(entry.getType()).name().toLowerCase();
         PunishmentData punishmentData = new PunishmentData();
         punishmentData.plugin_name = BanWardenPluginType.LITEBANS.name().toLowerCase();
@@ -166,6 +166,7 @@ public class LitebansHook implements BanWardenHook {
         punishmentData.is_ipban = entry.isIpban();
         punishmentData.creator_uuid = entry.getExecutorUUID();
         punishmentData.creator_username = entry.getExecutorName();
+        punishmentData.from_event = fromEvent;
 
         if (isRemoved) {
             punishmentData.removed_at = System.currentTimeMillis();
@@ -177,7 +178,7 @@ public class LitebansHook implements BanWardenHook {
         return punishmentData;
     }
 
-    private PunishmentData convertResultSetToData(ResultSet rs) throws SQLException {
+    private PunishmentData convertResultSetToData(ResultSet rs, String fromEvent) throws SQLException {
         PunishmentData punishmentData = new PunishmentData();
         punishmentData.plugin_name = BanWardenPluginType.LITEBANS.name().toLowerCase();
         punishmentData.plugin_punishment_id = rs.getString("id");
@@ -193,8 +194,9 @@ public class LitebansHook implements BanWardenHook {
         punishmentData.is_ipban = rs.getBoolean("ipban");
         punishmentData.creator_uuid = rs.getString("banned_by_uuid");
         punishmentData.creator_username = rs.getString("banned_by_name");
+        punishmentData.from_event = fromEvent;
 
-        if (rs.getTimestamp("removed_by_date") != null) {
+        if (rs.getTimestamp("removed_by_date") != null && !rs.getBoolean("active") && rs.getString("removed_by_name") != null && !rs.getString("removed_by_name").startsWith("#")) {
             punishmentData.removed_at = rs.getTimestamp("removed_by_date").getTime();
             punishmentData.remover_uuid = rs.getString("removed_by_uuid");
             punishmentData.remover_username = rs.getString("removed_by_name");
@@ -208,7 +210,7 @@ public class LitebansHook implements BanWardenHook {
         return switch (type.toLowerCase()) {
             case "ban" -> BanWardenPunishmentType.BAN;
             case "mute" -> BanWardenPunishmentType.MUTE;
-            case "warning" -> BanWardenPunishmentType.WARN;
+            case "warning", "warn" -> BanWardenPunishmentType.WARN;
             case "kick" -> BanWardenPunishmentType.KICK;
             default -> BanWardenPunishmentType.UNKNOWN;
         };

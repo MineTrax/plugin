@@ -345,8 +345,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         isDisablePlayerMovementTracking = this.getConfig().getBoolean("disable-player-movement-tracking");
         isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
-        serverSessionId = UUID.randomUUID().toString();
         isBanWardenEnabled = this.getConfig().getBoolean("enable-banwarden");
+        serverSessionId = UUID.randomUUID().toString();
     }
 
     private void startWebQueryServer() {

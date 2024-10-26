@@ -73,7 +73,7 @@ public class LibertybansHook implements BanWardenHook {
                 Punishment punishment = event.getPunishment();
                 MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
                     try {
-                        PunishmentData data = convertPunishmentToData(punishment, true, null);
+                        PunishmentData data = convertPunishmentToData(punishment, true, null, "punish");
                         ReportPlayerPunishment.reportSync(data);
                     } catch (Exception e) {
                         LoggingUtil.error("[BanWarden] PunishEvent -> Error reporting event to Minetrax: " + e.getMessage());
@@ -89,7 +89,7 @@ public class LibertybansHook implements BanWardenHook {
                 Operator operator = event.getOperator();
                 MinetraxCommon.getInstance().getScheduler().runAsync(() -> {
                     try {
-                        PunishmentData data = convertPunishmentToData(punishment, false, operator);
+                        PunishmentData data = convertPunishmentToData(punishment, false, operator, "pardon");
                         ReportPlayerPunishment.reportSync(data);
                     } catch (Exception e) {
                         LoggingUtil.error("[BanWarden] PardonEvent -> Error reporting event to Minetrax: " + e.getMessage());
@@ -117,7 +117,7 @@ public class LibertybansHook implements BanWardenHook {
                             // Process the current chunk
                             List<PunishmentData> punishmentDataList = new ArrayList<>();
                             punishmentList.forEach(punishment -> {
-                                PunishmentData data = convertPunishmentToData(punishment, true, null);
+                                PunishmentData data = convertPunishmentToData(punishment, true, null, "sync");
                                 punishmentDataList.add(data);
                             });
 
@@ -174,7 +174,7 @@ public class LibertybansHook implements BanWardenHook {
         };
     }
 
-    private PunishmentData convertPunishmentToData(Punishment punishment, boolean isActive, Operator pardonOperator) {
+    private PunishmentData convertPunishmentToData(Punishment punishment, boolean isActive, Operator pardonOperator, String fromEvent) {
         PunishmentData punishmentData = new PunishmentData();
         punishmentData.plugin_name = BanWardenPluginType.LIBERTYBANS.name().toLowerCase();
         punishmentData.plugin_punishment_id = String.valueOf(punishment.getIdentifier());
@@ -183,6 +183,7 @@ public class LibertybansHook implements BanWardenHook {
         punishmentData.end_at = punishment.getEndDateSeconds() * 1000;
         punishmentData.reason = punishment.getReason();
         punishmentData.is_active = isActive;
+        punishmentData.from_event = fromEvent;
 
         // Server scope
         if (punishment.getScope().appliesTo("*")) {

@@ -28,4 +28,6 @@ public class PunishmentData {
     public String remover_username;
     public String removed_reason;
     public long removed_at;
+
+    public String from_event; // punish, pardon, sync
 }
