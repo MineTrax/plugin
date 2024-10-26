@@ -137,7 +137,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
         proxyServer.getEventManager().register(this, new ServerConnectedListener());
 
         // Register Commands
-        proxyServer.getCommandManager().register("minetraxv", new MinetraxAdminCommand(this), "mtxv");
+        proxyServer.getCommandManager().register("minetraxv", new MinetraxAdminCommand(this), "mtxv", "mtxp");
 
         // Register Tasks
         if (isServerIntelEnabled) {

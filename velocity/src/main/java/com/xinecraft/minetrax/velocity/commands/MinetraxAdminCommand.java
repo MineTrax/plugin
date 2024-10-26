@@ -38,6 +38,11 @@ public class MinetraxAdminCommand implements SimpleCommand {
                 return;
             }
 
+            if (!plugin.getIsBanWardenEnabled()) {
+                source.sendMessage(Component.text("[BanWarden] BanWarden is not enabled, cannot sync bans.", NamedTextColor.RED));
+                return;
+            }
+
             String secondArg = args.length > 1 ? args[1].toLowerCase() : "all";
             source.sendMessage(Component.text("[BanWarden] Syncing " + secondArg + " punishments to web, plz check server logs for progress...", NamedTextColor.GREEN));
             banwardenSyncBans(secondArg);
@@ -54,11 +59,6 @@ public class MinetraxAdminCommand implements SimpleCommand {
     }
 
     private void banwardenSyncBans(String typeString) {
-        if (!plugin.getIsBanWardenEnabled()) {
-            plugin.getLogger().warn("BanWarden is not enabled, cannot sync bans.");
-            return;
-        }
-
         BanWardenSyncType syncType = switch (typeString) {
             case "active" -> BanWardenSyncType.ACTIVE;
             case "inactive" -> BanWardenSyncType.INACTIVE;

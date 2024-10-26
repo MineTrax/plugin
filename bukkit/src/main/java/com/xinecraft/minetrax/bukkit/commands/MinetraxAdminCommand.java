@@ -30,6 +30,12 @@ public class MinetraxAdminCommand implements CommandExecutor {
                 return false;
             }
 
+
+            if (!MinetraxBukkit.getPlugin().getIsBanWardenEnabled()) {
+                commandSender.sendMessage(ChatColor.RED + "[BanWarden] BanWarden is not enabled, cannot sync bans.");
+                return false;
+            }
+
             String secondArg = strings.length > 1 ? strings[1].toLowerCase() : "all";
             commandSender.sendMessage(ChatColor.GREEN + "[BanWarden] Syncing " + secondArg + " punishments to web, plz check server logs for progress...");
             banwardenSyncBans(secondArg);
@@ -48,11 +54,6 @@ public class MinetraxAdminCommand implements CommandExecutor {
     }
 
     private void banwardenSyncBans(String typeString) {
-        if (!MinetraxBukkit.getPlugin().getIsBanWardenEnabled()) {
-            MinetraxBukkit.getPlugin().getLogger().warning("BanWarden is not enabled, cannot sync bans.");
-            return;
-        }
-
         BanWardenSyncType syncType = switch (typeString) {
             case "active" -> BanWardenSyncType.ACTIVE;
             case "inactive" -> BanWardenSyncType.INACTIVE;

@@ -2,6 +2,7 @@ package com.xinecraft.minetrax.bungee;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.xinecraft.minetrax.bungee.commands.MinetraxAdminCommand;
 import com.xinecraft.minetrax.bungee.hooks.skinsrestorer.SkinsRestorerHook;
 import com.xinecraft.minetrax.bungee.listeners.ServerConnectedListener;
 import com.xinecraft.minetrax.bungee.logging.BungeeLogger;
@@ -113,6 +114,9 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
 
         // Register Listeners
         getProxy().getPluginManager().registerListener(this, new ServerConnectedListener());
+
+        // Register Commands
+        getProxy().getPluginManager().registerCommand(this, new MinetraxAdminCommand(this));
 
         // Register Tasks
         if (isServerIntelEnabled) {
