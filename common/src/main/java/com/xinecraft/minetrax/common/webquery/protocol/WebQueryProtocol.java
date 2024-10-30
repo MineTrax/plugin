@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.common.webquery.protocol;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.common.MinetraxCommon;
 import com.xinecraft.minetrax.common.data.WebQueryRequestData;
+import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.utils.CryptoUtil;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 
@@ -27,8 +28,8 @@ public class WebQueryProtocol {
         String response;
         switch (type) {
             case "status":
-               response = common.getWebQuery().handleStatus();
-               break;
+                response = common.getWebQuery().handleStatus();
+                break;
             case "ping":
                 response = common.getWebQuery().handlePing();
                 break;
@@ -60,6 +61,15 @@ public class WebQueryProtocol {
                 String playerUuidForCheck = payloadJson.get("player_uuid").getAsString();
                 response = common.getWebQuery().handleCheckPlayerOnline(playerUuidForCheck);
                 break;
+            case "banwarden-punish":
+                response = "Work in progress";
+                break;
+            case "banwarden-pardon":
+                String pType = payloadJson.get("type").getAsString();
+                BanWardenPunishmentType punishmentType = BanWardenPunishmentType.valueOf(pType.toUpperCase());
+                String victim = payloadJson.get("victim").getAsString();
+                String reason = payloadJson.get("reason").getAsString();
+                response = common.getWebQuery().handleBanwardenPardon(punishmentType, victim, reason);
             default:
                 throw new Exception("Invalid webquery command type");
         }

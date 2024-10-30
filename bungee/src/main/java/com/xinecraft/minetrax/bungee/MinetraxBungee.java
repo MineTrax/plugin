@@ -2,6 +2,7 @@ package com.xinecraft.minetrax.bungee;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.xinecraft.minetrax.bungee.commander.BungeeCommander;
 import com.xinecraft.minetrax.bungee.commands.MinetraxAdminCommand;
 import com.xinecraft.minetrax.bungee.hooks.skinsrestorer.SkinsRestorerHook;
 import com.xinecraft.minetrax.bungee.listeners.ServerConnectedListener;
@@ -94,6 +95,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         common.setPlatformType(PlatformType.BUNGEE);
         common.setGson(gson);
         common.setLogger(new BungeeLogger(this));
+        common.setCommander(new BungeeCommander());
         common.setScheduler(new BungeeScheduler(this));
         common.setWebQuery(new BungeeWebQuery(this));
         initBanWarden(common);
@@ -174,8 +176,8 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
         isConsoleLogEnabled = config.getBoolean("enable-consolelog", true);
         isAllowOnlyWhitelistedCommandsFromWeb = config.getBoolean("allow-only-whitelisted-commands-from-web", false);
         whitelistedCommandsFromWeb = config.getStringList("whitelisted-commands-from-web");
-        isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", false);
-        isBanWardenEnabled = config.getBoolean("enable-banwarden", false);
+        isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", true);
+        isBanWardenEnabled = config.getBoolean("enable-banwarden", true);
         serverSessionId = UUID.randomUUID().toString();
     }
 

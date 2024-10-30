@@ -17,6 +17,7 @@ import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import com.xinecraft.minetrax.common.webquery.WebQueryServer;
+import com.xinecraft.minetrax.velocity.commander.VelocityCommander;
 import com.xinecraft.minetrax.velocity.commands.MinetraxAdminCommand;
 import com.xinecraft.minetrax.velocity.hooks.skinsrestorer.SkinsRestorerHook;
 import com.xinecraft.minetrax.velocity.listeners.ServerConnectedListener;
@@ -115,6 +116,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
         common.setPlatformType(PlatformType.VELOCITY);
         common.setGson(gson);
         common.setLogger(new VelocityLogger(this));
+        common.setCommander(new VelocityCommander(this));
         common.setScheduler(new VelocityScheduler(this));
         common.setWebQuery(new VelocityWebQuery(this));
         initBanWarden(common);
@@ -176,8 +178,8 @@ public class MinetraxVelocity implements MinetraxPlugin {
         isConsoleLogEnabled = config.getBoolean("enable-consolelog", false);
         isAllowOnlyWhitelistedCommandsFromWeb = config.getBoolean("allow-only-whitelisted-commands-from-web", false);
         whitelistedCommandsFromWeb = config.getStringList("whitelisted-commands-from-web");
-        isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", false);
-        isBanWardenEnabled = config.getBoolean("enable-banwarden", false);
+        isSkinsRestorerHookEnabled = config.getBoolean("enable-skinsrestorer-hook", true);
+        isBanWardenEnabled = config.getBoolean("enable-banwarden", true);
         serverSessionId = UUID.randomUUID().toString();
     }
 

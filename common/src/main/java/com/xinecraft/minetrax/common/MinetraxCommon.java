@@ -10,6 +10,7 @@ import com.xinecraft.minetrax.common.enums.BanWardenPluginType;
 import com.xinecraft.minetrax.common.enums.PlatformType;
 import com.xinecraft.minetrax.common.interfaces.MinetraxPlugin;
 import com.xinecraft.minetrax.common.interfaces.banwarden.BanWardenHook;
+import com.xinecraft.minetrax.common.interfaces.commander.CommonCommander;
 import com.xinecraft.minetrax.common.interfaces.logging.CommonLogger;
 import com.xinecraft.minetrax.common.interfaces.schedulers.CommonScheduler;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
@@ -26,6 +27,7 @@ public class MinetraxCommon {
     private CommonLogger logger;
     private CommonScheduler scheduler;
     private CommonWebQuery webQuery;
+    private CommonCommander commander;
     private PlatformType platformType;
     private Gson gson;
     private MinetraxPlugin plugin;

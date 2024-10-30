@@ -41,12 +41,19 @@ public class LibertybansHook implements BanWardenHook {
     }
 
     @Override
-    public void upsert(PunishmentData punishmentData) {
+    public String punish(BanWardenPunishmentType type, String punishmentString) {
+        return "";
     }
 
     @Override
-    public void remove(String punishmentId) {
-
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+        switch (type) {
+            case BAN -> common.getCommander().dispatchCommand("libertybans:unban " + victim);
+            case MUTE -> common.getCommander().dispatchCommand("libertybans:unmute " + victim);
+            case WARN -> common.getCommander().dispatchCommand("libertybans:unwarn " + victim);
+            default -> LoggingUtil.error("[LitebansHook] Pardon -> Unknown punishment type: " + type);
+        }
+        return true;
     }
 
     @Override

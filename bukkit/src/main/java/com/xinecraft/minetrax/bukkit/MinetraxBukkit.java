@@ -3,6 +3,7 @@ package com.xinecraft.minetrax.bukkit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.xinecraft.minetrax.bukkit.adapters.ItemStackGsonAdapter;
+import com.xinecraft.minetrax.bukkit.commander.BukkitCommander;
 import com.xinecraft.minetrax.bukkit.commands.AccountLinkCommand;
 import com.xinecraft.minetrax.bukkit.commands.MinetraxAdminCommand;
 import com.xinecraft.minetrax.bukkit.commands.PlayerWhoisCommand;
@@ -154,6 +155,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         common.setPlatformType(PlatformType.BUKKIT);
         common.setGson(gson);
         common.setLogger(new BukkitLogger(this));
+        common.setCommander(new BukkitCommander());
         common.setScheduler(new BukkitScheduler(this));
         common.setWebQuery(new BukkitWebQuery(this));
         initBanWarden(common);
@@ -344,8 +346,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
         isSendInventoryDataToPlayerIntel = this.getConfig().getBoolean("send-inventory-data-to-player-intel");
         isDisablePlayerMovementTracking = this.getConfig().getBoolean("disable-player-movement-tracking");
-        isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook");
-        isBanWardenEnabled = this.getConfig().getBoolean("enable-banwarden");
+        isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook", true);
+        isBanWardenEnabled = this.getConfig().getBoolean("enable-banwarden", true);
         serverSessionId = UUID.randomUUID().toString();
     }
 

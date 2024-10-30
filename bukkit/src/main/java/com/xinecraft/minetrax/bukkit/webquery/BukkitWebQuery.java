@@ -6,6 +6,7 @@ import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.bukkit.utils.PlayerUtil;
 import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
 import com.xinecraft.minetrax.common.data.PlayerData;
+import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.skinsrestorer.api.PropertyUtils;
@@ -165,5 +166,11 @@ public class BukkitWebQuery implements CommonWebQuery {
         } else {
             return "false";
         }
+    }
+
+    @Override
+    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason) throws Exception {
+        boolean status = this.plugin.getCommon().getBanWarden().pardon(type, victim, reason);
+        return status ? "true" : "false";
     }
 }

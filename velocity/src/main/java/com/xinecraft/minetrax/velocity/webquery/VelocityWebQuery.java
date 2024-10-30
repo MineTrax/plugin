@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import com.xinecraft.minetrax.velocity.MinetraxVelocity;
 import com.xinecraft.minetrax.velocity.utils.SkinUtil;
@@ -144,5 +145,11 @@ public class VelocityWebQuery implements CommonWebQuery {
         } else {
             return "false";
         }
+    }
+
+    @Override
+    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason) throws Exception {
+        boolean status = this.plugin.getCommon().getBanWarden().pardon(type, victim, reason);
+        return status ? "true" : "false";
     }
 }

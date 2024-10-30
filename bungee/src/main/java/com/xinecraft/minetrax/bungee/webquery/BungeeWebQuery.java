@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.bungee.MinetraxBungee;
 import com.xinecraft.minetrax.bungee.utils.SkinUtil;
+import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
 import com.xinecraft.minetrax.common.utils.LoggingUtil;
 import net.md_5.bungee.api.ProxyServer;
@@ -145,5 +146,11 @@ public class BungeeWebQuery implements CommonWebQuery {
     public String handleCheckPlayerOnline(String playerUuid) throws Exception {
         ProxiedPlayer player = this.plugin.getProxy().getPlayer(UUID.fromString(playerUuid));
         return player != null ? "true" : "false";
+    }
+
+    @Override
+    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason) throws Exception {
+        boolean status = this.plugin.getCommon().getBanWarden().pardon(type, victim, reason);
+        return status ? "true" : "false";
     }
 }

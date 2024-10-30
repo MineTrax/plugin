@@ -1,18 +1,20 @@
 package com.xinecraft.minetrax.common.banwarden.hooks;
 
 import com.xinecraft.minetrax.common.data.PunishmentData;
+import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.enums.BanWardenSyncType;
 import com.xinecraft.minetrax.common.interfaces.banwarden.BanWardenHook;
 
 public class AdvancedbanHook implements BanWardenHook {
-    @Override
-    public void upsert(PunishmentData punishmentData) {
 
+    @Override
+    public String punish(BanWardenPunishmentType type, String punishmentString) {
+        return "";
     }
 
     @Override
-    public void remove(String punishmentId) {
-
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+        return false;
     }
 
     @Override

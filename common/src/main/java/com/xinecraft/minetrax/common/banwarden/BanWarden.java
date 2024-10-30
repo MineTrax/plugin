@@ -1,5 +1,6 @@
 package com.xinecraft.minetrax.common.banwarden;
 
+import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.enums.BanWardenSyncType;
 import com.xinecraft.minetrax.common.interfaces.banwarden.BanWardenHook;
 
@@ -12,5 +13,9 @@ public class BanWarden {
 
     public void sync(BanWardenSyncType type) {
         hook.sync(type);
+    }
+
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+        return hook.pardon(type, victim, reason);
     }
 }

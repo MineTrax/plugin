@@ -35,13 +35,19 @@ public class LitebansHook implements BanWardenHook {
     }
 
     @Override
-    public void upsert(PunishmentData punishmentData) {
-
+    public String punish(BanWardenPunishmentType type, String punishmentString) {
+        return "";
     }
 
     @Override
-    public void remove(String punishmentId) {
-
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+        switch (type) {
+            case BAN -> common.getCommander().dispatchCommand("litebans:unban " + victim + " " + reason);
+            case MUTE -> common.getCommander().dispatchCommand("litebans:unmute " + victim + " " + reason);
+            case WARN -> common.getCommander().dispatchCommand("litebans:unwarn " + victim + " " + reason);
+            default -> LoggingUtil.error("[LitebansHook] Pardon -> Unknown punishment type: " + type);
+        }
+        return true;
     }
 
     @Override
