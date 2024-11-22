@@ -243,7 +243,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Setup Schedulers
         if (isRemindPlayerToLinkEnabled) {
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, new AccountLinkReminderTask(), 10 * 20, remindPlayerToLinkInterval * 20L);
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, new AccountLinkReminderTask(), remindPlayerToLinkInterval * 20L, remindPlayerToLinkInterval * 20L);
         }
         if (isServerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new ServerIntelReportTask(), 60 * 20L, 60 * 20L);   // every minute

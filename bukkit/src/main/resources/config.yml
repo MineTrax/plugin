@@ -43,9 +43,11 @@ remind-player-to-link: true
 remind-player-interval: 300
 # The message send to player to remind them to link their account
 remind-player-link-message:
-  - "&eHey there! It seems you haven't linked your player in web yet. Please visit the link below to start the process."
-  - ""
-  - "&e**[{LINK_URL}]({LINK_URL} Click to visit)**"
+  - "&c&lWARNING! Your player isn't linked yet."
+  - "&cPlease follow these steps to link:"
+  - "&61. &fVisit &b[{WEB_URL}]({WEB_URL} Click to visit)&f and log in or register."
+  - "&62. &fNavigate to &eProfile > Linked Players&f, or directly visit &b[{LINK_URL}]({LINK_URL} Click to visit)&f."
+  - "&63. &fCopy the generated code and enter it in the chat, eg: &e/link 123456"
 # Keep sending reminder to player even if they are already linked.
 remind-player-when-already-linked: false
 # The message send to player to remind them that their account is already linked
@@ -54,9 +56,10 @@ remind-player-already-linked-message:
     - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to view your stats and more."
 # Message when player send /account-link without otp parameter
 player-link-init-message:
-  - "&bPlease visit below link and follow the steps there to continue linking your account."
-  - ""
-  - "&b**[{LINK_URL}]({LINK_URL} Click to visit)**"
+  - "&6&lPlease follow these steps to link:"
+  - "&61. &fVisit &b[{WEB_URL}]({WEB_URL} Click to visit)&f and log in or register."
+  - "&62. &fNavigate to &eProfile > Linked Players&f, or directly visit &b[{LINK_URL}]({LINK_URL} Click to visit)&f."
+  - "&63. &fCopy the generated code and enter it in the chat, eg: &e/link 123456"
 # Message when player send /account-link while player is already linked
 player-link-init-already-linked-message:
   - "&aYay! Your player is already linked."

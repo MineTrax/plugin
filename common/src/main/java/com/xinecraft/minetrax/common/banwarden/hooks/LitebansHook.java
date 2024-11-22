@@ -41,6 +41,9 @@ public class LitebansHook implements BanWardenHook {
 
     @Override
     public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+        if (reason.isBlank()) {
+            reason = "-";
+        }
         switch (type) {
             case BAN -> common.getCommander().dispatchCommand("litebans:unban " + victim + " " + reason);
             case MUTE -> common.getCommander().dispatchCommand("litebans:unmute " + victim + " " + reason);
