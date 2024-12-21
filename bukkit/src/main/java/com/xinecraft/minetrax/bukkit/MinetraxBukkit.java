@@ -93,6 +93,11 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     private List<String> playerLinkInitAlreadyLinkedMessage;
     private List<String> playerLinkErrorMessage;
     private List<String> playerLinkSuccessMessage;
+    private List<String> playerLinkConfirmationMessage;
+    private String playerLinkConfirmationTitle;
+    private String playerLinkConfirmationSubtitle;
+    private ConcurrentHashMap<String, String> playerLinkPendingVerificationMap = new ConcurrentHashMap<>();
+    private Boolean isPlayerLinkConfirmationEnabled;
     private long afkThresholdInMs;
     public ConcurrentHashMap<String, PlayerData> playersDataMap;
     public ConcurrentHashMap<String, PlayerSessionIntelData> playerSessionIntelDataMap;
@@ -110,6 +115,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
     public Boolean isBanWardenEnabled = false;
     public Gson gson = null;
     private MinetraxCommon common;
+    private String processingMessage;
+    private String cancelledMessage;
 
     private static Permission perms = null;
     private static Economy economy = null;
@@ -243,7 +250,7 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
 
         // Setup Schedulers
         if (isRemindPlayerToLinkEnabled) {
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, new AccountLinkReminderTask(), remindPlayerToLinkInterval * 20L, remindPlayerToLinkInterval * 20L);
+            getServer().getScheduler().runTaskTimerAsynchronously(this, new AccountLinkReminderTask(), remindPlayerToLinkInterval * 20L, remindPlayerToLinkInterval * 20L);
         }
         if (isServerIntelEnabled) {
             getServer().getScheduler().runTaskTimerAsynchronously(this, new ServerIntelReportTask(), 60 * 20L, 60 * 20L);   // every minute
@@ -341,6 +348,10 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         playerLinkInitAlreadyLinkedMessage = this.getConfig().getStringList("player-link-init-already-linked-message");
         playerLinkErrorMessage = this.getConfig().getStringList("player-link-error-message");
         playerLinkSuccessMessage = this.getConfig().getStringList("player-link-success-message");
+        isPlayerLinkConfirmationEnabled = this.getConfig().getBoolean("enable-player-link-confirmation", true);
+        playerLinkConfirmationMessage = this.getConfig().getStringList("player-link-confirmation-message");
+        playerLinkConfirmationTitle = this.getConfig().getString("player-link-confirmation-title");
+        playerLinkConfirmationSubtitle = this.getConfig().getString("player-link-confirmation-subtitle");
         afkThresholdInMs = this.getConfig().getLong("afk-threshold-in-seconds", 300) * 1000;
         isAllowOnlyWhitelistedCommandsFromWeb = this.getConfig().getBoolean("allow-only-whitelisted-commands-from-web");
         whitelistedCommandsFromWeb = this.getConfig().getStringList("whitelisted-commands-from-web");
@@ -349,6 +360,8 @@ public final class MinetraxBukkit extends JavaPlugin implements Listener, Minetr
         isSkinsRestorerHookEnabled = this.getConfig().getBoolean("enable-skinsrestorer-hook", true);
         isBanWardenEnabled = this.getConfig().getBoolean("enable-banwarden", true);
         serverSessionId = UUID.randomUUID().toString();
+        processingMessage = this.getConfig().getString("processing-message", "&6Processing...");
+        cancelledMessage = this.getConfig().getString("cancelled-message", "&cCancelled!");
     }
 
     private void startWebQueryServer() {

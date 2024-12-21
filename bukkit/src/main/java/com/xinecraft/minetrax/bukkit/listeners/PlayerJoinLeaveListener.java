@@ -5,8 +5,6 @@ import com.viaversion.viaversion.api.Via;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
 import com.xinecraft.minetrax.bukkit.utils.PlayerUtil;
 import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
-import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import com.xinecraft.minetrax.common.utils.VersionUtil;
 import com.xinecraft.minetrax.common.actions.FetchPlayerData;
 import com.xinecraft.minetrax.common.actions.ReportPlayerIntel;
 import com.xinecraft.minetrax.common.actions.ReportServerChat;
@@ -14,13 +12,13 @@ import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.common.data.PlayerSessionIntelData;
 import com.xinecraft.minetrax.common.data.PlayerWorldStatsIntelData;
 import com.xinecraft.minetrax.common.responses.GenericApiResponse;
+import com.xinecraft.minetrax.common.utils.LoggingUtil;
+import com.xinecraft.minetrax.common.utils.MinetraxHttpUtil;
+import com.xinecraft.minetrax.common.utils.VersionUtil;
 import com.xinecraft.minetrax.common.utils.WhoisUtil;
 import de.themoep.minedown.adventure.MineDown;
 import net.skinsrestorer.api.PropertyUtils;
-import net.skinsrestorer.api.SkinsRestorer;
-import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.PlayerStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -50,6 +48,13 @@ public class PlayerJoinLeaveListener implements Listener {
 
             // perform whois & add player to list of linkedPlayers hashmap
             this.broadcastWhoisForPlayer(event.getPlayer());
+        }
+
+        // Schedule AccountLinkReminder
+        if (MinetraxBukkit.getPlugin().getIsRemindPlayerToLinkEnabled()) {
+            Bukkit.getScheduler().runTaskLater(MinetraxBukkit.getPlugin(), () -> {
+                runAccountLinkReminder(event.getPlayer());
+            }, 20L * 30L);
         }
     }
 
@@ -237,5 +242,30 @@ public class PlayerJoinLeaveListener implements Listener {
 
         // Remove player data map.
         MinetraxBukkit.getPlugin().playersDataMap.remove(key);
+    }
+
+    private void runAccountLinkReminder(Player player) {
+        // If player is not online, return.
+        if (!player.isOnline()) {
+            return;
+        }
+
+        Boolean isAlreadyLinkedReminderEnabled = MinetraxBukkit.getPlugin().getIsRemindPlayerWhenAlreadyLinkedEnabled();
+        PlayerData playerData = MinetraxBukkit.getPlugin().playersDataMap.get(player.getUniqueId().toString());
+
+        if (playerData == null) {
+            return;
+        }
+        if (playerData.is_verified && !isAlreadyLinkedReminderEnabled) {
+            return;
+        }
+
+        List<String> messageList = playerData.is_verified ? MinetraxBukkit.getPlugin().getRemindPlayerWhenAlreadyLinkedMessage() : MinetraxBukkit.getPlugin().getRemindPlayerToLinkMessage();
+        for (String line : messageList) {
+            line = line.replace("{LINK_URL}", MinetraxHttpUtil.getUrl(MinetraxHttpUtil.ACCOUNT_LINK_ROUTE));
+            line = line.replace("{WEB_URL}", MinetraxBukkit.getPlugin().getApiHost());
+            line = line.replace("{PROFILE_URL}", playerData.profile_link);
+            MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
+        }
     }
 }

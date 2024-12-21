@@ -47,30 +47,42 @@ remind-player-link-message:
   - "&cPlease follow these steps to link:"
   - "&61. &fVisit &b[{WEB_URL}]({WEB_URL} Click to visit)&f and log in or register."
   - "&62. &fNavigate to &eProfile > Linked Players&f, or directly visit &b[{LINK_URL}]({LINK_URL} Click to visit)&f."
-  - "&63. &fCopy the generated code and enter it in the chat, eg: &e/link 123456"
+  - "&63. &fCopy the generated code, enter it in the chat and confirm, eg: &e/link 123456"
 # Keep sending reminder to player even if they are already linked.
 remind-player-when-already-linked: false
 # The message send to player to remind them that their account is already linked
 remind-player-already-linked-message:
-    - "&aYay! Your player is already linked."
-    - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to view your stats and more."
+    - "&a&lYour player is already linked."
+    - "&aVisit [{LINK_URL}]({LINK_URL} Click to visit) to manage."
 # Message when player send /account-link without otp parameter
 player-link-init-message:
   - "&6&lPlease follow these steps to link:"
   - "&61. &fVisit &b[{WEB_URL}]({WEB_URL} Click to visit)&f and log in or register."
   - "&62. &fNavigate to &eProfile > Linked Players&f, or directly visit &b[{LINK_URL}]({LINK_URL} Click to visit)&f."
-  - "&63. &fCopy the generated code and enter it in the chat, eg: &e/link 123456"
+  - "&63. &fCopy the generated code, enter it in the chat and confirm, eg: &e/link 123456"
 # Message when player send /account-link while player is already linked
 player-link-init-already-linked-message:
-  - "&aYay! Your player is already linked."
-  - "&aVisit [{WEB_URL}]({WEB_URL} Click to visit) to view your stats and more."
+  - "&a&lYour player is already linked."
+  - "&aVisit [{LINK_URL}]({LINK_URL} Click to visit) to manage."
 # If get error message response from server
 player-link-error-message:
-  - "&c&lOops! Some error occurred while linking your account:"
-  - "&c{ERROR_MESSAGE}"
+  - "&cOops! Some error occurred while linking:"
+  - "&c&l{ERROR_MESSAGE}"
 # Message when player linking is successful
 player-link-success-message:
   - "&a&lCongratulations! Your account has been successfully linked."
+# Enable player link confirmation to prevent accidental linking
+enable-player-link-confirmation: true
+# Message when player linking need confirmation
+player-link-confirmation-message:
+  - "&6&lAre you sure you want to link your account?"
+  - "&lClick -> [&a&lConfirm](run_command=/link confirm)  [&c&lDeny](run_command=/link deny)"
+  - ""
+  - "&6or manually type &a/link confirm&r &6or &c/link deny&r"
+# Title to show when player linking need confirmation
+player-link-confirmation-title: "&6Confirmation Required"
+# Subtitle to show when player linking need confirmation
+player-link-confirmation-subtitle: "Please check chat to &aconfirm&f or &cdeny&f linking."
 # If this is enabled it will send whois information about players when they join the server
 enable-whois-on-player-join: true
 # If this is enabled players with permission can run the /webwhois or /ww command
@@ -87,21 +99,21 @@ whois-player-on-join-message:
   - "&6Position&r: &b&l#{POSITION}&r - &6Rank&r: &b&l{RANK}&r"
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
-  - "&e&o[{URL}]({URL})&r"
+  - "&e&o[{URL}]({URL})"
 # This is the format of message that is sent when player runs /ww command
 whois-player-on-command-message:
   - "&a&l{USERNAME}&r is from &a&l{COUNTRY}&r"
   - "&6Position&r: &b&l#{POSITION}&r - &6Rank&r: &b&l{RANK}&r"
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
-  - "&e&o[{URL}]({URL})&r"
+  - "&e&o[{URL}]({URL})"
 # This is the format of message that is sent when admin runs /ww command
 whois-player-on-admin-command-message:
   - "&a&l{USERNAME}&r is from &a&l{GEO}&r"
   - "&6Position&r: &b&l#{POSITION}&r - &6Rank&r: &b&l{RANK}&r"
   - "&6Rating&r: &b&l{RATING}&r - &6Score&r: &b&l{SCORE}&r"
   - "&6Linked with&r: &b&l{USER}&r - &6Last Seen&r: &b&l{LAST_SEEN}&r"
-  - "&e&o[{URL}]({URL})&r"
+  - "&e&o[{URL}]({URL})"
 # This is the message sent when there are more than 1 player found
 whois-multiple-players-title-message: '&a&lThere is total &e&l{COUNT}&r &a&lplayers found.'
 # This is the message sent to show list of players found
@@ -124,3 +136,7 @@ whitelisted-commands-from-web:
 enable-skinsrestorer-hook: true
 # If enabled this will let minetrax hook into your ban plugin and sync bans to website.
 enable-banwarden: true
+# Processing text
+processing-message: '&7Processing...'
+# Cancelled text
+cancelled-message: '&7Cancelled!'

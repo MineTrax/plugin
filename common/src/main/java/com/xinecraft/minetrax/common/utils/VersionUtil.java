@@ -10,6 +10,9 @@ import java.util.Map;
 public class VersionUtil {
     private static final Map<Integer, String> protocolToVersion = new HashMap<>();
     static {
+        protocolToVersion.put(769, "1.21");
+        protocolToVersion.put(768, "1.21");
+        protocolToVersion.put(767, "1.21");
         protocolToVersion.put(766, "1.20");
         protocolToVersion.put(765, "1.20");
         protocolToVersion.put(764, "1.20");
