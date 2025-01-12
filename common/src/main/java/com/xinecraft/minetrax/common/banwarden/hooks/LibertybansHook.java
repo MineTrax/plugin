@@ -46,7 +46,7 @@ public class LibertybansHook implements BanWardenHook {
     }
 
     @Override
-    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason, String admin) {
         switch (type) {
             case BAN -> common.getCommander().dispatchCommand("libertybans:unban " + victim);
             case MUTE -> common.getCommander().dispatchCommand("libertybans:unmute " + victim);

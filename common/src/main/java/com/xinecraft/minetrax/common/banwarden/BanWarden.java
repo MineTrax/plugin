@@ -15,7 +15,7 @@ public class BanWarden {
         hook.sync(type);
     }
 
-    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
-        return hook.pardon(type, victim, reason);
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason, String admin) {
+        return hook.pardon(type, victim, reason, admin);
     }
 }

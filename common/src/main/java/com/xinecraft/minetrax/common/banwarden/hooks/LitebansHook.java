@@ -40,14 +40,15 @@ public class LitebansHook implements BanWardenHook {
     }
 
     @Override
-    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
-        if (reason.isBlank()) {
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason, String admin) {
+        if (reason == null || reason.isBlank()) {
             reason = "-";
         }
+        String parsedAdmin = admin == null || admin.isBlank() ? "--sender=BanWarden" : "--sender=" + admin;
         switch (type) {
-            case BAN -> common.getCommander().dispatchCommand("litebans:unban " + victim + " " + reason);
-            case MUTE -> common.getCommander().dispatchCommand("litebans:unmute " + victim + " " + reason);
-            case WARN -> common.getCommander().dispatchCommand("litebans:unwarn " + victim + " " + reason);
+            case BAN -> common.getCommander().dispatchCommand("litebans:unban " + victim + " " + reason + " " + parsedAdmin);
+            case MUTE -> common.getCommander().dispatchCommand("litebans:unmute " + victim + " " + reason + " " + parsedAdmin);
+            case WARN -> common.getCommander().dispatchCommand("litebans:unwarn " + victim + " " + reason + " " + parsedAdmin);
             default -> LoggingUtil.error("[LitebansHook] Pardon -> Unknown punishment type: " + type);
         }
         return true;

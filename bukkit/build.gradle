@@ -6,10 +6,10 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
-    compileOnly 'me.clip:placeholderapi:2.11.3'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.viaversion:viaversion-api:4.7.0'
-    compileOnly files('D:/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar')
-    compileOnly files('D:/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar')
+    compileOnly files('W:/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-2.23.2.jar')
+    compileOnly files('W:/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar')
 }
 
 java {

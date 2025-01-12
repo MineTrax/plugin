@@ -13,7 +13,7 @@ public class AdvancedbanHook implements BanWardenHook {
     }
 
     @Override
-    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason, String admin) {
         return false;
     }
 

@@ -6,7 +6,7 @@ import com.xinecraft.minetrax.common.enums.BanWardenSyncType;
 
 public interface BanWardenHook {
     String punish(BanWardenPunishmentType type, String punishmentString);
-    boolean pardon(BanWardenPunishmentType type, String victim, String reason);
+    boolean pardon(BanWardenPunishmentType type, String victim, String reason, String admin);
     PunishmentData getPunishment(String punishmentId);
     void sync(BanWardenSyncType type);
 }

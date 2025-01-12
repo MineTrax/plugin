@@ -16,7 +16,7 @@ public class NullHook implements BanWardenHook {
     }
 
     @Override
-    public boolean pardon(BanWardenPunishmentType type, String victim, String reason) {
+    public boolean pardon(BanWardenPunishmentType type, String victim, String reason, String admin) {
         warn();
         return false;
     }

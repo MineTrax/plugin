@@ -148,8 +148,8 @@ public class VelocityWebQuery implements CommonWebQuery {
     }
 
     @Override
-    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason) throws Exception {
-        boolean status = this.plugin.getCommon().getBanWarden().pardon(type, victim, reason);
+    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason, String admin) throws Exception {
+        boolean status = this.plugin.getCommon().getBanWarden().pardon(type, victim, reason, admin);
         return status ? "true" : "false";
     }
 }
