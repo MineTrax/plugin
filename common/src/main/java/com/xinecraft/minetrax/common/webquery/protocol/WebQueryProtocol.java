@@ -12,6 +12,11 @@ public class WebQueryProtocol {
     private static final MinetraxCommon common = MinetraxCommon.getInstance();
 
     public static String processInput(String input) throws Exception {
+        // Return null if input is empty.
+        if (input == null || input.isEmpty()) {
+            throw new Exception("Empty request");
+        }
+
         // Decrypt the input to plain text and map in JSON object.
         WebQueryRequestData requestData = decryptRequest(input);
 
