@@ -264,7 +264,7 @@ public class PlayerJoinLeaveListener implements Listener {
         for (String line : messageList) {
             line = line.replace("{LINK_URL}", MinetraxHttpUtil.getUrl(MinetraxHttpUtil.ACCOUNT_LINK_ROUTE));
             line = line.replace("{WEB_URL}", MinetraxBukkit.getPlugin().getApiHost());
-            line = line.replace("{PROFILE_URL}", playerData.profile_link);
+            line = line.replace("{PROFILE_URL}", playerData.profile_link.isBlank() ? "-" : playerData.profile_link);
             MinetraxBukkit.getPlugin().adventure().player(player).sendMessage(MineDown.parse(line));
         }
     }

@@ -13,16 +13,17 @@ public class WebQueryChannelHandler extends SimpleChannelInboundHandler<String> 
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
         String response = null;
         String status;
+        String clientIp = ctx.channel().remoteAddress().toString();
         try {
             response = WebQueryProtocol.processInput(s);
             status = "ok";
 
             if (response == null) {
-                MinetraxCommon.getInstance().getLogger().error("[WebQuery] Error processing input: output is null");
+                MinetraxCommon.getInstance().getLogger().error("[WebQuery]["+clientIp+"] Error processing input: output is null.");
                 status = "error";
             }
         } catch (Exception e) {
-            MinetraxCommon.getInstance().getLogger().error("[WebQuery] Error processing input: " + e.getMessage());
+            MinetraxCommon.getInstance().getLogger().error("[WebQuery]["+clientIp+"] Error processing input: " + e.getMessage());
             LoggingUtil.trace(e);
             status = "error";
         }
@@ -35,7 +36,8 @@ public class WebQueryChannelHandler extends SimpleChannelInboundHandler<String> 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        MinetraxCommon.getInstance().getLogger().error("[WebQuery] Exception caught: " + cause.getMessage());
+        String clientIp = ctx.channel().remoteAddress().toString();
+        MinetraxCommon.getInstance().getLogger().error("[WebQuery]["+clientIp+"] Exception caught: " + cause.getMessage());
         if (MinetraxCommon.getInstance().getPlugin().getIsDebugMode()) {
             cause.printStackTrace();
         }

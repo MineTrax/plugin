@@ -49,7 +49,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Getter
-@Plugin(id = "minetrax", name = "Minetrax", authors = {"Xinecraft"}, version = BuildConstants.VERSION, dependencies = {@Dependency(id = "skinsrestorer", optional = true)})
+@Plugin(
+        id = "minetrax",
+        name = "Minetrax",
+        authors = {"Xinecraft"},
+        version = BuildConstants.VERSION,
+        dependencies = {
+                @Dependency(id = "skinsrestorer", optional = true),
+                @Dependency(id = "litebans", optional = true)
+        }
+)
 public class MinetraxVelocity implements MinetraxPlugin {
     @Inject
     private Logger logger;

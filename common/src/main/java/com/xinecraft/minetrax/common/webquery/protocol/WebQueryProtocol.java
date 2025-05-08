@@ -19,6 +19,9 @@ public class WebQueryProtocol {
 
         // Decrypt the input to plain text and map in JSON object.
         WebQueryRequestData requestData = decryptRequest(input);
+        if (requestData == null) {
+            throw new Exception("Invalid request data");
+        }
 
         LoggingUtil.debug("[WebQuery] Request: " + requestData.toString());
 
