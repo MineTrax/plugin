@@ -170,6 +170,10 @@ public class BukkitWebQuery implements CommonWebQuery {
 
     @Override
     public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason, String admin) throws Exception {
+        boolean isBanWardenEnabled = this.plugin.isBanWardenEnabled;
+        if (!isBanWardenEnabled) {
+            throw new Exception("BanWarden is not enabled.");
+        }
         boolean status = this.plugin.getCommon().getBanWarden().pardon(type, victim, reason, admin);
         return status ? "true" : "false";
     }
