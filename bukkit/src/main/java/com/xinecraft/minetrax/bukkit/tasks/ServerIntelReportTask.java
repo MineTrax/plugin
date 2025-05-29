@@ -60,9 +60,9 @@ public class ServerIntelReportTask implements Runnable {
             worldData.environment = w.getEnvironment().toString();
             worldData.world_border = w.getWorldBorder().getSize();
             worldData.chunks_loaded = w.getLoadedChunks().length;
-            // Quick Hack for 1.12 as getGameTime() doesn't exist there.
+            // Quick Hack for 1.12 as getTime() doesn't exist there.
             try {
-                worldData.game_time = w.getGameTime();
+                worldData.game_time = w.getTime();
             } catch (NoSuchMethodError e) {
                 worldData.game_time = 0;
             }
