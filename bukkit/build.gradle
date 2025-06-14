@@ -8,27 +8,10 @@ dependencies {
     compileOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.viaversion:viaversion-api:5.0.0'
+    
+    // Required local plugin dependencies
     compileOnly files('W:/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-3.7.2.jar')
     compileOnly files('W:/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar')
-}
-
-java {
-    def targetJavaVersion = project.ext.targetJavaVersion
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
-}
-
-tasks.withType(Javadoc).configureEach {
-    options.encoding = 'UTF-8'
 }
 
 processResources {
@@ -41,5 +24,7 @@ processResources {
 }
 
 shadowJar {
-    relocate('org.bstats', 'com.xinecraft.minetrax.bstats')
+    // Additional bukkit-specific relocations
+    relocate('net.kyori', 'com.xinecraft.minetrax.libs.kyori')
+    relocate('de.themoep', 'com.xinecraft.minetrax.libs.themoep')
 }

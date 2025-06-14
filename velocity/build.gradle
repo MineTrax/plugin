@@ -1,24 +1,9 @@
 dependencies {
     implementation project(":common")
-    implementation 'org.bstats:bstats-velocity:3.0.0'
+    implementation 'org.bstats:bstats-velocity:3.0.2'
     compileOnly "com.velocitypowered:velocity-api:3.0.0-SNAPSHOT"
     annotationProcessor "com.velocitypowered:velocity-api:3.0.0-SNAPSHOT"
     implementation "dev.dejvokep:boosted-yaml:1.3"
-}
-
-java {
-    def targetJavaVersion = project.ext.targetJavaVersion
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
 }
 
 def templateSource = file('src/main/templates')
@@ -40,5 +25,6 @@ rootProject.idea.project.settings.taskTriggers.afterSync generateTemplates
 project.eclipse.synchronizationTasks(generateTemplates)
 
 shadowJar {
-
+    // Additional velocity-specific relocations
+    relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
 }

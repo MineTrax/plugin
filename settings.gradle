@@ -1,6 +1,6 @@
 pluginManagement {
     plugins {
-        id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+        // Remove unused Kotlin plugin since it's not used in this project
     }
 }
 plugins {

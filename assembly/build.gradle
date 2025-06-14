@@ -5,26 +5,29 @@ dependencies {
     implementation project(":velocity")
 }
 
-tasks.withType(JavaCompile) {
+java {
     def targetJavaVersion = project.ext.targetJavaVersion
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
 shadowJar {
     archiveFileName = "Minetrax-${project.version}.jar"
-    relocate('org.bstats', 'com.xinecraft.minetrax.libs.bstats')
-    relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
-    relocate('com.google.gson', 'com.xinecraft.minetrax.libs.google.gson')
-    relocate('org.apache.commons.codec', 'com.xinecraft.minetrax.libs.apache.commons.codec')
-    relocate('org.apache.commons.lang3', 'com.xinecraft.minetrax.libs.apache.commons.lang3')
+    
+    // Additional relocations specific to the final assembly
     relocate('org.intellij.lang.annotations', 'com.xinecraft.minetrax.libs.intellij.lang.annotations')
     relocate('org.jetbrains.annotations', 'com.xinecraft.minetrax.libs.jetbrains.annotations')
-    relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
-    relocate('okio', 'com.xinecraft.minetrax.libs.okio')
-    relocate('okhttp3', 'com.xinecraft.minetrax.libs.okhttp3')
     relocate('de.themoep', 'com.xinecraft.minetrax.libs.themoep')
+    relocate('dev.dejvokep.boostedyaml', 'com.xinecraft.minetrax.libs.dejvokep.boostedyaml')
 
     /**
      * Note: Kyori's relocation causes issue with Velocity.
