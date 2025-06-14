@@ -193,7 +193,7 @@ public class MinetraxVelocity implements MinetraxPlugin {
     }
 
     private void initBstats() {
-        int pluginId = 15485;
+        int pluginId = 26168;
         Metrics metrics = metricsFactory.make(this, pluginId);
     }
 

@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.gradleup.shadow" version "8.3.6"
     id 'maven-publish'
     id 'eclipse'
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.0.1"
@@ -44,11 +44,12 @@ allprojects {
 
 subprojects {
     ext {
+        toolkitJavaVersion = 21
         targetJavaVersion = 17
     }
 
     apply plugin: "java"
-    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "com.gradleup.shadow"
     apply plugin: "maven-publish"
 
     dependencies {
@@ -61,7 +62,7 @@ subprojects {
         implementation 'org.apache.commons:commons-lang3:3.14.0'
         compileOnly 'io.netty:netty-all:4.1.86.Final'
         implementation 'com.google.code.gson:gson:2.10.1'
-        compileOnly 'net.skinsrestorer:skinsrestorer-api:15.0.13'
+        compileOnly 'net.skinsrestorer:skinsrestorer-api:15.0.15'
         implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
         // BanWarden
@@ -70,8 +71,8 @@ subprojects {
         compileOnly "com.github.DevLeoko.AdvancedBan:AdvancedBan:v2.3.0"
     }
 
-    def targetJavaVersion = project.ext.targetJavaVersion as int
+    def toolkitJavaVersion = project.ext.toolkitJavaVersion as int
     java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(toolkitJavaVersion))
     }
 }

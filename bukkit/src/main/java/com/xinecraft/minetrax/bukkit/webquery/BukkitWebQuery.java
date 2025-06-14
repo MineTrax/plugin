@@ -1,5 +1,14 @@
 package com.xinecraft.minetrax.bukkit.webquery;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.xinecraft.minetrax.bukkit.MinetraxBukkit;
@@ -8,18 +17,9 @@ import com.xinecraft.minetrax.bukkit.utils.SkinUtil;
 import com.xinecraft.minetrax.common.data.PlayerData;
 import com.xinecraft.minetrax.common.enums.BanWardenPunishmentType;
 import com.xinecraft.minetrax.common.interfaces.webquery.CommonWebQuery;
-import com.xinecraft.minetrax.common.utils.LoggingUtil;
-import net.skinsrestorer.api.PropertyUtils;
-import net.skinsrestorer.api.SkinsRestorer;
+
 import net.skinsrestorer.api.exception.DataRequestException;
 import net.skinsrestorer.api.exception.MineSkinException;
-import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.PlayerStorage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
-import java.util.*;
 
 public class BukkitWebQuery implements CommonWebQuery {
     private final MinetraxBukkit plugin;
@@ -120,30 +120,32 @@ public class BukkitWebQuery implements CommonWebQuery {
             throw new Exception("Command: " + command + " is not whitelisted.");
         }
 
-        Bukkit.getScheduler().callSyncMethod(this.plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)).get();
+        Bukkit.getScheduler()
+                .callSyncMethod(this.plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)).get();
         return "true";
     }
 
     @Override
-    public String handleSetPlayerSkin(String playerUuid, String commandType, String value) throws MineSkinException, DataRequestException {
+    public String handleSetPlayerSkin(String playerUuid, String commandType, String value)
+            throws MineSkinException, DataRequestException {
         // Ignore if not has skins restorer or skins restorer in proxy mode
         if (!this.plugin.getHasSkinsRestorer() || this.plugin.getHasSkinsRestorerInProxyMode()) {
             return "ok";
         }
 
         switch (commandType) {
-            case "url":
-            case "username":
-                SkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
-                break;
-            case "upload":
-                SkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
-                break;
-            case "clear":
-                SkinUtil.clearPlayerSkin(playerUuid);
-                break;
-            default:
-                break;
+        case "url":
+        case "username":
+            SkinUtil.setPlayerSkinUsingUrlOrName(playerUuid, value);
+            break;
+        case "upload":
+            SkinUtil.setPlayerSkinUsingCustom(playerUuid, value);
+            break;
+        case "clear":
+            SkinUtil.clearPlayerSkin(playerUuid);
+            break;
+        default:
+            break;
         }
 
         return "true";
@@ -169,7 +171,8 @@ public class BukkitWebQuery implements CommonWebQuery {
     }
 
     @Override
-    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason, String admin) throws Exception {
+    public String handleBanwardenPardon(BanWardenPunishmentType type, String victim, String reason, String admin)
+            throws Exception {
         boolean isBanWardenEnabled = this.plugin.isBanWardenEnabled;
         if (!isBanWardenEnabled) {
             throw new Exception("BanWarden is not enabled.");

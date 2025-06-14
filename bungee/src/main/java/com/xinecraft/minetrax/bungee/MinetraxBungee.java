@@ -182,7 +182,7 @@ public final class MinetraxBungee extends Plugin implements MinetraxPlugin {
     }
 
     private void initBstats() {
-        int pluginId = 15485;
+        int pluginId = 26167;
         Metrics metrics = new Metrics(this, pluginId);
     }
 

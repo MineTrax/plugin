@@ -6,8 +6,10 @@ dependencies {
 }
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    def targetJavaVersion = project.ext.targetJavaVersion
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
 
 shadowJar {
