@@ -84,7 +84,7 @@ player-link-confirmation-title: "&6Confirmation Required"
 # Subtitle to show when player linking need confirmation
 player-link-confirmation-subtitle: "Please check chat to &aconfirm&f or &cdeny&f linking."
 # If this is enabled it will send whois information about players when they join the server
-enable-whois-on-player-join: true
+enable-whois-on-player-join: false
 # If this is enabled players with permission can run the /webwhois or /ww command
 enable-whois-on-command: true
 # Message that is sent when /ww finds no players

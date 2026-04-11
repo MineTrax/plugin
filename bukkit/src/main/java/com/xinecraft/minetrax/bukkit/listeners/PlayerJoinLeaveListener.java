@@ -100,13 +100,16 @@ public class PlayerJoinLeaveListener implements Listener {
         String ipAddress = Objects.requireNonNull(player.getAddress()).getHostString();
         String uuid = player.getUniqueId().toString();
         Boolean shouldBroadcastOnJoin = MinetraxBukkit.getPlugin().getIsWhoisOnPlayerJoinEnabled();
+        if (!shouldBroadcastOnJoin) {
+            return;
+        }
 
         Bukkit.getScheduler().runTaskAsynchronously(MinetraxBukkit.getPlugin(), () -> {
             List<String> sayList = WhoisUtil.forPlayerSync(
                     username,
                     uuid,
                     ipAddress,
-                    shouldBroadcastOnJoin,
+                    true,
                     true,
                     null,
                     MinetraxBukkit.getPlugin().getWhoisNoMatchFoundMessage(),
@@ -195,7 +198,7 @@ public class PlayerJoinLeaveListener implements Listener {
             SkinProperty skin = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
             if (skin != null) {
                 playerSessionIntelData.skin_property = MinetraxBukkit.getPlugin().getGson().toJson(skin);
-                playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureUrlStripped(skin);
+                playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureHash(skin);
             }
         }
     }

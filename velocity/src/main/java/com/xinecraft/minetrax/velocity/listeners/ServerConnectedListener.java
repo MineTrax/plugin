@@ -24,7 +24,7 @@ public class ServerConnectedListener {
             SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getUsername());
             if (skinProperty != null) {
                 String skinPropertyJson = MinetraxVelocity.getPlugin().getGson().toJson(skinProperty);
-                String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
+                String skinTextureId = PropertyUtils.getSkinTextureHash(skinProperty);
                 String playerUuid = player.getUniqueId().toString();
 
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();

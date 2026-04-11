@@ -33,7 +33,7 @@ public class SkinsRestorerHook implements Consumer<SkinApplyEvent> {
             playerSessionIntelData.skin_texture_id = null;
         } else {
             playerSessionIntelData.skin_property = MinetraxBukkit.getPlugin().getGson().toJson(skinProperty);
-            playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
+            playerSessionIntelData.skin_texture_id = PropertyUtils.getSkinTextureHash(skinProperty);
         }
     }
 }

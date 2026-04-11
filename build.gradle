@@ -9,7 +9,7 @@ plugins {
 allprojects {
     group = 'com.xinecraft'
     description = 'Minetrax'
-    version = '7.0.3'
+    version = '8.0.0'
 
     repositories {
         mavenLocal()

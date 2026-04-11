@@ -45,7 +45,7 @@ public class VelocityWebQuery implements CommonWebQuery {
             if (this.plugin.getHasSkinsRestorer()) {
                 SkinProperty skin = SkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getUsername());
                 if (skin != null) {
-                    playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skin));
+                    playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureHash(skin));
                 }
             }
 

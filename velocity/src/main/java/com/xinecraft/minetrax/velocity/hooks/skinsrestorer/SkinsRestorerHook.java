@@ -23,7 +23,7 @@ public class SkinsRestorerHook implements Consumer<SkinApplyEvent> {
 
         if (player != null && !skinProperty.getValue().isEmpty()) {
             String skinPropertyJson = MinetraxVelocity.getPlugin().getGson().toJson(skinProperty);
-            String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
+            String skinTextureId = PropertyUtils.getSkinTextureHash(skinProperty);
             String playerUuid = player.getUniqueId().toString();
 
             ByteArrayDataOutput out = ByteStreams.newDataOutput();

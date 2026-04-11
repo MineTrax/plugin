@@ -24,7 +24,7 @@ public class ServerConnectedListener implements Listener {
             SkinProperty skinProperty = SkinUtil.getSkinForPlayer(player.getUniqueId(), player.getName());
             if (skinProperty != null) {
                 String skinPropertyJson = MinetraxBungee.getPlugin().getGson().toJson(skinProperty);
-                String skinTextureId = PropertyUtils.getSkinTextureUrlStripped(skinProperty);
+                String skinTextureId = PropertyUtils.getSkinTextureHash(skinProperty);
                 String playerUuid = player.getUniqueId().toString();
 
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();

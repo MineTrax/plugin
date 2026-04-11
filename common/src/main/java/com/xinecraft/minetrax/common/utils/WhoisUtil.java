@@ -25,15 +25,15 @@ public class WhoisUtil {
     ) {
         List<String> returnList = new ArrayList<>();
         try {
+            if (isFromJoinEvent && !shouldBroadcast) {
+                return null;
+            }
+
             PlayerWhoisApiResponse whoisResponseData = WhoisQuery.playerSync(uuid, username, ipAddress, isFromJoinEvent);
 
             if (whoisResponseData.getCode() != 200) {
                 returnList.add("&c Error making whois request: " + whoisResponseData.getMessage());
                 return returnList;
-            }
-
-            if (isFromJoinEvent && !shouldBroadcast) {
-                return null;
             }
 
             // Get country, state and city from geodata
@@ -106,8 +106,8 @@ public class WhoisUtil {
                 returnList.add(titleMessage);
                 for (PlayerWhoisApiResponse.Player player : whoisResponseData.getData().players) {
                     String line = multiplePlayersListMessage;
-                    line = line.replace("{POSITION}", player.position);
-                    line = line.replace("{USERNAME}", player.username);
+                    line = line.replace("{POSITION}", player.position != null ? player.position : "&r&oNone&r");
+                    line = line.replace("{USERNAME}", player.username != null ? player.username : "&r&oUnknown&r");
                     returnList.add(line);
                 }
             } else {

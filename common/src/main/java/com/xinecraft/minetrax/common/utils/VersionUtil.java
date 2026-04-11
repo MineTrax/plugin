@@ -5,11 +5,18 @@ import java.util.Map;
 
 /**
  * Utility class to get Minecraft version from protocol id
- * <a href="https://minecraft.fandom.com/wiki/Protocol_version">...</a>
+ * https://github.com/ViaVersion/ViaVersion/blob/master/api/src/main/java/com/viaversion/viaversion/api/protocol/version/ProtocolVersion.java
+ * https://minecraft.fandom.com/wiki/Protocol_version
  */
 public class VersionUtil {
     private static final Map<Integer, String> protocolToVersion = new HashMap<>();
     static {
+        protocolToVersion.put(775, "26.1");
+        protocolToVersion.put(774, "1.21");
+        protocolToVersion.put(773, "1.21");
+        protocolToVersion.put(772, "1.21");
+        protocolToVersion.put(771, "1.21");
+        protocolToVersion.put(770, "1.21");
         protocolToVersion.put(769, "1.21");
         protocolToVersion.put(768, "1.21");
         protocolToVersion.put(767, "1.21");

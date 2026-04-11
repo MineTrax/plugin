@@ -50,7 +50,7 @@ public class BungeeWebQuery implements CommonWebQuery {
             if (this.plugin.getHasSkinsRestorer()) {
                 SkinProperty skin = SkinUtil.getSkinOfPlayerFromCache(player.getUniqueId(), player.getName());
                 if (skin != null) {
-                    playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureUrlStripped(skin));
+                    playerJsonObject.addProperty("skin_texture_id", PropertyUtils.getSkinTextureHash(skin));
                 }
             }
 

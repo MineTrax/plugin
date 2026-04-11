@@ -124,7 +124,7 @@ public class SkinUtil {
                 // get from SkinsRestorer API
                 SkinProperty skin = getSkinOfPlayerFromCache(playerUuid, playerName);
                 if (skin != null) {
-                    return PropertyUtils.getSkinTextureUrlStripped(skin);
+                    return PropertyUtils.getSkinTextureHash(skin);
                 }
             }
         } catch (Exception e) {

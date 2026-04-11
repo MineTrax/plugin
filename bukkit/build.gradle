@@ -10,8 +10,8 @@ dependencies {
     compileOnly 'com.viaversion:viaversion-api:5.0.0'
     
     // Required local plugin dependencies
-    compileOnly files('W:/Wurky/MineTrax/Plugin Development/Plugins/VentureChat-3.7.2.jar')
-    compileOnly files('W:/Wurky/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar')
+    compileOnly files('D:/MineTrax/Plugin Development/Plugins/VentureChat-3.8.0.jar')
+    compileOnly files('D:/MineTrax/Plugin Development/Plugins/EpicCore-1.6.jar')
 }
 
 processResources {
